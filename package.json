@@ -1,0 +1,23 @@
+{
+  "name": "bodegas.cliente.js",
+  "version": "1.0.0",
+  "description": "bodegas.cliente.js ==================",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gogs.ondev.today/lp/bodegas.cliente.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "grunt-concurrent": "^2.0.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-serve": "^0.1.6",
+    "load-grunt-tasks": "^3.2.0"
+  }
+}

@@ -1,0 +1,42 @@
+'use strict';
+
+var Utils = {  //jshint ignore: line
+    base_url : 'http://localhost:8520/',
+    getURL : function(module, args) 
+    {
+        var url = Utils.base_url + module + '/';
+
+        if (args)
+        {
+            url += args.join('/');
+        }
+
+        return url;
+    },
+    render : function(template, data)
+    {
+        var builder = template;
+
+        for(var d in data)
+        {
+            builder = builder.replace(
+                    new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}'), 
+                    data[d]);
+        }
+
+        return builder;
+    },
+    getUrlParameter: function(sParam)
+    {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) 
+            {
+                return sParameterName[1];
+            }
+        }
+    }
+};

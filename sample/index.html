@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/sample/style.css" />
+    </head>
+    <body>
+
+        <div class="menu" >
+            <ul>
+            </ul>
+        </div>
+
+        <div class="products" >
+        </div>
+
+        <script type="text/x-template" id="tag_template" >
+            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
+        </script>
+
+        <script type="text/x-template" id="product_template" >
+            <div class="product" >
+                <div>{{ name }}</div>
+                <img src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+                <div>{{ sell_price }}</div>
+                <div>{{ description }}</div>
+                <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
+                <button class="add-to-cart" productid="{{ id }}" >Add to cart</button>
+            </div>
+        </script>
+
+        <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="/dist/bodegas.client.js"></script>
+        <script type="text/javascript" src="sample.js" ></script>
+    </body>
+</html>
