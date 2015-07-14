@@ -56,7 +56,7 @@ $(document).ready(function()
             sample_view.renderTags(tags);
         });
 
-        ecommerce.product.list(1, 10, function(products)
+        ecommerce.product.list(1, 12, function(products)
         {
             sample_view.renderProducts(products);
         });
