@@ -19,9 +19,12 @@ var Utils = {  //jshint ignore: line
 
         for(var d in data)
         {
-            builder = builder.replace(
-                    new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}'), 
-                    data[d]);
+            var reg = new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}');
+
+            while (builder.split(reg).length > 1)
+            {
+                builder = builder.replace(reg, data[d]);
+            }
         }
 
         return builder;

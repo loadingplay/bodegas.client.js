@@ -1,32 +1,15 @@
 /* globals BodegasClient */
 /* globals Utils */
+/* globals ProductDetailView */
+
 'use strict';
-
-var SampleProductView = function()
-{
-    this.template = '';
-
-    this.initTemplates();
-};
-
-SampleProductView.prototype.initTemplates = function() 
-{
-    this.template = $.trim($('#product_detail').html());
-};
-
-SampleProductView.prototype.render = function(product) 
-{
-    var $el = $('.container');
-    $el.html(Utils.render(this.template, product));
-};
-
 
 $(document).ready(function()
 {
     var ecommerce = new BodegasClient();
-    var sample_product_view = new SampleProductView();
+    var sample_product_view = new ProductDetailView();
 
-    ecommerce.authenticate(function()
+    ecommerce.authenticate(100, function()
     {
         ecommerce.product.get(Utils.getUrlParameter('id'), function(product)
         {

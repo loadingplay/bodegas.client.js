@@ -21,6 +21,11 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
         tags = callback_or_tags;
     }
 
+    if (tags === undefined || tags === '')
+    {
+        tags = 'false';
+    }
+
     jQuery.get(Utils.getURL(
         'product', 
         ['list', page, items_per_page, tags]), 

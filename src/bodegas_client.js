@@ -13,10 +13,10 @@ var BodegasClient = function()
     this.tag = null;
 };
 
-BodegasClient.prototype.authenticate = function(callback) 
+BodegasClient.prototype.authenticate = function(app_public, callback) 
 {
     var self = this;
-    jQuery.get(Utils.getURL('authenticate', [10]), function(data)
+    jQuery.get(Utils.getURL('authenticate', [app_public]), function(data)
     {
         if (data.success)
         {
