@@ -47,6 +47,7 @@
         }
 
         options = $.extend({}, settings, options);
+        Utils.base_url = options.base_url;
 
         return methods[method](options);
     };
