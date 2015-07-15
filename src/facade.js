@@ -34,6 +34,7 @@
         var settings = {
             'app_public' : 0,
             'products_per_page' : 10,
+            'base_url' : 'http://localhost:8520/'
         };
 
         if (typeof(options_or_method) === 'string')
