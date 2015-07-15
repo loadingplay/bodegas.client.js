@@ -31,6 +31,10 @@
     $.fn[pluginName] = function ( options_or_method, options ) 
     {
         var method = 'main';
+        var settings = {
+            'app_public' : 0,
+            'products_per_page' : 10,
+        };
 
         if (typeof(options_or_method) === 'string')
         {
@@ -40,6 +44,8 @@
         {
             options = options_or_method;
         }
+
+        options = $.extend({}, settings, options);
 
         return methods[method](options);
     };
@@ -68,7 +74,7 @@ EcommerceFacade.prototype.showProductList = function()
         });
 
         self.ecommerce.product.list(
-            1, 12, 
+            1, self.options.products_per_page, 
             Utils.getUrlParameter('tag'), function(products)
         {
             self.view.renderProducts(products);
