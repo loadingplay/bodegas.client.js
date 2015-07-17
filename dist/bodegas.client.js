@@ -69,7 +69,8 @@ BodegasClient.prototype.init = function(site_id)
         var settings = {
             'app_public' : 0,
             'products_per_page' : 10,
-            'base_url' : 'http://localhost:8520/'
+            'base_url' : 'http://localhost:8520/',
+            'product_id' : null
         };
 
         if (typeof(options_or_method) === 'string')
@@ -122,12 +123,12 @@ EcommerceFacade.prototype.showProductList = function()
 
 EcommerceFacade.prototype.showProductDetail = function() 
 {
+    var product_id = this.options.product_id || Utils.getUrlParameter('id');
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.product.get(
-            Utils.getUrlParameter('id'), function(product)
+        self.ecommerce.product.get(product_id, function(product)
         {
             self.product_view.render(product);
         });
