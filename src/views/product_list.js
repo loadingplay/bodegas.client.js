@@ -35,8 +35,36 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
-        var rendered = Utils.render(this.product_template, product);
+        var $rendered = $(Utils.render(this.product_template, product));
 
-        $products.append(rendered);
+        this.renderProductImage($('.product-image', $rendered), product.id);
+
+        $products.append($rendered);
     }
+};
+
+
+ProductListView.prototype.renderProductImage = function($image, product_id) 
+{
+    var url = Utils.getURL('product', ['images', product_id]);
+
+    $.get(url, function(data)
+    {
+        if (typeof(data) === 'string')
+        {
+            data = $.parseJSON(data);
+        }
+
+        if (data.images.length > 0)
+        {
+            var src = data.images[0].thumb_200;
+            var $aux = $image.clone();
+
+            $aux.load(function()
+            {
+                $image.replaceWith($aux);
+            });
+            $aux.attr('src', src);
+        }
+    });
 };

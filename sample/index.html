@@ -21,8 +21,8 @@
         <script type="text/x-template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
-                <img src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-                <div>{{ sell_price }}</div>
+                <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+                <div>{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
                 <button class="add-to-cart" productid="{{ id }}" >Add to cart</button>

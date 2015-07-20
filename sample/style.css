@@ -4,3 +4,8 @@
     border: black solid 1px;
     float: left;
 }
+
+.product img
+{
+    max-width: 100%;
+}
