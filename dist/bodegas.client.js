@@ -198,7 +198,7 @@ Tag.prototype.listAll = function(callback)
 'use strict';
 
 var Utils = {  //jshint ignore: line
-    base_url : 'http://localhost:8520/',
+    base_url : 'http://apibodegas.ondev.today/',
     getURL : function(module, args) 
     {
         var url = Utils.base_url + module + '/';

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<div class="products" >
+</div>
+
+<div class="product-template" style="display:none" >
+    <div>{{ name }} : {{ main_price }}</div>
+    <button class="add-to-cart" >+</button>
+</div>
+
+<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/dist/bodegas.client.js"></script>
+
+<script type="text/javascript" >
+$(document).ready(function()
+{
+
+    var template = $(".product-template").html();
+    var ecommerce = new BodegasClient();
+
+    ecommerce.authenticate(100, function()
+    {
+        ecommerce.product.list(1, 3, function(products)
+        {
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                $(".products").append(Utils.render(template, product));
+            };
+        });
+    });
+});
+</script>
+</body>
+</html>
