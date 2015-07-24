@@ -216,6 +216,7 @@ var Utils = {  //jshint ignore: line
 
         for(var d in data)
         {
+            //console.log("d.name: " + d + " || d.val: "+ data[d] + "\n");
             var reg = new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}');
 
             while (builder.split(reg).length > 1)
