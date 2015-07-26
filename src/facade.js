@@ -5,8 +5,8 @@
 
 'use strict';
 
-(function ( $, window, document, undefined ) {
-    
+(function ( $, window, document, undefined ) 
+{
     // Create the defaults once
     var pluginName = 'ecommerce';
     var methods = {

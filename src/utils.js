@@ -2,8 +2,17 @@
 
 var Utils = {  //jshint ignore: line
     base_url : 'http://apibodegas.ondev.today/',
+    strEndsWith : function(str, suffix)
+    {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    },
     getURL : function(module, args) 
     {
+        if (!Utils.strEndsWith(Utils.base_url, '/'))
+        {
+            Utils.base_url += '/';
+        }
+
         var url = Utils.base_url + module + '/';
 
         if (args)

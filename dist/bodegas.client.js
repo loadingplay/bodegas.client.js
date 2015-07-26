@@ -40,8 +40,8 @@ BodegasClient.prototype.init = function(site_id)
 
 'use strict';
 
-(function ( $, window, document, undefined ) {
-    
+(function ( $, window, document, undefined ) 
+{
     // Create the defaults once
     var pluginName = 'ecommerce';
     var methods = {
@@ -149,6 +149,8 @@ var Product = function(site_id)
 Product.prototype.list = function(page, items_per_page, callback_or_tags, callback) 
 {
     var tags = 'false';
+    var product_list = [];
+
     if (typeof callback_or_tags === 'function')
     {
         callback = callback_or_tags;
@@ -168,7 +170,12 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
         ['list', page, items_per_page, tags]), 
         function(data)
         {
-            callback(data.products);
+            if (data.products !== undefined)
+            {
+                product_list = data.products;
+            }
+
+            callback(product_list);
         });
 };
 
@@ -199,8 +206,17 @@ Tag.prototype.listAll = function(callback)
 
 var Utils = {  //jshint ignore: line
     base_url : 'http://apibodegas.ondev.today/',
+    strEndsWith : function(str, suffix)
+    {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    },
     getURL : function(module, args) 
     {
+        if (!Utils.strEndsWith(Utils.base_url, '/'))
+        {
+            Utils.base_url += '/';
+        }
+
         var url = Utils.base_url + module + '/';
 
         if (args)

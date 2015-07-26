@@ -5,13 +5,7 @@ module.exports = function(grunt)  //jshint ignore: line
     require('load-grunt-tasks')(grunt);  //jshint ignore: line
 
     grunt.initConfig({
-        concurrent : 
-        {
-            serve : [ 'serve', 'watch' ],
-            options: {
-                logConcurrentOutput: true
-            }
-        },
+
         concat: {
             js: {
                 src: ['src/**/*.js'],
@@ -24,6 +18,7 @@ module.exports = function(grunt)  //jshint ignore: line
         },
 
         watch: {
+            options : { livereload : true },
             js: {
                 files: ['src/**/*.js'],
                 tasks: ['concat']
@@ -42,18 +37,24 @@ module.exports = function(grunt)  //jshint ignore: line
             }
         },
 
-        serve: {
-            options: {
-                port: 9000
+        express : {
+            all : {
+                options: {
+                    port : 9000,
+                    hostname : 'localhost',
+                    bases : ['.'],
+                    livereload : true
+                }
             }
-        },
+        }
 
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-serve');
+    grunt.loadNpmTasks('grunt-express');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'concurrent:serve']);
+    grunt.registerTask('default', ['concat', 'uglify', 'express', 'watch']);
+    grunt.registerTask('tests', ['concat', 'express', 'watch']);
 };

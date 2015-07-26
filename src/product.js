@@ -12,6 +12,8 @@ var Product = function(site_id)
 Product.prototype.list = function(page, items_per_page, callback_or_tags, callback) 
 {
     var tags = 'false';
+    var product_list = [];
+
     if (typeof callback_or_tags === 'function')
     {
         callback = callback_or_tags;
@@ -31,7 +33,12 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
         ['list', page, items_per_page, tags]), 
         function(data)
         {
-            callback(data.products);
+            if (data.products !== undefined)
+            {
+                product_list = data.products;
+            }
+
+            callback(product_list);
         });
 };
 
