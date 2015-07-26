@@ -1,8 +1,10 @@
+'use strict';
+
 // ==== model ===
 
 var cart_model = [
     {
-        name : "some product name",
+        name : 'some product name',
         quantity : 0,
         id : 0,
         price : 0
@@ -15,37 +17,37 @@ var CartView = function(controller)
 {
     this.controller = controller;
     this.options = {
-        cartSelector : ".shopping-cart",
-        addToCartbutton : ".add-to-cart",
-        removeFromCart : ".remove-from-cart",
-        addOne : ".add-one",
-        removeOne : ".remove-one"
+        cartSelector : '.shopping-cart',
+        addToCartbutton : '.add-to-cart',
+        removeFromCart : '.remove-from-cart',
+        addOne : '.add-one',
+        removeOne : '.remove-one'
     };
 };
 
 CartView.prototype.init = function()
 {
     var self = this;
-    $(document).on("click", this.options.addToCartbutton, function()
+    $(document).on('click', this.options.addToCartbutton, function()
                    {
-                       var product_id = $(this).attr("product_id");
+                       var product_id = $(this).attr('product_id');
                        self.controller.addToCart( product_id, 1 );
                    });
-    $(document).on("click", this.options.removeFromCart, function()
+    $(document).on('click', this.options.removeFromCart, function()
                    {
-                       var product_id = $(this).attr("product_id");
+                       var product_id = $(this).attr('product_id');
                        self.controller.removeFromCart(product_id);
                    });
     
-    $(document).on("click", this.options.addOne, function()
+    $(document).on('click', this.options.addOne, function()
                    {
-                       var product_id = $(this).attr("product_id");
+                       var product_id = $(this).attr('product_id');
                        self.controller.addToCart(product_id, 1);
                    });
 
-    $(document).on("click", this.options.removeOne, function()
+    $(document).on('click', this.options.removeOne, function()
                    {
-                       var product_id = $(this).attr("product_id");
+                       var product_id = $(this).attr('product_id');
                        self.controller.addToCart(product_id, -1);
                    });
 };
@@ -57,21 +59,21 @@ CartView.prototype.render = function()
     var $shopping_cart = $(this.options.cartSelector);
     var total = this.controller.getTotal();
 
-    $shopping_cart.html("");
+    $shopping_cart.html('');
 
     for (var i = 0; i < products.length; i++)
     {
-         var html = "<div>" + products[i].name + 
-                    " | " + products[i].quantity +
-                    "<button class='remove-from-cart' product_id='" + products[i].id + "' >Remove</button>" +
-                    "<button class='add-one' product_id='" + products[i].id + "' >+</button>" +
-                    "<button class='remove-one' product_id='" + products[i].id + "' >-</button>" +
-                    "<span class='product-total' >" + (products[i].price * products[i].quantity ) + "</span>"
-                    "</div>";
+         var html = '<div>' + products[i].name + 
+                    ' | ' + products[i].quantity +
+                    '<button class="remove-from-cart" product_id="' + products[i].id + '" >Remove</button>' +
+                    '<button class="add-one" product_id="' + products[i].id + '"" >+</button>' +
+                    '<button class="remove-one" product_id="' + products[i].id + '" >-</button>' +
+                    '<span class="product-total" >' + (products[i].price * products[i].quantity ) + '</span>' +
+                    '</div>';
          $shopping_cart.append(html);
     }
     
-    $shopping_cart.append("<div>total : " + total + " </div>");
+    $shopping_cart.append('<div>total : ' + total + ' </div>');
 };
 
 // ==== Controller ====
