@@ -232,7 +232,6 @@ var Utils = {  //jshint ignore: line
 
         for(var d in data)
         {
-            //console.log("d.name: " + d + " || d.val: "+ data[d] + "\n");
             var reg = new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}');
 
             while (builder.split(reg).length > 1)
@@ -361,6 +360,7 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
+        console.log(Utils.render(this.product_template, product));
         var $rendered = $(Utils.render(this.product_template, product));
 
         this.renderProductImage($('.product-image', $rendered), product.id);

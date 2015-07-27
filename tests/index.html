@@ -2,17 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Unittest</title>
+    <title>Bodegas : Cliente js</title>
     <link rel="stylesheet" href="/bower_components/qunit/qunit/qunit.css">
 </head>
 <body>
 
-    <div id="qunit">
-        <!-- overriden values -->
-        <div class="agencia-comision" >50</div>
-    </div>
-
-
+    <div id="qunit"></div>
     <div id="qunit-testrunner-toolbar">
         <span>jQuery Versions: 
             <input id="version-191" name="version" type="radio" value="1.9.1" />
@@ -27,13 +22,18 @@
     </div>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
+    <div class="content" style="display:none" >
+        <div class="products" ></div>
+    </div>
     <script src="/bower_components/qunit/qunit/qunit.js"></script>
     <script src="jquery.js"></script>
+    <script src="lib/blanket.js"></script>
 
     <!-- incluir codigo a testear -->
-    <script src="/dist/bodegas.client.js"></script>
+    <script src="/dist/bodegas.client.js" data-cover ></script>
     <!-- incluir codigo a testear -->
     <script type="text/javascript" src="product.test.js"></script>
+    <script type="text/javascript" src="product.view.test.js"></script>
     <script type="text/javascript" src="utils.test.js"></script>
 
     <script>

@@ -46,7 +46,7 @@ module.exports = function(grunt)  //jshint ignore: line
                     livereload : true
                 }
             }
-        }
+        },
 
     });
 
