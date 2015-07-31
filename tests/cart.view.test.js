@@ -30,8 +30,9 @@ QUnit.test('cart', function(assert)
 
         $button.click();
 
-        assert.equal(shopping_cart_view.controller.getProducts().length, 1, 'added product on click on add to cart');
+        assert.equal(shopping_cart_view.controller.getProducts().length, 2, 'added product on click on add to cart');
         assert.equal(shopping_cart_view.controller.getProducts()[0].id, product_id, 'added right product');
+        assert.equal(shopping_cart_view.controller.getProducts()[1].id, 9, 'added a different product right');
         html_loaded();
     });
 

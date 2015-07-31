@@ -209,9 +209,21 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
     }
 };
 
-ShoppingCart.prototype.getProducts = function() 
+ShoppingCart.prototype.addOne = function(id)
 {
-    return this.model;
+    //Si esta accesible esta funcion es pq ya existe el producto.
+    /*
+    if (!this.productExist(id)) 
+    {
+        this.model.push({ 'id' : id, 'price' : price, 'name' : name, 'quantity' : 0 });
+    }*/
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        if (this.model[i].id === id)
+        {
+            this.model[i].quantity += 1;
+        }
+    }
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
@@ -226,18 +238,39 @@ ShoppingCart.prototype.removeProduct = function(id)
     }
 };
 
+ShoppingCart.prototype.removeOne = function(id)
+{
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        if (this.model[i].id === id)
+        {
+            this.model[i].quantity -= 1;
+            
+            if (this.model[i].quantity <= 0)
+            {
+                this.removeProduct(id);
+            }
+            return;
+        }
+    }
+};
+
+ShoppingCart.prototype.getProducts = function() 
+{
+    return this.model;
+};
+
 ShoppingCart.prototype.productExist = function(id) 
 {
     var pid = parseInt(id);
     // get the product from model, if exist or create from database
     for (var i = 0; i < this.model.length; i++)
     {
-        if (this.model[i].id === pid)
+        if (parseInt(this.model[i].id) === pid)
         {
             return true;
         }
     }
-
     return false;
 };
 /* globals Utils */
@@ -467,9 +500,31 @@ var ShoppingCartView = function(controller)
     this.init();
 };
 
+ShoppingCartView.prototype.renderView = function(cart_div, cart_item_template)
+{
+    var productos = this.controller.getProducts();
+    for (var i = 0; i < productos.length; i++)
+    {
+        var builder = cart_item_template;
+        builder = builder.replace("{{ id }}", productos[i].id);
+        builder = builder.replace("{{ name }}", productos[i].name);
+        builder = builder.replace("{{ price }}", productos[i].price);
+        cart_div.append(builder);
+    }
+
+    if (productos.length != 0)
+    {
+        cart_div.append('<span> Some Total: xxx </span>');
+    }    
+}
+
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
+    var cart_div = $('.shopping-cart');
+    var cart_item_template = $('#product_template').html();
+    console.log('________' + cart_item_template);
+
     $(document).on('click', this.options.addToCartbutton, function()
     {
         var $button = $(this);
@@ -478,6 +533,40 @@ ShoppingCartView.prototype.init = function()
         var price = $button.attr('product-price');
 
         self.controller.addProduct(id, price, name);
+        self.renderView(cart_div, cart_item_template);
+
+        console.log(self.controller.getProducts());
+    });
+
+    $(document).on('click', this.options.removeFromCart, function()
+    {
+        var $button = $(this);
+        var id = $button.attr('product-id');
+
+        self.controller.removeProduct(id);
+        self.renderView(cart_div, cart_item_template);
+
+        console.log(self.controller.getProducts());
+    });
+
+    $(document).on('click', this.options.addOne, function()
+    {
+        var $button = $(this);
+        var id = $button.attr('product-id');
+
+        self.controller.addOne(id);
+        self.renderView(cart_div, cart_item_template);
+
+        console.log(self.controller.getProducts());
+    });
+
+    $(document).on('click', this.options.removeOne, function()
+    {
+        var $button = $(this);
+        var id = $button.attr('product-id');
+
+        self.controller.removeOne(id);
+        self.renderView(cart_div, cart_item_template);
 
         console.log(self.controller.getProducts());
     });

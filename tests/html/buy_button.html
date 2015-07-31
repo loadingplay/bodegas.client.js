@@ -1,1 +1,17 @@
-    <button product-id="11" product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart</button>
+    <div class="shopping-cart" style="border : black solid 1px">
+    </div>
+
+    <script type="text/x-template" id="product_template">
+        <div class="product" >
+            <div>{{ name }}</div>
+            <div>{{ main_price }}</div>
+            <div>{{ description }}</div>
+            <button class="remove-from-cart" product-id="-69">Remove</button>
+            <button class="add-one" product-id="-69">+</button>
+            <button class="remove-one" product-id="-69">-</button>
+            <span class="product-total">4596</span>
+        </div>
+    </script>
+
+    <button product-id="11" product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart id11</button>
+    <button product-id="9" product-name="Filete de Pescado y Atun en Salsa" product-price="4596" class="add-to-cart" >add to cart id9</button>
