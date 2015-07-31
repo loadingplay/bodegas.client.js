@@ -14,6 +14,7 @@ module.exports = function(grunt)  //jshint ignore: line
             css: {
                 src : ['css/**/*.css'],
                 dest: 'dist/bodegas.client.css',
+
             }
         },
 
@@ -56,5 +57,4 @@ module.exports = function(grunt)  //jshint ignore: line
     grunt.loadNpmTasks('grunt-express');
 
     grunt.registerTask('default', ['concat', 'uglify', 'express', 'watch']);
-    grunt.registerTask('tests', ['concat', 'express', 'watch']);
 };
