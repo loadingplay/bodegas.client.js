@@ -6,7 +6,7 @@ var cart_model = [
     {
         name : 'some product name',
         quantity : 0,
-        id : 0,
+        id : -69,
         price : 0
     }
 ];
@@ -117,6 +117,7 @@ CartController.prototype.getTotal = function()
 CartController.prototype.addToCart = function(product_id, quantity)
 {
     var product = this.findProduct(product_id);
+    console.log("ading quantity");
     product.quantity += quantity;  // add quantity counter
     
     this.view.render();  // redraw view
@@ -141,16 +142,43 @@ CartController.prototype.findProduct = function(product_id)
             return this.model[i];
         }
     }
+    return this.createProduct(product_id);
 };
 
-CartController.prototype.createProductFromDB = function(data)
+CartController.prototype.createProduct = function(product_id)
 {
-    //Black magic...
+    // Como se -arma- la url... ?
+    var my_model = this.model;
+    var url = 'http://apibodegas.ondev.today/product/list/1/10/false';
+    jQuery.get(url, 
+        function(data)
+        {
+            for (var i = 0; i < data.products.length; i++)
+            {
+                if (data.products[i].id == product_id)
+                {
+                    var aux_prod = {
+                        name : data.products[i].name,
+                        quantity : 0,
+                        id : data.products[i].id,
+                        price : data.products[i].main_price //es main price ?
+                    };
+                    my_model.push(aux_prod);
+                }
+            }
+            for (i = 0; i < my_model.length; i++)
+            {
+                if (my_model[i].id == product_id)
+                {
+                    console.log("returning: " + my_model[i].name);
+                    return my_model[i];
+                }
+            }
+        });
 };
 
-/*
+
 $(document).ready(function()
 {
     var controller = new CartController();
 });
-*/

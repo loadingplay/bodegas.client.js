@@ -6,6 +6,8 @@
     </head>
     <body>
 
+        <div class="shopping-cart" style="border : black solid 1px">
+        </div>
         <div class="menu" >
             <ul>
             </ul>
@@ -25,12 +27,13 @@
                 <div>{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button class="add-to-cart" productid="{{ id }}" >Add to cart</button>
+                <button class="add-to-cart" product_id="{{ id }}" >Add to cart</button>
             </div>
         </script>
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="/dist/bodegas.client.js"></script>
+        <script type="text/javascript" src="/sample/shopping_cart.js"></script>
         <!-- <script type="text/javascript" src="sample.js" ></script> -->
         <script type="text/javascript" >
         $(document).ready(function()
