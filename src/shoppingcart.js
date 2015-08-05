@@ -47,11 +47,13 @@ ShoppingCart.prototype.removeOne = function(id)
         if (this.model[i].id === id)
         {
             this.model[i].quantity -= 1;
+            this.model[i].total = this.model[i].price * this.model[i].quantity;
             
             if (this.model[i].quantity <= 0)
             {
                 this.removeProduct(id);
             }
+
             return;
         }
     }

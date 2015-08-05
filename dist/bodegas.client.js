@@ -235,11 +235,13 @@ ShoppingCart.prototype.removeOne = function(id)
         if (this.model[i].id === id)
         {
             this.model[i].quantity -= 1;
+            this.model[i].total = this.model[i].price * this.model[i].quantity;
             
             if (this.model[i].quantity <= 0)
             {
                 this.removeProduct(id);
             }
+
             return;
         }
     }
@@ -504,9 +506,15 @@ ShoppingCartView.prototype.init = function()
         self.render();
     });
 
-    $(document).on('click', '.add-one', function()
+    $(document).on('click', this.options.addOne, function()
     {
         self.addOneClick($(this));
+        self.render();
+    });
+
+    $(document).on('click', this.options.removeOne, function()
+    {
+        self.removeOne($(this));
         self.render();
     });
 
@@ -522,27 +530,6 @@ ShoppingCartView.prototype.init = function()
     //     console.log(self.controller.getProducts());
     // });
 
-    // $(document).on('click', this.options.addOne, function()
-    // {
-    //     var $button = $(this);
-    //     var id = $button.attr('product-id');
-
-    //     self.controller.addOne(id);
-    //     self.renderView(cart_div, cart_item_template);
-
-    //     console.log(self.controller.getProducts());
-    // });
-
-    // $(document).on('click', this.options.removeOne, function()
-    // {
-    //     var $button = $(this);
-    //     var id = $button.attr('product-id');
-
-    //     self.controller.removeOne(id);
-    //     self.renderView(cart_div, cart_item_template);
-
-    //     console.log(self.controller.getProducts());
-    // });
 };
 
 ShoppingCartView.prototype.addOneClick = function($button) 
@@ -559,6 +546,13 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var price = $button.attr('product-price');
 
     this.controller.addProduct(id, price, name);
+};
+
+ShoppingCartView.prototype.removeOne = function($button) 
+{
+    var id = $button.attr('product-id');
+
+    this.controller.removeOne(id);
 };
 
 // ************ render methods ***************

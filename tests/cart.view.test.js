@@ -50,10 +50,12 @@ QUnit.test('add button', function(assert)
     var html_loaded = assert.async();
     var shopping_cart_view,
         $button,
-        $add_button;
+        $add_button,
+        $remove_button;
 
     $('.cart').load('html/buy_button.html', function()
     {
+        // add button
         shopping_cart_view = new ShoppingCartView();
 
         $button = $('.add-to-cart');
@@ -65,7 +67,15 @@ QUnit.test('add button', function(assert)
         assert.equal(shopping_cart_view.controller.getProducts()[0].quantity, 2, 'added one product after + click');
         assert.equal($.trim($('.quantity').html()), '2');
 
-        assert.ok(true);
+        // remove button
+        $remove_button = $('.remove-one');
+        $remove_button.click();
+
+        assert.equal(shopping_cart_view.controller.getProducts()[0].quantity, 1, 'removed product after click - button');
+        assert.equal(
+            shopping_cart_view.controller.getProducts()[0].total, 
+            shopping_cart_view.controller.getProducts()[0].price, 'price is updated');
+
         html_loaded();
     });
 });
