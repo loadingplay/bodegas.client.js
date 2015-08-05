@@ -66,7 +66,7 @@ QUnit.test('add button', function(assert)
         $add_button.click();
 
         assert.equal(shopping_cart_view.controller.getProducts()[0].quantity, 2, 'added one product after + click');
-        assert.equal($.trim($('.quantity').html()), '2');
+        assert.equal($.trim($('.quantity').html()), '2', 'quantity is correct in html');
 
         // remove button
         $remove_button = $('.remove-one');
@@ -83,6 +83,9 @@ QUnit.test('add button', function(assert)
         $delete_button.click();
 
         assert.equal(shopping_cart_view.controller.getProducts().length, 1, 'removed element');
+
+        // render total
+        assert.notEqual($('.total').html().indexOf('4596'), -1, '');
 
         html_loaded();
     });

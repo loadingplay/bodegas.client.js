@@ -77,3 +77,16 @@ ShoppingCart.prototype.productExist = function(id)
     }
     return false;
 };
+
+ShoppingCart.prototype.getTotal = function() 
+{
+    var total = 0;
+
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        var product = this.model[i];
+        total += product.price * product.quantity;
+    }
+
+    return total;
+};

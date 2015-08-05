@@ -16,7 +16,8 @@ var ShoppingCartView = function(controller)
     };
 
     this.$cart_div = $('.shopping-cart');
-    this.cart_item_template = $('#product_template').html();
+    this.cart_item_template = $('#shopping-cart-product').html();
+    this.total_template = $('#shopping-cart-total').html();
 
     this.init();
 };
@@ -93,6 +94,7 @@ ShoppingCartView.prototype.render = function()
 {
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
+    this.renderTotal(this.$cart_div);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
@@ -107,5 +109,6 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
 
 ShoppingCartView.prototype.renderTotal = function($cart_div) 
 {
-    $cart_div.append('<span> Some Total: xxx </span>');
+    var total = Utils.render(this.total_template, { 'total' : this.controller.getTotal() });
+    $cart_div.append(total);
 };

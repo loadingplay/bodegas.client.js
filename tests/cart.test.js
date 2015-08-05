@@ -69,6 +69,10 @@ QUnit.test('totals', function(assert)
             product.main_price * 2,
             'total after adding the same product again');
 
+        assert.equal(
+            shopping_cart.getTotal(),
+            product.main_price * 2);
+
         products_loaded();
     });
 });

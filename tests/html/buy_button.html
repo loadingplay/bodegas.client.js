@@ -1,7 +1,7 @@
     <div class="shopping-cart" style="border : black solid 1px">
     </div>
 
-    <script type="text/x-template" id="product_template">
+    <script type="text/x-template" id="shopping-cart-product">
         <div class="product" >
             <div>{{ id }}</div>
             <div>{{ name }}</div>
@@ -12,6 +12,11 @@
             <button class="remove-one" product-id="{{ id }}">-</button>
             <span class="product-total">{{ total }}</span>
         </div>
+    </script>
+
+
+    <script type="text/x-template" id="shopping-cart-total" >
+        <span class="total" > Total: {{ total }} </span>
     </script>
 
     <button product-id="11" product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart id11</button>
