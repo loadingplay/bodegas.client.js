@@ -51,7 +51,8 @@ QUnit.test('add button', function(assert)
     var shopping_cart_view,
         $button,
         $add_button,
-        $remove_button;
+        $remove_button,
+        $delete_button;
 
     $('.cart').load('html/buy_button.html', function()
     {
@@ -75,6 +76,13 @@ QUnit.test('add button', function(assert)
         assert.equal(
             shopping_cart_view.controller.getProducts()[0].total, 
             shopping_cart_view.controller.getProducts()[0].price, 'price is updated');
+
+
+        // remove product
+        $delete_button = $('.remove-from-cart');
+        $delete_button.click();
+
+        assert.equal(shopping_cart_view.controller.getProducts().length, 1, 'removed element');
 
         html_loaded();
     });

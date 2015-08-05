@@ -518,19 +518,17 @@ ShoppingCartView.prototype.init = function()
         self.render();
     });
 
-
-    // $(document).on('click', this.options.removeFromCart, function()
-    // {
-    //     var $button = $(this);
-    //     var id = $button.attr('product-id');
-
-    //     self.controller.removeProduct(id);
-    //     self.renderView(cart_div, cart_item_template);
-
-    //     console.log(self.controller.getProducts());
-    // });
+    $(document).on('click', this.options.removeFromCart, function()
+    {
+        self.removeProduct($(this));
+        self.render();
+    });
 
 };
+
+
+/**************** button actions ****************/
+
 
 ShoppingCartView.prototype.addOneClick = function($button) 
 {
@@ -555,7 +553,16 @@ ShoppingCartView.prototype.removeOne = function($button)
     this.controller.removeOne(id);
 };
 
-// ************ render methods ***************
+ShoppingCartView.prototype.removeProduct = function($button) 
+{
+    var id = $button.attr('product-id');
+
+    this.controller.removeProduct(id);
+};
+
+
+/**************** rendering methos ****************/
+
 
 ShoppingCartView.prototype.render = function() 
 {
