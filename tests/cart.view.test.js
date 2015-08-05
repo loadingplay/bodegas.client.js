@@ -1,6 +1,7 @@
 /*global QUnit*/
 /*global Product*/
 /*global ShoppingCart*/
+/*global ShoppingCartView*/
 /*global $*/
 
 'use strict';
@@ -21,46 +22,50 @@ QUnit.module(
 QUnit.test('cart', function(assert)
 {
     var html_loaded = assert.async();
-    var shopping_cart_view = new ShoppingCartView();
+    var shopping_cart_view;
 
     $('.cart').load('html/buy_button.html', function()
     {
         var $button = $('.add-to-cart');
         var product_id = $button.attr('product-id');
 
+        shopping_cart_view = new ShoppingCartView();
+
         $button.click();
 
         assert.equal(shopping_cart_view.controller.getProducts().length, 2, 'added product on click on add to cart');
         assert.equal(shopping_cart_view.controller.getProducts()[0].id, product_id, 'added right product');
         assert.equal(shopping_cart_view.controller.getProducts()[1].id, 9, 'added a different product right');
+
+        assert.notEqual($.trim($('.shopping-cart').html()), '', 'shopping cart is not empty');
+        assert.equal($('.product').length, 2, 'added two products');
+
         html_loaded();
     });
-
-    // var products_loaded = assert.async();
-
-    // product.list(1, 10, function(products)
-    // {
-    //     var product = products[0];
-    //     var product2= products[1];
-
-    //     // add product
-    //     shopping_cart.addProduct(product.id, product.main_price, product.name);
-    //     assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
-
-    //     // remove product
-    //     shopping_cart.removeProduct(product.id);
-    //     assert.equal(shopping_cart.getProducts().length, 0, 'shoppint cart length == 0 after removing');
+});
 
 
-    //     shopping_cart.addProduct(product.id, product.main_price, product.name);
-    //     shopping_cart.addProduct(product2.id, product2.main_price, product2.name);
-    //     assert.equal(shopping_cart.getProducts().length, 2, 'length == 2 after adding two diferent products');
+QUnit.test('add button', function(assert)
+{
+    var html_loaded = assert.async();
+    var shopping_cart_view,
+        $button,
+        $add_button;
 
-    //     shopping_cart.addProduct(product.id, product.main_price, product.name);
-    //     assert.equal(shopping_cart.getProducts().length, 2, 'length == 2 after adding an existing product');
+    $('.cart').load('html/buy_button.html', function()
+    {
+        shopping_cart_view = new ShoppingCartView();
 
-    //     assert.equal(shopping_cart.getProducts()[0].quantity, 2, 'quantity is 2 after adding an existing product');
+        $button = $('.add-to-cart');
+        $button.click();
 
-    //     products_loaded();
-    // });
+        $add_button = $('.add-one');
+        $add_button.click();
+
+        assert.equal(shopping_cart_view.controller.getProducts()[0].quantity, 2, 'added one product after + click');
+        assert.equal($.trim($('.quantity').html()), '2');
+
+        assert.ok(true);
+        html_loaded();
+    });
 });

@@ -197,7 +197,13 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
 {
     if (!this.productExist(id))
     {
-        this.model.push({ 'id' : id, 'price' : price, 'name' : name, 'quantity' : 0 });
+        this.model.push({ 
+            'id' : id, 
+            'price' : price, 
+            'name' : name, 
+            'quantity' : 0,
+            'total' : price 
+        });
     }
 
     for (var i = 0; i < this.model.length; i++) 
@@ -205,23 +211,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
         if (this.model[i].id === id)
         {
             this.model[i].quantity += 1;
-        }
-    }
-};
-
-ShoppingCart.prototype.addOne = function(id)
-{
-    //Si esta accesible esta funcion es pq ya existe el producto.
-    /*
-    if (!this.productExist(id)) 
-    {
-        this.model.push({ 'id' : id, 'price' : price, 'name' : name, 'quantity' : 0 });
-    }*/
-    for (var i = 0; i < this.model.length; i++) 
-    {
-        if (this.model[i].id === id)
-        {
-            this.model[i].quantity += 1;
+            this.model[i].total = this.model[i].quantity * this.model[i].price;
         }
     }
 };
@@ -483,6 +473,7 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
 };
 /*global ShoppingCart*/
 /*global $*/
+/*global Utils*/
 
 'use strict';
 
@@ -497,77 +488,98 @@ var ShoppingCartView = function(controller)
         removeOne : '.remove-one'
     };
 
+    this.$cart_div = $('.shopping-cart');
+    this.cart_item_template = $('#product_template').html();
+
     this.init();
 };
-
-ShoppingCartView.prototype.renderView = function(cart_div, cart_item_template)
-{
-    var productos = this.controller.getProducts();
-    for (var i = 0; i < productos.length; i++)
-    {
-        var builder = cart_item_template;
-        builder = builder.replace("{{ id }}", productos[i].id);
-        builder = builder.replace("{{ name }}", productos[i].name);
-        builder = builder.replace("{{ price }}", productos[i].price);
-        cart_div.append(builder);
-    }
-
-    if (productos.length != 0)
-    {
-        cart_div.append('<span> Some Total: xxx </span>');
-    }    
-}
 
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
-    var cart_div = $('.shopping-cart');
-    var cart_item_template = $('#product_template').html();
-    console.log('________' + cart_item_template);
 
     $(document).on('click', this.options.addToCartbutton, function()
     {
-        var $button = $(this);
-        var id = $button.attr('product-id');
-        var name = $button.attr('product-name');
-        var price = $button.attr('product-price');
-
-        self.controller.addProduct(id, price, name);
-        self.renderView(cart_div, cart_item_template);
-
-        console.log(self.controller.getProducts());
+        self.addToCartClick($(this));
+        self.render();
     });
 
-    $(document).on('click', this.options.removeFromCart, function()
+    $(document).on('click', '.add-one', function()
     {
-        var $button = $(this);
-        var id = $button.attr('product-id');
-
-        self.controller.removeProduct(id);
-        self.renderView(cart_div, cart_item_template);
-
-        console.log(self.controller.getProducts());
+        self.addOneClick($(this));
+        self.render();
     });
 
-    $(document).on('click', this.options.addOne, function()
+
+    // $(document).on('click', this.options.removeFromCart, function()
+    // {
+    //     var $button = $(this);
+    //     var id = $button.attr('product-id');
+
+    //     self.controller.removeProduct(id);
+    //     self.renderView(cart_div, cart_item_template);
+
+    //     console.log(self.controller.getProducts());
+    // });
+
+    // $(document).on('click', this.options.addOne, function()
+    // {
+    //     var $button = $(this);
+    //     var id = $button.attr('product-id');
+
+    //     self.controller.addOne(id);
+    //     self.renderView(cart_div, cart_item_template);
+
+    //     console.log(self.controller.getProducts());
+    // });
+
+    // $(document).on('click', this.options.removeOne, function()
+    // {
+    //     var $button = $(this);
+    //     var id = $button.attr('product-id');
+
+    //     self.controller.removeOne(id);
+    //     self.renderView(cart_div, cart_item_template);
+
+    //     console.log(self.controller.getProducts());
+    // });
+};
+
+ShoppingCartView.prototype.addOneClick = function($button) 
+{
+    var id = $button.attr('product-id');
+
+    this.controller.addProduct(id);
+};
+
+ShoppingCartView.prototype.addToCartClick = function($button) 
+{
+    var id = $button.attr('product-id');
+    var name = $button.attr('product-name');
+    var price = $button.attr('product-price');
+
+    this.controller.addProduct(id, price, name);
+};
+
+// ************ render methods ***************
+
+ShoppingCartView.prototype.render = function() 
+{
+    this.$cart_div.html('');
+    this.renderProducts(this.$cart_div, this.cart_item_template);
+};
+
+ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
+{
+    var productos = this.controller.getProducts();
+    for (var i = 0; i < productos.length; i++)
     {
-        var $button = $(this);
-        var id = $button.attr('product-id');
+        var builder = Utils.render(cart_item_template, productos[i]);
+        $cart_div.append(builder);
+    }
+};
 
-        self.controller.addOne(id);
-        self.renderView(cart_div, cart_item_template);
-
-        console.log(self.controller.getProducts());
-    });
-
-    $(document).on('click', this.options.removeOne, function()
-    {
-        var $button = $(this);
-        var id = $button.attr('product-id');
-
-        self.controller.removeOne(id);
-        self.renderView(cart_div, cart_item_template);
-
-        console.log(self.controller.getProducts());
-    });
+ShoppingCartView.prototype.renderTotal = function($cart_div) 
+{
+    $cart_div.append('<span> Some Total: xxx </span>');
 };

@@ -9,7 +9,13 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
 {
     if (!this.productExist(id))
     {
-        this.model.push({ 'id' : id, 'price' : price, 'name' : name, 'quantity' : 0 });
+        this.model.push({ 
+            'id' : id, 
+            'price' : price, 
+            'name' : name, 
+            'quantity' : 0,
+            'total' : price 
+        });
     }
 
     for (var i = 0; i < this.model.length; i++) 
@@ -17,23 +23,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
         if (this.model[i].id === id)
         {
             this.model[i].quantity += 1;
-        }
-    }
-};
-
-ShoppingCart.prototype.addOne = function(id)
-{
-    //Si esta accesible esta funcion es pq ya existe el producto.
-    /*
-    if (!this.productExist(id)) 
-    {
-        this.model.push({ 'id' : id, 'price' : price, 'name' : name, 'quantity' : 0 });
-    }*/
-    for (var i = 0; i < this.model.length; i++) 
-    {
-        if (this.model[i].id === id)
-        {
-            this.model[i].quantity += 1;
+            this.model[i].total = this.model[i].quantity * this.model[i].price;
         }
     }
 };
