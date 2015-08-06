@@ -1,4 +1,5 @@
 /* global Utils */
+/* global $*/
 
 'use strict';
 
@@ -35,7 +36,6 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
-        console.log(Utils.render(this.product_template, product));
         var $rendered = $(Utils.render(this.product_template, product));
 
         this.renderProductImage($('.product-image', $rendered), product.id);

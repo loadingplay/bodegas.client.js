@@ -1,8 +1,51 @@
+/*global Utils*/
+/*global $*/
+
 'use strict';
 
 var ShoppingCart = function()
 {
     this.model = [];
+    this.guid = this.generateGUID();
+};
+
+ShoppingCart.prototype.generateGUID = function() 
+{
+    var old_guid = $.cookie('shopping-cart');
+    var guid = old_guid;
+
+    if (old_guid === undefined || old_guid === '')
+    {
+        guid = Utils.createUUID();  // request a new guid
+        $.cookie('shopping-cart', guid);  // save to cookie
+    }
+    return guid;
+};
+
+ShoppingCart.prototype.getGUID = function() 
+{
+    return this.guid;
+};
+
+ShoppingCart.prototype.saveModel = function() 
+{
+    var self = this;
+    $.post( 
+        Utils.getURL('cart', ['save', this.guid]), 
+        { 'json_data' : JSON.stringify(this.model) }, function()
+        {
+            //nothing here
+        });
+};
+
+ShoppingCart.prototype.recalcTotals = function() 
+{
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        var p = this.model[i];
+
+        p.total = p.quantity * p.price;
+    };
 };
 
 ShoppingCart.prototype.addProduct = function(id, price, name) 
@@ -26,6 +69,8 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
             this.model[i].total = this.model[i].quantity * this.model[i].price;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
@@ -38,6 +83,8 @@ ShoppingCart.prototype.removeProduct = function(id)
             return;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.removeOne = function(id)
@@ -57,6 +104,8 @@ ShoppingCart.prototype.removeOne = function(id)
             return;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.getProducts = function() 
@@ -89,4 +138,22 @@ ShoppingCart.prototype.getTotal = function()
     }
 
     return total;
+};
+
+ShoppingCart.prototype.loadCart = function(callback) 
+{
+    var self = this;
+    var onload = callback === undefined ? $.noop : callback;
+
+    $.get(Utils.getURL(
+        'cart', 
+        [
+            'load', 
+            this.getGUID()
+        ]), function(cart_products)
+    {
+        self.model = cart_products.products;
+        self.recalcTotals();
+        onload(cart_products);
+    });
 };

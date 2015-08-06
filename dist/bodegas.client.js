@@ -186,11 +186,54 @@ Product.prototype.get = function(product_id, callback)
         callback(product);
     });
 };
+/*global Utils*/
+/*global $*/
+
 'use strict';
 
 var ShoppingCart = function()
 {
     this.model = [];
+    this.guid = this.generateGUID();
+};
+
+ShoppingCart.prototype.generateGUID = function() 
+{
+    var old_guid = $.cookie('shopping-cart');
+    var guid = old_guid;
+
+    if (old_guid === undefined || old_guid === '')
+    {
+        guid = Utils.createUUID();  // request a new guid
+        $.cookie('shopping-cart', guid);  // save to cookie
+    }
+    return guid;
+};
+
+ShoppingCart.prototype.getGUID = function() 
+{
+    return this.guid;
+};
+
+ShoppingCart.prototype.saveModel = function() 
+{
+    var self = this;
+    $.post( 
+        Utils.getURL('cart', ['save', this.guid]), 
+        { 'json_data' : JSON.stringify(this.model) }, function()
+        {
+            //nothing here
+        });
+};
+
+ShoppingCart.prototype.recalcTotals = function() 
+{
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        var p = this.model[i];
+
+        p.total = p.quantity * p.price;
+    };
 };
 
 ShoppingCart.prototype.addProduct = function(id, price, name) 
@@ -214,6 +257,8 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
             this.model[i].total = this.model[i].quantity * this.model[i].price;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
@@ -226,6 +271,8 @@ ShoppingCart.prototype.removeProduct = function(id)
             return;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.removeOne = function(id)
@@ -245,6 +292,8 @@ ShoppingCart.prototype.removeOne = function(id)
             return;
         }
     }
+
+    this.saveModel();
 };
 
 ShoppingCart.prototype.getProducts = function() 
@@ -277,6 +326,24 @@ ShoppingCart.prototype.getTotal = function()
     }
 
     return total;
+};
+
+ShoppingCart.prototype.loadCart = function(callback) 
+{
+    var self = this;
+    var onload = callback === undefined ? $.noop : callback;
+
+    $.get(Utils.getURL(
+        'cart', 
+        [
+            'load', 
+            this.getGUID()
+        ]), function(cart_products)
+    {
+        self.model = cart_products.products;
+        self.recalcTotals();
+        onload(cart_products);
+    });
 };
 /* globals Utils */
 
@@ -346,6 +413,21 @@ var Utils = {  //jshint ignore: line
                 return sParameterName[1];
             }
         }
+    },
+    createUUID : function() 
+    {
+        // http://www.ietf.org/rfc/rfc4122.txt
+        var s = [];
+        var hexDigits = '0123456789abcdef';
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = '-';
+
+        var uuid = s.join('');
+        return uuid;
     }
 };
 /* globals Utils */
@@ -416,6 +498,7 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
 };
 
 /* global Utils */
+/* global $*/
 
 'use strict';
 
@@ -452,7 +535,6 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
-        console.log(Utils.render(this.product_template, product));
         var $rendered = $(Utils.render(this.product_template, product));
 
         this.renderProductImage($('.product-image', $rendered), product.id);

@@ -1,6 +1,7 @@
 /*global QUnit*/
 /*global Product*/
 /*global ShoppingCart*/
+/*global $*/
 
 'use strict';
 var product;
@@ -13,6 +14,10 @@ QUnit.module(
         {
             product = new Product();
             shopping_cart = new ShoppingCart();
+        },
+        teardown : function()
+        {
+            $.removeCookie('shopping-cart');
         }
     });
 
@@ -72,6 +77,37 @@ QUnit.test('totals', function(assert)
         assert.equal(
             shopping_cart.getTotal(),
             product.main_price * 2);
+
+        products_loaded();
+    });
+});
+
+QUnit.test('load from cache', function(assert)
+{
+    var products_loaded = assert.async();
+    var shopping_cart_loaded = assert.async();
+
+    product.list(1,10, function(products)
+    {
+        var new_shopping_cart;
+        var product = products[0];
+
+        shopping_cart.addProduct(product.id, product.main_price, product.name);
+        assert.equal(shopping_cart.getProducts().length, 1, 'length is one');
+
+        assert.equal($.cookie('shopping-cart'), shopping_cart.getGUID(), 'guid created');
+
+        // create a brand new instance
+        new_shopping_cart = new ShoppingCart();
+
+        // check if guid is conserved
+        assert.equal(shopping_cart.getGUID(), new_shopping_cart.getGUID(), 'guid is conserved');
+
+        new_shopping_cart.loadCart(function()
+        {
+            assert.deepEqual(new_shopping_cart.getProducts(), shopping_cart.getProducts(), 'old products are loaded');
+            shopping_cart_loaded();
+        });
 
         products_loaded();
     });
