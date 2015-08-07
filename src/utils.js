@@ -24,6 +24,7 @@ var Utils = {  //jshint ignore: line
     },
     render : function(template, data)
     {
+        if (template === undefined) return '';
         var builder = template;
 
         for(var d in data)

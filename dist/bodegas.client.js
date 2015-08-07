@@ -2,6 +2,7 @@
 /* global Utils */
 /* global Tag */
 /* global Product */
+/* global ShoppingCart */
 
 
 'use strict';
@@ -32,6 +33,7 @@ BodegasClient.prototype.init = function(site_id)
     this.site_id = site_id;
     this.tag = new Tag(site_id);
     this.product = new Product(site_id);
+    this.cart = new ShoppingCart();
 };
 /* global BodegasClient */
 /* global ProductListView */
@@ -188,6 +190,7 @@ Product.prototype.get = function(product_id, callback)
 };
 /*global Utils*/
 /*global $*/
+/*global ShoppingCartView*/
 
 'use strict';
 
@@ -195,6 +198,7 @@ var ShoppingCart = function()
 {
     this.model = [];
     this.guid = this.generateGUID();
+    this.view = new ShoppingCartView(this);
 };
 
 ShoppingCart.prototype.generateGUID = function() 
@@ -386,6 +390,7 @@ var Utils = {  //jshint ignore: line
     },
     render : function(template, data)
     {
+        if (template === undefined) return '';
         var builder = template;
 
         for(var d in data)

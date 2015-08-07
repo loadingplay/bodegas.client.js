@@ -27,7 +27,21 @@
                 <div>{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button class="add-to-cart" product_id="{{ id }}" >Add to cart</button>
+                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
+            </div>
+        </script>
+
+
+        <script type="text/x-template" id="shopping-cart-product">
+            <div class="product" >
+                <div>{{ id }}</div>
+                <div>{{ name }}</div>
+                <div>{{ price }}</div>
+                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
+                <button class="add-one" product-id="{{ id }}">+</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="product-total">{{ total }}</span>
             </div>
         </script>
 

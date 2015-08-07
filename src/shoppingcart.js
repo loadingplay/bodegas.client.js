@@ -1,5 +1,6 @@
 /*global Utils*/
 /*global $*/
+/*global ShoppingCartView*/
 
 'use strict';
 
@@ -7,6 +8,7 @@ var ShoppingCart = function()
 {
     this.model = [];
     this.guid = this.generateGUID();
+    this.view = new ShoppingCartView(this);
 };
 
 ShoppingCart.prototype.generateGUID = function() 
