@@ -27,12 +27,12 @@
         <div class="cart" ></div>
     </div>
     <script type="text/javascript" src="jquery.js"></script>
-    <script type="text/javascript" src="/bower_components/qunit/qunit/qunit.js"></script>
-    <script type="text/javascript" src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/tests/lib/blanket.js"></script>
+    <script type="text/javascript" src="../bower_components/qunit/qunit/qunit.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery.cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="lib/blanket.js"></script>
 
     <!-- incluir codigo a testear -->
-    <script  type="text/javascript" src="/dist/bodegas.client.js" data-cover ></script>
+    <script  type="text/javascript" src="../dist/bodegas.client.js" data-cover ></script>
     <!-- incluir codigo a testear -->
     <script type="text/javascript" src="product.test.js"></script>
     <script type="text/javascript" src="product.view.test.js"></script>
@@ -63,6 +63,14 @@
 
             $("input[value='" + version + "']").attr("checked", "checked");
         });
+    </script>
+
+    <script type="text/javascript">
+    // overriding some methods
+    $.cookie = function(param)
+    {
+        return 'something';
+    };
     </script>
 </body>
 </html>

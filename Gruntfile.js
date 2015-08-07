@@ -2,9 +2,31 @@
 
 module.exports = function(grunt)  //jshint ignore: line
 {
+    /*** istanbul ***/
+    grunt.loadNpmTasks('grunt-contrib-qunit');
+    grunt.loadNpmTasks('grunt-qunit-istanbul');
+    /*** istanbul ***/
+
     require('load-grunt-tasks')(grunt);  //jshint ignore: line
 
     grunt.initConfig({
+
+        /*** istanbul ***/
+        pkg: grunt.file.readJSON('package.json'),
+
+        qunit : {
+            all: ['tests/index.istanbul.html'],
+            options: {
+                coverage: {
+                  src: ['dist/bodegas.client.js'],
+                  instrumentedFiles: 'temp/',
+                  htmlReport: 'report/coverage',
+                  coberturaReport: 'report/',
+                  linesThresholdPct: 20
+                }
+            }
+        },
+        /*** istanbul ***/
 
         concat: {
             js: {
@@ -55,6 +77,7 @@ module.exports = function(grunt)  //jshint ignore: line
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-express');
+
 
     grunt.registerTask('default', ['concat', 'uglify', 'express', 'watch']);
 };
