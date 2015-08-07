@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="280"  lines-covered="191"  line-rate="0.6820999999999999"  branches-valid="48"  branches-covered="30"  branch-rate="0.625"  timestamp="1438976160575" complexity="0" version="0.1">
+<coverage lines-valid="280"  lines-covered="191"  line-rate="0.6820999999999999"  branches-valid="48"  branches-covered="30"  branch-rate="0.625"  timestamp="1438980867582" complexity="0" version="0.1">
 <sources>
 	<source>/Users/ricardo/git_loadingplay/bodegas.cliente.js</source>
 </sources>
@@ -180,8 +180,8 @@
 			<method name="(anonymous_57)"  hits="10"  signature="()V" >
 				<lines><line number="550"  hits="10" /></lines>
 			</method>
-			<method name="(anonymous_58)"  hits="2"  signature="()V" >
-				<lines><line number="562"  hits="2" /></lines>
+			<method name="(anonymous_58)"  hits="7"  signature="()V" >
+				<lines><line number="562"  hits="7" /></lines>
 			</method>
 			<method name="(anonymous_59)"  hits="2"  signature="()V" >
 				<lines><line number="576"  hits="2" /></lines>
@@ -454,7 +454,7 @@
 			<line number="559"  hits="8"  branch="false" />
 			<line number="560"  hits="8"  branch="false" />
 			<line number="562"  hits="8"  branch="false" />
-			<line number="564"  hits="2"  branch="false" />
+			<line number="564"  hits="7"  branch="false" />
 			<line number="566"  hits="8"  branch="false" />
 			<line number="574"  hits="1"  branch="false" />
 			<line number="576"  hits="1"  branch="false" />
