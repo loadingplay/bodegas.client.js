@@ -29,7 +29,6 @@ ShoppingCart.prototype.getGUID = function()
 
 ShoppingCart.prototype.saveModel = function() 
 {
-    var self = this;
     $.post( 
         Utils.getURL('cart', ['save', this.guid]), 
         { 'json_data' : JSON.stringify(this.model) }, function()
@@ -45,7 +44,7 @@ ShoppingCart.prototype.recalcTotals = function()
         var p = this.model[i];
 
         p.total = p.quantity * p.price;
-    };
+    }
 };
 
 ShoppingCart.prototype.addProduct = function(id, price, name) 
