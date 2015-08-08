@@ -6,28 +6,6 @@
     </head>
     <body>
 
-        <!-- shopping cart -->
-        <div class="shopping-cart" style="border : black solid 1px">
-        </div>
-
-        <div type="template" id="shopping-cart-product">
-            <div class="shopping-cart-product" >
-                <div>{{ id }}</div>
-                <div>{{ name }}</div>
-                <div>{{ price }}</div>
-                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
-                <button class="add-one" product-id="{{ id }}">+</button>
-                <span class="quantity" >{{ quantity }}</span>
-                <button class="remove-one" product-id="{{ id }}">-</button>
-                <span class="product-total">{{ total }}</span>
-            </div>
-        </div>
-
-        <div type="template" id="shopping-cart-total" >
-            <span class="total" > Total: {{ total }} </span>
-        </div>
-        <!-- shopping cart -->
-
         <!-- tags -->
         <div class="menu" >
             <ul>
@@ -54,6 +32,28 @@
             </div>
         </div>
         <!-- products -->
+
+        <!-- shopping cart -->
+        <div class="shopping-cart" style="border : black solid 1px">
+        </div>
+
+        <div type="template" id="shopping-cart-product">
+            <div class="shopping-cart-product" >
+                <div>{{ id }}</div>
+                <div>{{ name }}</div>
+                <div>{{ price }}</div>
+                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
+                <button class="add-one" product-id="{{ id }}">+</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="product-total">{{ total }}</span>
+            </div>
+        </div>
+
+        <div type="template" id="shopping-cart-total" >
+            <span class="total" > Total: {{ total }} </span>
+        </div>
+        <!-- shopping cart -->
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
