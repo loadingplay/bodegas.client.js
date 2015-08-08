@@ -6,31 +6,9 @@
     </head>
     <body>
 
+        <!-- shopping cart -->
         <div class="shopping-cart" style="border : black solid 1px">
         </div>
-        <div class="menu" >
-            <ul>
-            </ul>
-        </div>
-
-        <div class="products" >
-        </div>
-
-        <div type="template" id="tag_template" >
-            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
-        </div>
-
-        <div type="template" id="product_template" >
-            <div class="product" >
-                <div>{{ name }}</div>
-                <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-                <div>{{ main_price }}</div>
-                <div>{{ description }}</div>
-                <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
-            </div>
-        </div>
-
 
         <div type="template" id="shopping-cart-product">
             <div class="shopping-cart-product" >
@@ -44,6 +22,34 @@
                 <span class="product-total">{{ total }}</span>
             </div>
         </div>
+        <!-- shopping cart -->
+
+        <!-- tags -->
+        <div class="menu" >
+            <ul>
+            </ul>
+        </div>
+
+        <div type="template" id="tag_template" >
+            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
+        </div>
+        <!-- tags -->
+
+        <!-- products -->
+        <div class="products" >
+        </div>
+
+        <div type="template" id="product_template" >
+            <div class="product" >
+                <div>{{ name }}</div>
+                <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+                <div>{{ main_price }}</div>
+                <div>{{ description }}</div>
+                <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
+                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
+            </div>
+        </div>
+        <!-- products -->
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
