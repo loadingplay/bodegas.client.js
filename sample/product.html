@@ -21,6 +21,10 @@
                 <span class="product-total">{{ total }}</span>
             </div>
         </div>
+
+        <div type="template" id="shopping-cart-total" >
+            <span class="total" > Total: {{ total }} </span>
+        </div>
         <!-- shopping cart -->
 
         <!-- product detail -->
@@ -49,7 +53,7 @@
                 $(document).ecommerce('product_detail', {
                     'app_public' : 100,
                     'base_url' : 'http://apibodegas.ondev.today/'
-                })
+                });
             });
         </script>
     </body>
