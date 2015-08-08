@@ -26,26 +26,30 @@ ShoppingCartView.prototype.init = function()
 {
     var self = this;
 
-    $(document).on('click', this.options.addToCartbutton, function()
+    $(document).on('click', this.options.addToCartbutton, function(evt)
     {
+        evt.preventDefault();
         self.addToCartClick($(this));
         self.render();
     });
 
-    $(document).on('click', this.options.addOne, function()
+    $(document).on('click', this.options.addOne, function(evt)
     {
+        evt.preventDefault();
         self.addOneClick($(this));
         self.render();
     });
 
-    $(document).on('click', this.options.removeOne, function()
+    $(document).on('click', this.options.removeOne, function(evt)
     {
+        evt.preventDefault();
         self.removeOne($(this));
         self.render();
     });
 
-    $(document).on('click', this.options.removeFromCart, function()
+    $(document).on('click', this.options.removeFromCart, function(evt)
     {
+        evt.preventDefault();
         self.removeProduct($(this));
         self.render();
     });
