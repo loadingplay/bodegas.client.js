@@ -9,6 +9,8 @@ var ShoppingCart = function()
     this.model = [];
     this.guid = this.generateGUID();
     this.view = new ShoppingCartView(this);
+
+    this.loadCart();
 };
 
 ShoppingCart.prototype.generateGUID = function() 
@@ -54,7 +56,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
     if (!this.productExist(id))
     {
         this.model.push({ 
-            'id' : id, 
+            'id' : parseInt(id), 
             'price' : price, 
             'name' : name, 
             'quantity' : 0,
@@ -64,35 +66,34 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
 
     for (var i = 0; i < this.model.length; i++) 
     {
-        if (this.model[i].id === id)
+        if (this.model[i].id === parseInt(id))
         {
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
+            this.saveModel();
+            return;
         }
     }
-
-    this.saveModel();
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
 {
     for (var i = 0; i < this.model.length; i++) 
     {
-        if (id === this.model[i].id)
+        if (parseInt(id) === this.model[i].id)
         {
             this.model.splice(i, 1);
+            this.saveModel();
             return;
         }
     }
-
-    this.saveModel();
 };
 
 ShoppingCart.prototype.removeOne = function(id)
 {
     for (var i = 0; i < this.model.length; i++) 
     {
-        if (this.model[i].id === id)
+        if (this.model[i].id === parseInt(id))
         {
             this.model[i].quantity -= 1;
             this.model[i].total = this.model[i].price * this.model[i].quantity;
@@ -102,11 +103,11 @@ ShoppingCart.prototype.removeOne = function(id)
                 this.removeProduct(id);
             }
 
+            this.saveModel();
             return;
         }
     }
 
-    this.saveModel();
 };
 
 ShoppingCart.prototype.getProducts = function() 
@@ -155,6 +156,8 @@ ShoppingCart.prototype.loadCart = function(callback)
     {
         self.model = cart_products.products;
         self.recalcTotals();
+        self.view.render();
+
         onload(cart_products);
     });
 };
