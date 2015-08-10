@@ -37,7 +37,6 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
             {
                 product_list = data.products;
             }
-
             callback(product_list);
         });
 };

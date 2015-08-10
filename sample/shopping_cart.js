@@ -180,5 +180,5 @@ CartController.prototype.createProduct = function(product_id)
 
 $(document).ready(function()
 {
-    var controller = new CartController();
+    //var controller = new CartController();
 });

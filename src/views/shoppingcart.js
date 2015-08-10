@@ -6,6 +6,7 @@
 
 var ShoppingCartView = function(controller)
 {
+    console.log("shopping cart view motherfucker!");
     this.controller = controller === undefined ? new ShoppingCart() : controller;
     this.options = {
         cartSelector : '.shopping-cart',
@@ -25,9 +26,11 @@ var ShoppingCartView = function(controller)
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
+    console.log("INITED CART VIEW!");
 
     $(document).on('click', this.options.addToCartbutton, function()
     {
+        console.log("CLICKED!");
         self.addToCartClick($(this));
         self.render();
     });
@@ -49,7 +52,8 @@ ShoppingCartView.prototype.init = function()
         self.removeProduct($(this));
         self.render();
     });
-
+    
+    this.render();
 };
 
 
@@ -112,3 +116,9 @@ ShoppingCartView.prototype.renderTotal = function($cart_div)
     var total = Utils.render(this.total_template, { 'total' : this.controller.getTotal() });
     $cart_div.append(total);
 };
+
+
+$(document).ready(function()
+{
+    var cartview = new ShoppingCartView();
+});

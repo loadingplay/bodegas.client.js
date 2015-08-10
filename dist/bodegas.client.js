@@ -44,11 +44,14 @@ BodegasClient.prototype.init = function(site_id)
 {
     // Create the defaults once
     var pluginName = 'ecommerce';
+    var page = 1;
     var methods = {
         main : function(options)
         {
+            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
-            facade.showProductList();
+            facade.showProductList(page);
+            page++;
 
             return facade;
         },
@@ -56,6 +59,15 @@ BodegasClient.prototype.init = function(site_id)
         {
             var facade = new EcommerceFacade(options);
             facade.showProductDetail();
+
+            return facade;
+        },
+        load_more : function(options)
+        {
+            console.log("page: " + page);
+            var facade = new EcommerceFacade(options);
+            facade.showProductList(page);
+            page++;
 
             return facade;
         }
@@ -100,7 +112,7 @@ var EcommerceFacade = function(options)
 };
 
 
-EcommerceFacade.prototype.showProductList = function() 
+EcommerceFacade.prototype.showProductList = function(page) 
 {
     var self = this;
 
@@ -112,7 +124,7 @@ EcommerceFacade.prototype.showProductList = function()
         });
 
         self.ecommerce.product.list(
-            1, self.options.products_per_page, 
+            page, self.options.products_per_page, 
             Utils.getUrlParameter('tag'), function(products)
         {
             self.view.renderProducts(products);
@@ -174,7 +186,6 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
             {
                 product_list = data.products;
             }
-
             callback(product_list);
         });
 };
@@ -193,8 +204,9 @@ Product.prototype.get = function(product_id, callback)
 
 var ShoppingCart = function()
 {
+    console.log("THIS SHOPPINGCART!");
     this.model = [];
-    this.guid = this.generateGUID();
+    //this.guid = this.generateGUID();
 };
 
 ShoppingCart.prototype.generateGUID = function() 
@@ -247,7 +259,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
             'quantity' : 0,
             'total' : price 
         });
-    }
+    } 
 
     for (var i = 0; i < this.model.length; i++) 
     {
@@ -255,9 +267,10 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
         {
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
+            break;
         }
     }
-
+    
     this.saveModel();
 };
 
@@ -576,6 +589,7 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
 
 var ShoppingCartView = function(controller)
 {
+    console.log("shopping cart view motherfucker!");
     this.controller = controller === undefined ? new ShoppingCart() : controller;
     this.options = {
         cartSelector : '.shopping-cart',
@@ -595,9 +609,11 @@ var ShoppingCartView = function(controller)
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
+    console.log("INITED CART VIEW!");
 
     $(document).on('click', this.options.addToCartbutton, function()
     {
+        console.log("CLICKED!");
         self.addToCartClick($(this));
         self.render();
     });
@@ -619,7 +635,8 @@ ShoppingCartView.prototype.init = function()
         self.removeProduct($(this));
         self.render();
     });
-
+    
+    this.render();
 };
 
 
@@ -682,3 +699,9 @@ ShoppingCartView.prototype.renderTotal = function($cart_div)
     var total = Utils.render(this.total_template, { 'total' : this.controller.getTotal() });
     $cart_div.append(total);
 };
+
+
+$(document).ready(function()
+{
+    var cartview = new ShoppingCartView();
+});

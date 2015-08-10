@@ -5,8 +5,9 @@
 
 var ShoppingCart = function()
 {
+    console.log("THIS SHOPPINGCART!");
     this.model = [];
-    this.guid = this.generateGUID();
+    //this.guid = this.generateGUID();
 };
 
 ShoppingCart.prototype.generateGUID = function() 
@@ -59,7 +60,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
             'quantity' : 0,
             'total' : price 
         });
-    }
+    } 
 
     for (var i = 0; i < this.model.length; i++) 
     {
@@ -67,9 +68,10 @@ ShoppingCart.prototype.addProduct = function(id, price, name)
         {
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
+            break;
         }
     }
-
+    
     this.saveModel();
 };
 

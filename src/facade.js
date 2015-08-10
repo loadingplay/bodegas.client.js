@@ -9,11 +9,14 @@
 {
     // Create the defaults once
     var pluginName = 'ecommerce';
+    var page = 1;
     var methods = {
         main : function(options)
         {
+            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
-            facade.showProductList();
+            facade.showProductList(page);
+            page++;
 
             return facade;
         },
@@ -21,6 +24,15 @@
         {
             var facade = new EcommerceFacade(options);
             facade.showProductDetail();
+
+            return facade;
+        },
+        load_more : function(options)
+        {
+            console.log("page: " + page);
+            var facade = new EcommerceFacade(options);
+            facade.showProductList(page);
+            page++;
 
             return facade;
         }
@@ -65,7 +77,7 @@ var EcommerceFacade = function(options)
 };
 
 
-EcommerceFacade.prototype.showProductList = function() 
+EcommerceFacade.prototype.showProductList = function(page) 
 {
     var self = this;
 
@@ -77,7 +89,7 @@ EcommerceFacade.prototype.showProductList = function()
         });
 
         self.ecommerce.product.list(
-            1, self.options.products_per_page, 
+            page, self.options.products_per_page, 
             Utils.getUrlParameter('tag'), function(products)
         {
             self.view.renderProducts(products);

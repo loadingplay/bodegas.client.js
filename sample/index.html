@@ -6,7 +6,7 @@
     </head>
     <body>
 
-        <div class="shopping-cart" style="border : black solid 1px">
+        <div class="shopping-cart" style="border : black solid 1px">        
         </div>
         <div class="menu" >
             <ul>
@@ -27,21 +27,49 @@
                 <div>{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button class="add-to-cart" product_id="{{ id }}" >Add to cart</button>
+                <button class="add-to-cart" product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" >Add to cart</button>
             </div>
+        </script>
+
+        <script type="text/x-template" id="shopping-cart-product" >
+            <div> {{ name }} | {{ quantity }}
+                <button class="remove-from-cart" product-id="{{ id }}" >Remove</button>
+                <button class="add-one" product-id="{{ id }}" >+</button>
+                <button class="remove-one" product-id="{{ id }}" >-</button>
+                <span class="product-total" >{{ total }}</span>
+            </div>
+        </script>
+
+        <script type="text/x-template" id="shopping-cart-total" >
+            <div>Total : {{ total }} </div>
         </script>
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
         <script type="text/javascript" src="/dist/bodegas.client.js"></script>
-        <script type="text/javascript" src="/sample/shopping_cart.js"></script>
+        <!--script type="text/javascript" src="/sample/shopping_cart.js"></script-->
         <!-- <script type="text/javascript" src="sample.js" ></script> -->
         <script type="text/javascript" >
         $(document).ready(function()
             {
+
+                //alert("html: " + $('#tag_template').html());
                 $(document).ecommerce({
                     'app_public' : 100,
                     'base_url' : 'http://apibodegas.ondev.today/'
+                });
+
+                $(document).on("scroll", function()
+                {
+                    if($(window).scrollTop() == $(document).height() - $(window).height())
+                    {
+                        //show more content function 
+                        //alert("FIN PAGINA: " + $(document).ecommerce('test'));
+                        $(document).ecommerce('load_more',{
+                            'app_public' : 100,
+                            'base_url' : 'http://apibodegas.ondev.today/'
+                        });
+                    }                    
                 });
             });
         </script>
