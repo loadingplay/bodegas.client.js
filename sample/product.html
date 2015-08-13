@@ -2,10 +2,12 @@
 <html>
     <head>
         <title></title>
+        <link rel="stylesheet" type="text/css" href="/sample/style.css" />
     </head>
     <body>
+        <!-- product detail -->
         <div class="container" ></div>
-        <script type="text/x-template" id="product_detail" >
+        <div type="template" id="product_detail" >
         <div class="product" >
             <div>{{ name }}</div>
             <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
@@ -14,9 +16,33 @@
             <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image_4 }}?mw=100" />
             <div>{{ main_price }}</div>
             <div>{{ description }}</div>
-            <button class="add-to-cart" productid="{{ id }}" >Add to cart</button>
+            <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
         </div>
-        </script>
+        </div>
+        <!-- product detail -->
+
+        <!-- shopping cart -->
+        <div class="shopping-cart" style="border : black solid 1px">
+        </div>
+
+        <div type="template" id="shopping-cart-product">
+            <div class="shopping-cart-product" >
+                <div>{{ id }}</div>
+                <div>{{ name }}</div>
+                <div>{{ price }}</div>
+                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
+                <button class="add-one" product-id="{{ id }}">+</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="product-total">{{ total }}</span>
+            </div>
+        </div>
+
+        <div type="template" id="shopping-cart-total" >
+            <span class="total" > Total: {{ total }} </span>
+        </div>
+        <!-- shopping cart -->
+
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
@@ -28,7 +54,7 @@
                 $(document).ecommerce('product_detail', {
                     'app_public' : 100,
                     'base_url' : 'http://apibodegas.ondev.today/'
-                })
+                });
             });
         </script>
     </body>

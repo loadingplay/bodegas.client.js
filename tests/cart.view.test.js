@@ -15,6 +15,7 @@ QUnit.module(
         {
             product = new Product();
             shopping_cart = new ShoppingCart();
+            $('.cart').html('');
         }
     });
 
@@ -29,7 +30,7 @@ QUnit.test('cart', function(assert)
         var $button = $('.add-to-cart');
         var product_id = $button.attr('product-id');
 
-        shopping_cart_view = new ShoppingCartView();
+        shopping_cart_view = (new ShoppingCart()).view;  // dont init double instance
 
         $button.click();
 
@@ -57,7 +58,8 @@ QUnit.test('add button', function(assert)
     $('.cart').load('html/buy_button.html', function()
     {
         // add button
-        shopping_cart_view = new ShoppingCartView();
+        shopping_cart_view = (new ShoppingCart()).view;  // dont init double instance
+        shopping_cart_view.controller.model = [];
 
         $button = $('.add-to-cart');
         $button.click();

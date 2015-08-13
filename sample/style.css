@@ -1,11 +1,39 @@
 .product
 {
-    width: 20%;
+    width: 30%;
     border: black solid 1px;
     float: left;
+    margin-left: 1%;
+    margin-bottom: 1%;
+    height: 650px;
 }
 
 .product img
 {
     max-width: 100%;
+}
+
+.products
+{
+    float: left;
+    width: 75%;
+}
+
+.shopping-cart
+{
+    float: left;
+    width: 22%;
+}
+
+.total
+{
+    height: 30px;
+    display: block;
+    padding-top: 10px;
+    font-weight: bolder;
+}
+
+div[type=template]
+{
+    display: none;
 }

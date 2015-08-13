@@ -40,6 +40,7 @@
     <script type="text/javascript" src="utils.test.js"></script>
     <script type="text/javascript" src="cart.test.js"></script>
     <script type="text/javascript" src="cart.view.test.js"></script>
+
     <script>
         $(function ()
         {
@@ -63,6 +64,14 @@
 
             $("input[value='" + version + "']").attr("checked", "checked");
         });
+    </script>
+
+    <script type="text/javascript">
+    // overriding some methods
+    $.cookie = function(param)
+    {
+        return 'something';
+    };
     </script>
 </body>
 </html>

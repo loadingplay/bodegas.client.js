@@ -45,7 +45,7 @@
         var method = 'main';
         var settings = {
             'app_public' : 0,
-            'products_per_page' : 10,
+            'products_per_page' : 12,
             'base_url' : 'http://localhost:8520/',
             'product_id' : null
         };

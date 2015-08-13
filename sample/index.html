@@ -6,30 +6,54 @@
     </head>
     <body>
 
-        <div class="shopping-cart" style="border : black solid 1px">        
-        </div>
+        <!-- tags -->
         <div class="menu" >
             <ul>
             </ul>
         </div>
 
+        <div type="template" id="tag_template" >
+            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
+        </div>
+        <!-- tags -->
+
+        <!-- products -->
         <div class="products" >
         </div>
 
-        <script type="text/x-template" id="tag_template" >
-            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
-        </script>
-
-        <script type="text/x-template" id="product_template" >
+        <div type="template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
                 <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
                 <div>{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button class="add-to-cart" product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" >Add to cart</button>
+                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
             </div>
-        </script>
+        </div>
+        <!-- products -->
+
+        <!-- shopping cart -->
+        <div class="shopping-cart" style="border : black solid 1px">
+        </div>
+
+        <div type="template" id="shopping-cart-product">
+            <div class="shopping-cart-product" >
+                <div>{{ id }}</div>
+                <div>{{ name }}</div>
+                <div>{{ price }}</div>
+                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
+                <button class="add-one" product-id="{{ id }}">+</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="product-total">{{ total }}</span>
+            </div>
+        </div>
+
+        <div type="template" id="shopping-cart-total" >
+            <span class="total" > Total: {{ total }} </span>
+        </div>
+        <!-- shopping cart -->
 
         <script type="text/x-template" id="shopping-cart-product" >
             <div> {{ name }} | {{ quantity }}
@@ -47,7 +71,6 @@
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
         <script type="text/javascript" src="/dist/bodegas.client.js"></script>
-        <!--script type="text/javascript" src="/sample/shopping_cart.js"></script-->
         <!-- <script type="text/javascript" src="sample.js" ></script> -->
         <script type="text/javascript" >
         $(document).ready(function()
