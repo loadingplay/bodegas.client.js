@@ -178,7 +178,7 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
     {
         tags = 'false';
     }
-
+    console.log("tagcito: " + tags);
     jQuery.get(Utils.getURL(
         'product', 
         ['list', page, items_per_page, tags]), 

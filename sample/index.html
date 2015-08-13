@@ -82,12 +82,10 @@
                     'base_url' : 'http://apibodegas.ondev.today/'
                 });
 
-                $(document).on("scroll", function()
+                $(document).on('scroll', function()
                 {
                     if($(window).scrollTop() == $(document).height() - $(window).height())
                     {
-                        //show more content function 
-                        //alert("FIN PAGINA: " + $(document).ecommerce('test'));
                         $(document).ecommerce('load_more',{
                             'app_public' : 100,
                             'base_url' : 'http://apibodegas.ondev.today/'
