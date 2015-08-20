@@ -641,6 +641,7 @@ var ShoppingCartView = function(controller)
     };
 
     this.$cart_div = $('.shopping-cart');
+    this.$cart_container = $('.cart-container');
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
 
@@ -726,10 +727,10 @@ ShoppingCartView.prototype.render = function()
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
     this.renderTotal(this.$cart_div);
-    this.renderCheckoutData(this.$cart_div);
+    this.renderCheckoutData(this.$cart_div, this.$cart_container);
 };
 
-ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
+ShoppingCartView.prototype.renderCheckoutData = function($cart_div, $cart_container)
 {
     var guid = this.controller.getGUID();
     var session_id = this.controller.getSessionId();
@@ -738,12 +739,12 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
     var webpay_url = this.controller.getWebpayUrl();
     var checkout_url = this.controller.getCheckoutUrl();
 
-    $('input[name=order_id]', $cart_div).val(guid);
-    $('input[name=success_url]', $cart_div).val(success_url);
-    $('input[name=failure_url]', $cart_div).val(failure_url);
-    $('input[name=webpay_url]', $cart_div).val(webpay_url);
-    $('input[name=session_id]', $cart_div).val(session_id);
-    $("#shipping-form", $cart_div).attr('action', checkout_url);
+    $('input[name=order_id]', $cart_container).val(guid);
+    $('input[name=success_url]', $cart_container).val(success_url);
+    $('input[name=failure_url]', $cart_container).val(failure_url);
+    $('input[name=webpay_url]', $cart_container).val(webpay_url);
+    $('input[name=session_id]', $cart_container).val(session_id);
+    $("#shipping-form", $cart_container).attr('action', checkout_url);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
