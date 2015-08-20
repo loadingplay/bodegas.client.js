@@ -210,6 +210,11 @@ var ShoppingCart = function()
     console.log("THIS SHOPPINGCART!");
     this.model = [];
     this.guid = this.generateGUID();
+    this.webpay_url = '';
+    this.success_url = '';
+    this.failure_url = '';
+    this.session_id = '';
+    this.checkout_url = '';
     this.view = new ShoppingCartView(this);
 
     this.loadCart();
@@ -231,6 +236,31 @@ ShoppingCart.prototype.generateGUID = function()
 ShoppingCart.prototype.getGUID = function() 
 {
     return this.guid;
+};
+
+ShoppingCart.prototype.getWebpayUrl = function() 
+{
+    return this.webpay_url;
+};
+
+ShoppingCart.prototype.getSuccessUrl = function() 
+{
+    return this.success_url;
+};
+
+ShoppingCart.prototype.getFailureUrl = function() 
+{
+    return this.failure_url;
+};
+
+ShoppingCart.prototype.getSessionId = function() 
+{
+    return this.session_id;
+};
+
+ShoppingCart.prototype.getCheckoutUrl = function() 
+{
+    return this.checkout_url;
 };
 
 ShoppingCart.prototype.saveModel = function() 
@@ -357,6 +387,11 @@ ShoppingCart.prototype.loadCart = function(callback)
         ]), function(cart_products)
     {
         self.model = cart_products.products;
+        self.webpay_url = cart_products.webpay_url;
+        self.session_id = cart_products.session_id;
+        self.success_url = cart_products.success_url;
+        self.failure_url = cart_products.failure_url;
+        self.checkout_url = cart_products.checkout_url;
         self.recalcTotals();
         self.view.render();
 
@@ -691,6 +726,24 @@ ShoppingCartView.prototype.render = function()
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
     this.renderTotal(this.$cart_div);
+    this.renderCheckoutData(this.$cart_div);
+};
+
+ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
+{
+    var guid = this.controller.getGUID();
+    var session_id = this.controller.getSessionId();
+    var failure_url = this.controller.getFailureUrl();
+    var success_url = this.controller.getSuccessUrl();
+    var webpay_url = this.controller.getWebpayUrl();
+    var checkout_url = this.controller.getCheckoutUrl();
+
+    $('input[name=order_id]', $cart_div).val(guid);
+    $('input[name=success_url]', $cart_div).val(success_url);
+    $('input[name=failure_url]', $cart_div).val(failure_url);
+    $('input[name=webpay_url]', $cart_div).val(webpay_url);
+    $('input[name=session_id]', $cart_div).val(session_id);
+    $("#shipping-form", $cart_div).attr('action', checkout_url);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)

@@ -102,6 +102,24 @@ ShoppingCartView.prototype.render = function()
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
     this.renderTotal(this.$cart_div);
+    this.renderCheckoutData(this.$cart_div);
+};
+
+ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
+{
+    var guid = this.controller.getGUID();
+    var session_id = this.controller.getSessionId();
+    var failure_url = this.controller.getFailureUrl();
+    var success_url = this.controller.getSuccessUrl();
+    var webpay_url = this.controller.getWebpayUrl();
+    var checkout_url = this.controller.getCheckoutUrl();
+
+    $('input[name=order_id]', $cart_div).val(guid);
+    $('input[name=success_url]', $cart_div).val(success_url);
+    $('input[name=failure_url]', $cart_div).val(failure_url);
+    $('input[name=webpay_url]', $cart_div).val(webpay_url);
+    $('input[name=session_id]', $cart_div).val(session_id);
+    $("#shipping-form", $cart_div).attr('action', checkout_url);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
