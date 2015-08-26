@@ -207,7 +207,6 @@ Product.prototype.get = function(product_id, callback)
 
 var ShoppingCart = function()
 {
-    console.log("THIS SHOPPINGCART!");
     this.model = [];
     this.guid = this.generateGUID();
     this.webpay_url = '';
@@ -379,6 +378,12 @@ ShoppingCart.prototype.loadCart = function(callback)
     var self = this;
     var onload = callback === undefined ? $.noop : callback;
 
+    console.log(Utils.getURL(
+        'cart', 
+        [
+            'load', 
+            this.getGUID()
+        ]));
     $.get(Utils.getURL(
         'cart', 
         [

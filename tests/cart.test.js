@@ -107,7 +107,6 @@ QUnit.test('load from cache', function(assert)
 
         new_shopping_cart.loadCart(function()
         {
-
             assert.deepEqual(new_shopping_cart.getProducts(), shopping_cart.getProducts(), 'old products are loaded');
             shopping_cart_loaded();
         });

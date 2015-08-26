@@ -15,7 +15,7 @@ module.exports = function(grunt)  //jshint ignore: line
         pkg: grunt.file.readJSON('package.json'),
 
         qunit : {
-            all: ['tests/index.istanbul.html'],
+            all: ['tests/index.html'],
             options: {
                 coverage: {
                   src: ['dist/bodegas.client.js'],
