@@ -9,7 +9,7 @@ QUnit.module(
     {
         setup: function()
         {
-            product = new Product();
+            product = new Product(2);
         }
     });
 

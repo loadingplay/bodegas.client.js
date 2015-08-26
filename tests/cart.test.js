@@ -12,8 +12,8 @@ QUnit.module(
     {
         setup: function()
         {
-            product = new Product();
-            shopping_cart = new ShoppingCart();
+            product = new Product(2);
+            shopping_cart = new ShoppingCart(2);
         },
         teardown : function()
         {

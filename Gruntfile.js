@@ -78,6 +78,5 @@ module.exports = function(grunt)  //jshint ignore: line
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-express');
 
-
     grunt.registerTask('default', ['concat', 'uglify', 'express', 'watch']);
 };
