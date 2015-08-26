@@ -19,6 +19,9 @@ ProductListView.prototype.initTemplates = function()
 
 ProductListView.prototype.renderTags = function(tags) 
 {
+    // detect if tags are list
+    if (tags === undefined) return;
+
     var $menu = $('.menu ul');
     for (var i = 0; i < tags.length; i++) 
     {

@@ -21,7 +21,7 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
     {
         if (data.success)
         {
-            self.init();
+            self.init(app_public);
             callback(self);
         }
     });

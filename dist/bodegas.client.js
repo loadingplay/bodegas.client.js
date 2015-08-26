@@ -21,7 +21,7 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
     {
         if (data.success)
         {
-            self.init();
+            self.init(app_public);
             callback(self);
         }
     });
@@ -178,10 +178,10 @@ Product.prototype.list = function(page, items_per_page, callback_or_tags, callba
     {
         tags = 'false';
     }
-    console.log("tagcito: " + tags);
+
     jQuery.get(Utils.getURL(
         'product', 
-        ['list', page, items_per_page, tags]), 
+        ['list', this.site_id, page, items_per_page, tags]), 
         function(data)
         {
             if (data.products !== undefined)
@@ -398,6 +398,7 @@ ShoppingCart.prototype.loadCart = function(callback)
         onload(cart_products);
     });
 };
+/* globals $*/
 /* globals Utils */
 
 'use strict';
@@ -409,7 +410,7 @@ var Tag = function(site_id)
 
 Tag.prototype.listAll = function(callback) 
 {
-    $.get(Utils.getURL('tag', ['list_all']), function(data)
+    $.get(Utils.getURL('tag', ['list_all', this.site_id]), function(data)
     {
         callback(data.tags);
     });
@@ -572,6 +573,9 @@ ProductListView.prototype.initTemplates = function()
 
 ProductListView.prototype.renderTags = function(tags) 
 {
+    // detect if tags are list
+    if (tags === undefined) return;
+
     var $menu = $('.menu ul');
     for (var i = 0; i < tags.length; i++) 
     {
