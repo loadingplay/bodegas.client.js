@@ -1,5 +1,7 @@
 # bodegas.cliente.js [![Build Status](http://jenkins.ondev.today/buildStatus/icon?job=bodegas.client.js)](http://ondev.today:8080/job/bodegas.client.js/)
 
+[![Coverage](http://jenkins.ondev.today/job/bodegas.client.js/HTML_Cobertrura_Report/)](http://jenkins.ondev.today/job/bodegas.client.js/HTML_Cobertrura_Report/)
+
 this a javascript client for bodegas
 
 
