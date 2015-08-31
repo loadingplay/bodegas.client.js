@@ -37,26 +37,40 @@ ProductListView.prototype.renderTags = function(tags)
 ProductListView.prototype.renderProducts = function(products) 
 {
     var $products = $('.products');
-    for (var i = 0; i < products.length; i++) 
+
+    if (products.length > 0)
     {
-        var product = products[i];
+        for (var i = 0; i < products.length; i++) 
+        {
+            var product = products[i];
 
-        var $rendered = $(Utils.render(this.product_template, product));
-        Utils.processPrice($rendered);
+            var $rendered = $(Utils.render(this.product_template, product));
+            Utils.processPrice($rendered);
 
-        this.renderProductImage($('.product-image', $rendered), product.id);
+            this.renderProductImage($('.product-image', $rendered), product.id);
 
-        $products.append($rendered);
+            $products.append($rendered);
+        }
+
+        this.renderLoading();
     }
-
-    this.renderLoading();
+    else
+    {
+        this.removeLoading();
+    }
 };
 
 
-ProductListView.prototype.renderLoading = function() 
+ProductListView.prototype.removeLoading = function() 
 {
     var $products = $('.products');
     $('.spinner', $products).remove();
+};
+
+ProductListView.prototype.renderLoading = function() 
+{
+    this.removeLoading();
+    var $products = $('.products');
     $products.append($('#product_loading').html());
 };
 
