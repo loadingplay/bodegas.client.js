@@ -14,7 +14,7 @@
             <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image_2 }}?mw=100" />
             <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image_3 }}?mw=100" />
             <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image_4 }}?mw=100" />
-            <div>{{ main_price }}</div>
+            <div class="money" >{{ main_price }}</div>
             <div>{{ description }}</div>
             <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
         </div>
@@ -34,12 +34,12 @@
                 <button class="add-one" product-id="{{ id }}">+</button>
                 <span class="quantity" >{{ quantity }}</span>
                 <button class="remove-one" product-id="{{ id }}">-</button>
-                <span class="product-total">{{ total }}</span>
+                <span class="product-total money">{{ total }}</span>
             </div>
         </div>
 
         <div type="template" id="shopping-cart-total" >
-            <span class="total" > Total: {{ total }} </span>
+            <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
         </div>
         <!-- shopping cart -->
 

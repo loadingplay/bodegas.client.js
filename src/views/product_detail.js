@@ -22,6 +22,7 @@ ProductDetailView.prototype.render = function(product)
     this.renderImages($images, product.id);
 
     $el.append($prod);
+    Utils.processPrice($prod);
 };
 
 ProductDetailView.prototype.renderImages = function($images, product_id) 
