@@ -47,6 +47,9 @@ ProductListView.prototype.renderProducts = function(products)
 
         $products.append($rendered);
     }
+
+    $('.spinner', $products).remove();
+    $products.append($('#product_loading').html());
 };
 
 

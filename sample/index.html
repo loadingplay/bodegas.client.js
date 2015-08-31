@@ -23,6 +23,16 @@
         <div class="products" >
         </div>
 
+        <div type="template" id="product_loading" >
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
         <div type="template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
@@ -93,7 +103,8 @@
                 //alert("html: " + $('#tag_template').html());
                 $(document).ecommerce({
                     'app_public' : 2,
-                    'base_url' : 'http://apibodegas.ondev.today/'
+                    'base_url' : 'http://apibodegas.ondev.today/',
+                    'products_per_page' : 3
                 });
 
                 $(document).on('scroll', function()
@@ -102,7 +113,8 @@
                     {
                         $(document).ecommerce('load_more',{
                             'app_public' : 2,
-                            'base_url' : 'http://apibodegas.ondev.today/'
+                            'base_url' : 'http://apibodegas.ondev.today/',
+                            'products_per_page' : 3
                         });
                     }
                 });
