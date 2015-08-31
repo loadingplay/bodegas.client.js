@@ -50,7 +50,6 @@ BodegasClient.prototype.init = function(site_id)
     var methods = {
         main : function(options)
         {
-            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
@@ -66,7 +65,6 @@ BodegasClient.prototype.init = function(site_id)
         },
         load_more : function(options)
         {
-            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
@@ -378,12 +376,6 @@ ShoppingCart.prototype.loadCart = function(callback)
     var self = this;
     var onload = callback === undefined ? $.noop : callback;
 
-    console.log(Utils.getURL(
-        'cart', 
-        [
-            'load', 
-            this.getGUID()
-        ]));
     $.get(Utils.getURL(
         'cart', 
         [
@@ -420,6 +412,7 @@ Tag.prototype.listAll = function(callback)
         callback(data.tags);
     });
 };
+/*global $*/
 'use strict';
 
 var Utils = {  //jshint ignore: line
@@ -488,8 +481,37 @@ var Utils = {  //jshint ignore: line
 
         var uuid = s.join('');
         return uuid;
+    },
+    /**
+     * return an string with number formatted as price I.E $2.000
+     * @param  {Number} n number to convert
+     * @param  {Number} c decimal counter, by default 0
+     * @param  {String} d decimal separator, by defailt ","
+     * @param  {String} t unit separator, by default "."
+     * @return {String}   string with price formatted number.
+     */
+    formatMoney : function(n, c, d, t)
+    {
+        c = isNaN(c = Math.abs(c)) ? 0 : c;
+        d = d === undefined ? ',' : d;
+        t = t === undefined ? '.' : t;
+        var s = n < 0 ? '-' : '';
+        var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + '';
+        var j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return '$ ' + s + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
+    },
+    processPrice : function($tag)
+    {
+        $('.money', $tag).each(function()
+        {
+            var html = $(this).html();
+            $(this).html(Utils.formatMoney(html));
+        });
     }
 };
+
+
 /* globals Utils */
 'use strict';
 
@@ -598,7 +620,9 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
+
         var $rendered = $(Utils.render(this.product_template, product));
+        Utils.processPrice($rendered);
 
         this.renderProductImage($('.product-image', $rendered), product.id);
 
@@ -639,7 +663,6 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
 
 var ShoppingCartView = function(controller)
 {
-    console.log("shopping cart view motherfucker!");
     this.controller = controller === undefined ? new ShoppingCart() : controller;
     this.options = {
         cartSelector : '.shopping-cart',
@@ -660,7 +683,6 @@ var ShoppingCartView = function(controller)
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
-    console.log("INITED CART VIEW!");
 
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
@@ -753,7 +775,7 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div, $cart_contai
     $('input[name=failure_url]', $cart_container).val(failure_url);
     $('input[name=webpay_url]', $cart_container).val(webpay_url);
     $('input[name=session_id]', $cart_container).val(session_id);
-    $("#shipping-form", $cart_container).attr('action', checkout_url);
+    $('#shipping-form', $cart_container).attr('action', checkout_url);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
@@ -761,13 +783,20 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
     var productos = this.controller.getProducts();
     for (var i = 0; i < productos.length; i++)
     {
-        var builder = Utils.render(cart_item_template, productos[i]);
-        $cart_div.append(builder);
+        var $builder = $(Utils.render(cart_item_template, productos[i]));
+        $cart_div.append($builder);
+        Utils.processPrice($builder);
     }
 };
 
 ShoppingCartView.prototype.renderTotal = function($cart_div) 
 {
-    var total = Utils.render(this.total_template, { 'total' : this.controller.getTotal() });
-    $cart_div.append(total);
+    var $total = $(Utils.render(
+        this.total_template, 
+        { 
+            'total' : this.controller.getTotal()
+        }));
+
+    Utils.processPrice($total);
+    $cart_div.append($total);
 };

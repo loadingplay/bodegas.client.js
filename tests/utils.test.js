@@ -52,3 +52,15 @@ QUnit.test('getUrlParameter', function(assert)
 
     assert.equal(Utils.getUrlParameter('foo'), 'foo', 'get a parameter from url');
 });
+
+QUnit.test('format money', function(assert)
+{
+    assert.equal(Utils.formatMoney(100), '$ 100');
+    assert.equal(Utils.formatMoney(1000), '$ 1.000');
+    assert.equal(Utils.formatMoney(10000), '$ 10.000');
+    assert.equal(Utils.formatMoney(100000), '$ 100.000');
+    assert.equal(Utils.formatMoney(1000000), '$ 1.000.000');
+    assert.equal(Utils.formatMoney(12700000), '$ 12.700.000');
+    assert.equal(Utils.formatMoney(127000000), '$ 127.000.000');
+    assert.equal(Utils.formatMoney(200072), '$ 200.072');
+});

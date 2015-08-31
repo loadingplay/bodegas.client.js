@@ -13,7 +13,6 @@
     var methods = {
         main : function(options)
         {
-            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
@@ -29,7 +28,6 @@
         },
         load_more : function(options)
         {
-            console.log("page: " + page);
             var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;

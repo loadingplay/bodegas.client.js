@@ -39,7 +39,9 @@ ProductListView.prototype.renderProducts = function(products)
     for (var i = 0; i < products.length; i++) 
     {
         var product = products[i];
+
         var $rendered = $(Utils.render(this.product_template, product));
+        Utils.processPrice($rendered);
 
         this.renderProductImage($('.product-image', $rendered), product.id);
 

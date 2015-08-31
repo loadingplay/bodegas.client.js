@@ -1,3 +1,4 @@
+/*global $*/
 'use strict';
 
 var Utils = {  //jshint ignore: line
@@ -66,5 +67,33 @@ var Utils = {  //jshint ignore: line
 
         var uuid = s.join('');
         return uuid;
+    },
+    /**
+     * return an string with number formatted as price I.E $2.000
+     * @param  {Number} n number to convert
+     * @param  {Number} c decimal counter, by default 0
+     * @param  {String} d decimal separator, by defailt ","
+     * @param  {String} t unit separator, by default "."
+     * @return {String}   string with price formatted number.
+     */
+    formatMoney : function(n, c, d, t)
+    {
+        c = isNaN(c = Math.abs(c)) ? 0 : c;
+        d = d === undefined ? ',' : d;
+        t = t === undefined ? '.' : t;
+        var s = n < 0 ? '-' : '';
+        var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + '';
+        var j = (j = i.length) > 3 ? j % 3 : 0;
+
+        return '$ ' + s + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '');
+    },
+    processPrice : function($tag)
+    {
+        $('.money', $tag).each(function()
+        {
+            var html = $(this).html();
+            $(this).html(Utils.formatMoney(html));
+        });
     }
 };
+

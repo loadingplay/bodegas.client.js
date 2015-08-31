@@ -6,7 +6,6 @@
 
 var ShoppingCartView = function(controller)
 {
-    console.log("shopping cart view motherfucker!");
     this.controller = controller === undefined ? new ShoppingCart() : controller;
     this.options = {
         cartSelector : '.shopping-cart',
@@ -27,7 +26,6 @@ var ShoppingCartView = function(controller)
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
-    console.log("INITED CART VIEW!");
 
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
@@ -120,7 +118,7 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div, $cart_contai
     $('input[name=failure_url]', $cart_container).val(failure_url);
     $('input[name=webpay_url]', $cart_container).val(webpay_url);
     $('input[name=session_id]', $cart_container).val(session_id);
-    $("#shipping-form", $cart_container).attr('action', checkout_url);
+    $('#shipping-form', $cart_container).attr('action', checkout_url);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
@@ -128,13 +126,20 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
     var productos = this.controller.getProducts();
     for (var i = 0; i < productos.length; i++)
     {
-        var builder = Utils.render(cart_item_template, productos[i]);
-        $cart_div.append(builder);
+        var $builder = $(Utils.render(cart_item_template, productos[i]));
+        $cart_div.append($builder);
+        Utils.processPrice($builder);
     }
 };
 
 ShoppingCartView.prototype.renderTotal = function($cart_div) 
 {
-    var total = Utils.render(this.total_template, { 'total' : this.controller.getTotal() });
-    $cart_div.append(total);
+    var $total = $(Utils.render(
+        this.total_template, 
+        { 
+            'total' : this.controller.getTotal()
+        }));
+
+    Utils.processPrice($total);
+    $cart_div.append($total);
 };

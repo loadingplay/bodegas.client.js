@@ -27,7 +27,7 @@
             <div class="product" >
                 <div>{{ name }}</div>
                 <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-                <div>{{ main_price }}</div>
+                <div class="money" >{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
                 <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
@@ -43,17 +43,17 @@
             <div class="shopping-cart-product" >
                 <div>{{ id }}</div>
                 <div>{{ name }}</div>
-                <div>{{ price }}</div>
+                <div class="money" >{{ price }}</div>
                 <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
                 <button class="add-one" product-id="{{ id }}">+</button>
                 <span class="quantity" >{{ quantity }}</span>
                 <button class="remove-one" product-id="{{ id }}">-</button>
-                <span class="product-total">{{ total }}</span>
+                <span class="product-total money">{{ total }}</span>
             </div>
         </div>
 
         <div type="template" id="shopping-cart-total" >
-            <span class="total" > Total: {{ total }} </span>
+            <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
             <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
                 <input name="site_id" class="form-control required" type="hidden" value="{{site_id}}">
                 <input name="order_id" class="form-control required" type="hidden" value="{{cart_id}}">
@@ -78,7 +78,7 @@
         </script>
 
         <script type="text/x-template" id="shopping-cart-total" >
-            <div>Total : {{ total }} </div>
+            <div>Total : <span class="money" >{{ total }}</span> </div>
         </script>
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
