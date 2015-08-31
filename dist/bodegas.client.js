@@ -47,10 +47,11 @@ BodegasClient.prototype.init = function(site_id)
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
+    var facade;
     var methods = {
         main : function(options)
         {
-            var facade = new EcommerceFacade(options);
+            facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
 
@@ -63,9 +64,8 @@ BodegasClient.prototype.init = function(site_id)
 
             return facade;
         },
-        load_more : function(options)
+        load_more : function()
         {
-            var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
 
@@ -587,6 +587,7 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
 
 var ProductListView = function()
 {
+    this.allproductsLoaded = false;
     this.tag_template = '';
     this.product_template = '';
 
@@ -638,6 +639,7 @@ ProductListView.prototype.renderProducts = function(products)
     }
     else
     {
+        this.allproductsLoaded = true;
         this.removeLoading();
     }
 };
@@ -652,8 +654,11 @@ ProductListView.prototype.removeLoading = function()
 ProductListView.prototype.renderLoading = function() 
 {
     this.removeLoading();
-    var $products = $('.products');
-    $products.append($('#product_loading').html());
+    if (!this.allproductsLoaded)
+    {
+        var $products = $('.products');
+        $products.append($('#product_loading').html());
+    }
 };
 
 

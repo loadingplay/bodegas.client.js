@@ -10,10 +10,11 @@
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
+    var facade;
     var methods = {
         main : function(options)
         {
-            var facade = new EcommerceFacade(options);
+            facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
 
@@ -26,9 +27,8 @@
 
             return facade;
         },
-        load_more : function(options)
+        load_more : function()
         {
-            var facade = new EcommerceFacade(options);
             facade.showProductList(page);
             page++;
 

@@ -5,6 +5,7 @@
 
 var ProductListView = function()
 {
+    this.allproductsLoaded = false;
     this.tag_template = '';
     this.product_template = '';
 
@@ -56,6 +57,7 @@ ProductListView.prototype.renderProducts = function(products)
     }
     else
     {
+        this.allproductsLoaded = true;
         this.removeLoading();
     }
 };
@@ -70,8 +72,11 @@ ProductListView.prototype.removeLoading = function()
 ProductListView.prototype.renderLoading = function() 
 {
     this.removeLoading();
-    var $products = $('.products');
-    $products.append($('#product_loading').html());
+    if (!this.allproductsLoaded)
+    {
+        var $products = $('.products');
+        $products.append($('#product_loading').html());
+    }
 };
 
 
