@@ -8,6 +8,7 @@ var ProductListView = function()
     this.tag_template = '';
     this.product_template = '';
 
+    this.renderLoading();
     this.initTemplates();
 };
 
@@ -48,6 +49,13 @@ ProductListView.prototype.renderProducts = function(products)
         $products.append($rendered);
     }
 
+    this.renderLoading();
+};
+
+
+ProductListView.prototype.renderLoading = function() 
+{
+    var $products = $('.products');
     $('.spinner', $products).remove();
     $products.append($('#product_loading').html());
 };
