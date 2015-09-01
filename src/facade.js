@@ -68,15 +68,25 @@
 
 var EcommerceFacade = function(options)
 {
+    var self = this;
+
+    this.page = 1;
     this.options = options;
     this.ecommerce = new BodegasClient();
     this.view  = new ProductListView();
     this.product_view = new ProductDetailView();
+
+
+    this.view.onScrollEnd(function(){
+        self.page++;
+        self.showProductList(self.page);
+    });
 };
 
 
 EcommerceFacade.prototype.showProductList = function(page) 
 {
+    console.log(page);
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()

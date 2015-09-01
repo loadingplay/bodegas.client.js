@@ -106,18 +106,6 @@
                     'base_url' : 'http://apibodegas.ondev.today/',
                     'products_per_page' : 3
                 });
-
-                $(document).on('scroll', function()
-                {
-                    if($(window).scrollTop() == $(document).height() - $(window).height())
-                    {
-                        $(document).ecommerce('load_more',{
-                            'app_public' : 2,
-                            'base_url' : 'http://apibodegas.ondev.today/',
-                            'products_per_page' : 3
-                        });
-                    }
-                });
             });
         </script>
     </body>

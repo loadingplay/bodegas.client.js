@@ -5,9 +5,11 @@
 
 var ProductListView = function()
 {
-    this.allproductsLoaded = false;
+    this.all_products_loaded = false;
+    this.loading_products = false;
     this.tag_template = '';
     this.product_template = '';
+    this.on_scroll_end = $.noop;
 
     this.renderLoading();
     this.initTemplates();
@@ -17,6 +19,33 @@ ProductListView.prototype.initTemplates = function()
 {
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
+
+    this.init();
+};
+
+
+ProductListView.prototype.init = function() 
+{
+    var self = this;
+    $(document).on('scroll', function()
+    {
+        if (self.loading_products) return;  // if this flag is enabled then don`t load
+
+        var $products = $('.products');
+        var $loading = $('.spinner', $products);
+
+        // check if loading is in viewport
+        if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
+        {
+            self.loading_products = true;
+            self.on_scroll_end();
+        }
+    });
+};
+
+ProductListView.prototype.onScrollEnd = function(callback) 
+{
+    this.on_scroll_end = callback;
 };
 
 ProductListView.prototype.renderTags = function(tags) 
@@ -57,7 +86,7 @@ ProductListView.prototype.renderProducts = function(products)
     }
     else
     {
-        this.allproductsLoaded = true;
+        this.all_products_loaded = true;
         this.removeLoading();
     }
 };
@@ -72,11 +101,13 @@ ProductListView.prototype.removeLoading = function()
 ProductListView.prototype.renderLoading = function() 
 {
     this.removeLoading();
-    if (!this.allproductsLoaded)
+    if (!this.all_products_loaded)
     {
         var $products = $('.products');
         $products.append($('#product_loading').html());
     }
+
+    this.loading_products = false;
 };
 
 
