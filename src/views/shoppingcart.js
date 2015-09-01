@@ -20,6 +20,8 @@ var ShoppingCartView = function(controller)
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
 
+    this.renderLoading();
+
     this.init();
 };
 
@@ -57,6 +59,25 @@ ShoppingCartView.prototype.init = function()
     
     this.render();
 };
+
+
+ShoppingCartView.prototype.removeLoading = function() 
+{
+    var $container = $('.container');
+    $('.spinner', $container).remove();
+};
+
+ShoppingCartView.prototype.renderLoading = function() 
+{
+    this.removeLoading();
+    if (!this.allcontainerLoaded)
+    {
+        var $container = $('.container');
+        $container.append($('#product_loading').html());
+    }
+};
+
+
 
 
 /**************** button actions ****************/
@@ -127,6 +148,7 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
     for (var i = 0; i < productos.length; i++)
     {
         var $builder = $(Utils.render(cart_item_template, productos[i]));
+        this.removeLoading();
         $cart_div.append($builder);
         Utils.processPrice($builder);
     }
