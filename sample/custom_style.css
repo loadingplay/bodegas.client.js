@@ -39,6 +39,20 @@ div[type=template]
 }
 
 
+/* product detail */
+
+.container .product {
+    width: 480px;
+    height: auto;
+}
+
+.container
+{
+    float: left;
+    width: 600px;
+}
+
+
 /* animation */
 .spinner {
   margin: 100px auto;
