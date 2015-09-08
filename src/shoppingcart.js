@@ -8,10 +8,6 @@ var ShoppingCart = function()
 {
     this.model = [];
     this.guid = this.generateGUID();
-    this.webpay_url = '';
-    this.success_url = '';
-    this.failure_url = '';
-    this.session_id = '';
     this.checkout_url = '';
     this.view = new ShoppingCartView(this);
 
@@ -34,26 +30,6 @@ ShoppingCart.prototype.generateGUID = function()
 ShoppingCart.prototype.getGUID = function() 
 {
     return this.guid;
-};
-
-ShoppingCart.prototype.getWebpayUrl = function() 
-{
-    return this.webpay_url;
-};
-
-ShoppingCart.prototype.getSuccessUrl = function() 
-{
-    return this.success_url;
-};
-
-ShoppingCart.prototype.getFailureUrl = function() 
-{
-    return this.failure_url;
-};
-
-ShoppingCart.prototype.getSessionId = function() 
-{
-    return this.session_id;
 };
 
 ShoppingCart.prototype.getCheckoutUrl = function() 
@@ -185,10 +161,6 @@ ShoppingCart.prototype.loadCart = function(callback)
         ]), function(cart_products)
     {
         self.model = cart_products.products;
-        self.webpay_url = cart_products.webpay_url;
-        self.session_id = cart_products.session_id;
-        self.success_url = cart_products.success_url;
-        self.failure_url = cart_products.failure_url;
         self.checkout_url = cart_products.checkout_url;
         self.recalcTotals();
         self.view.render();
