@@ -91,6 +91,10 @@
             <div>Total : <span class="money" >{{ total }}</span> </div>
         </script>
 
+        <script type="text/x-template" id="shopping-cart-checkout-button" >
+            <div>{{ site_id }}</div>
+        </script>
+
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
 
         <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
@@ -104,7 +108,7 @@
                 $(document).ecommerce({
                     'app_public' : 2,
                     'base_url' : 'http://apibodegas.ondev.today/',
-                    'products_per_page' : 3
+                    'products_per_page' : 9
                 });
             });
         </script>
