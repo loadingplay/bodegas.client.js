@@ -4,11 +4,13 @@
 
 'use strict';
 
-var ShoppingCart = function()
+var ShoppingCart = function(site_id)
 {
+    site_id = site_id === undefined ? 2 : site_id;
     this.model = [];
     this.guid = this.generateGUID();
     this.checkout_url = '';
+    this.site_id = site_id;
     this.view = new ShoppingCartView(this);
 
     this.loadCart();

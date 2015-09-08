@@ -33,5 +33,5 @@ BodegasClient.prototype.init = function(site_id)
     this.site_id = site_id;
     this.tag = new Tag(site_id);
     this.product = new Product(site_id);
-    this.cart = new ShoppingCart();
+    this.cart = new ShoppingCart(site_id);
 };

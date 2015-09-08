@@ -19,6 +19,7 @@ var ShoppingCartView = function(controller)
     this.$cart_container = $('.cart-container');
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
+    this.checkout_template = $('#shopping-cart-checkout-button').html();
 
     this.renderLoading();
 
@@ -122,16 +123,20 @@ ShoppingCartView.prototype.render = function()
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
     this.renderTotal(this.$cart_div);
-    this.renderCheckoutData(this.$cart_div, this.$cart_container);
+    this.renderCheckoutData(this.$cart_div);
 };
 
-ShoppingCartView.prototype.renderCheckoutData = function($cart_div, $cart_container)
+ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 {
-    var guid = this.controller.getGUID();
-    var checkout_url = this.controller.getCheckoutUrl();
+    // var guid = this.controller.getGUID();
+    // var checkout_url = this.controller.getCheckoutUrl();
+    var html = Utils.render(
+        this.checkout_template, 
+        {
+            'site_id' : this.controller.site_id
+        });
 
-    $('input[name=order_id]', $cart_container).val(guid);
-    $('#shipping-form', $cart_container).attr('action', checkout_url);
+    $('.checkout-button', $cart_div).html(html);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
