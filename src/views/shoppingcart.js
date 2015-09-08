@@ -128,17 +128,9 @@ ShoppingCartView.prototype.render = function()
 ShoppingCartView.prototype.renderCheckoutData = function($cart_div, $cart_container)
 {
     var guid = this.controller.getGUID();
-    var session_id = this.controller.getSessionId();
-    var failure_url = this.controller.getFailureUrl();
-    var success_url = this.controller.getSuccessUrl();
-    var webpay_url = this.controller.getWebpayUrl();
     var checkout_url = this.controller.getCheckoutUrl();
 
     $('input[name=order_id]', $cart_container).val(guid);
-    $('input[name=success_url]', $cart_container).val(success_url);
-    $('input[name=failure_url]', $cart_container).val(failure_url);
-    $('input[name=webpay_url]', $cart_container).val(webpay_url);
-    $('input[name=session_id]', $cart_container).val(session_id);
     $('#shipping-form', $cart_container).attr('action', checkout_url);
 };
 
