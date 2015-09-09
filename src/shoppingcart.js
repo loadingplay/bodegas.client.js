@@ -4,13 +4,12 @@
 
 'use strict';
 
-var ShoppingCart = function(site_id)
+var ShoppingCart = function(site_id, checkout_url)
 {
-    site_id = site_id === undefined ? 2 : site_id;
     this.model = [];
     this.guid = this.generateGUID();
-    this.checkout_url = '';
-    this.site_id = site_id;
+    this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+    this.site_id = site_id === undefined ? 2 : site_id;
     this.view = new ShoppingCartView(this);
 
     this.loadCart();
@@ -37,6 +36,11 @@ ShoppingCart.prototype.getGUID = function()
 ShoppingCart.prototype.getCheckoutUrl = function() 
 {
     return this.checkout_url;
+};
+
+ShoppingCart.prototype.getSiteId = function() 
+{
+    return this.site_id;
 };
 
 ShoppingCart.prototype.saveModel = function() 
@@ -163,7 +167,6 @@ ShoppingCart.prototype.loadCart = function(callback)
         ]), function(cart_products)
     {
         self.model = cart_products.products;
-        self.checkout_url = cart_products.checkout_url;
         self.recalcTotals();
         self.view.render();
 

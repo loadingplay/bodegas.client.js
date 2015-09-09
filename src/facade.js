@@ -45,6 +45,7 @@
             'app_public' : 0,
             'products_per_page' : 12,
             'base_url' : 'http://localhost:8520/',
+            'checkout_url': 'http://localhost:8522',
             'product_id' : null
         };
 
@@ -72,7 +73,7 @@ var EcommerceFacade = function(options)
 
     this.page = 1;
     this.options = options;
-    this.ecommerce = new BodegasClient();
+    this.ecommerce = new BodegasClient(this.options.checkout_url);
     this.view  = new ProductListView();
     this.product_view = new ProductDetailView();
 

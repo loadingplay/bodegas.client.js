@@ -19,7 +19,7 @@ var ShoppingCartView = function(controller)
     this.$cart_container = $('.cart-container');
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
-    this.checkout_template = $('#shopping-cart-checkout-button').html();
+    this.checkout_template = $('#shopping-cart-checkout-form').html();
 
     this.renderLoading();
 
@@ -130,13 +130,18 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 {
     // var guid = this.controller.getGUID();
     // var checkout_url = this.controller.getCheckoutUrl();
+
+    console.log("site id" + this.controller.getSiteId());
+
     var html = Utils.render(
         this.checkout_template, 
         {
-            'site_id' : this.controller.site_id
+            'site_id' : this.controller.getSiteId(),
+            'checkout_url': this.controller.getCheckoutUrl(),
+            'cart_id': this.controller.getGUID()
         });
 
-    $('.checkout-button', $cart_div).html(html);
+    $('.checkout-form').html(html);
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
