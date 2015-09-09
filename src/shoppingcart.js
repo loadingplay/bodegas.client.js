@@ -154,6 +154,19 @@ ShoppingCart.prototype.getTotal = function()
     return total;
 };
 
+ShoppingCart.prototype.getUnitsTotal = function() 
+{
+    var units_total = 0;
+
+    for (var i = 0; i < this.model.length; i++) 
+    {
+        var product = this.model[i];
+        units_total += product.quantity;
+    }
+
+    return units_total;
+};
+
 ShoppingCart.prototype.loadCart = function(callback) 
 {
     var self = this;

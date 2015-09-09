@@ -41,7 +41,6 @@ module.exports = function(grunt)  //jshint ignore: line
         },
 
         watch: {
-            options : { livereload : true },
             js: {
                 files: ['src/**/*.js'],
                 tasks: ['concat']
@@ -65,8 +64,7 @@ module.exports = function(grunt)  //jshint ignore: line
                 options: {
                     port : 9000,
                     hostname : 'localhost',
-                    bases : ['.'],
-                    livereload : true
+                    bases : ['.']
                 }
             }
         },
