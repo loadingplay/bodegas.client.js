@@ -20,6 +20,7 @@ var ShoppingCartView = function(controller)
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
     this.checkout_template = $('#shopping-cart-checkout-form').html();
+    this.units_total_template = $('#shopping-cart-units-total').html();
 
     this.renderLoading();
 
@@ -123,6 +124,7 @@ ShoppingCartView.prototype.render = function()
     this.$cart_div.html('');
     this.renderProducts(this.$cart_div, this.cart_item_template);
     this.renderTotal(this.$cart_div);
+    this.renderUnitsTotal(this.$cart_div);
     this.renderCheckoutData(this.$cart_div);
 };
 
@@ -166,4 +168,17 @@ ShoppingCartView.prototype.renderTotal = function($cart_div)
 
     Utils.processPrice($total);
     $cart_div.append($total);
+};
+
+ShoppingCartView.prototype.renderUnitsTotal = function($cart_div) 
+{
+    var $units_total = $(Utils.render(
+        this.units_total_template, 
+        { 
+            'units_total' : this.controller.getUnitsTotal()
+        }));
+
+    Utils.processPrice($units_total);
+    // $cart_div.append($units_total);
+    $(".units-total").html($units_total);
 };

@@ -62,8 +62,13 @@
             </div>
         </div>
 
+        <div type="template" id="shopping-cart-units-total" >
+        <span class="units-total" > Unidades: <span >{{ units_total }}</span> </span>
+        </div>
+
         <div type="template" id="shopping-cart-total" >
             <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
+            <div class="units-total"></div>
             <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
                 <input name="site_id" class="form-control required" type="hidden" value="{{site_id}}">
                 <input name="order_id" class="form-control required" type="hidden" value="{{cart_id}}">
