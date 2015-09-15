@@ -652,7 +652,7 @@ ProductListView.prototype.renderProducts = function(products)
 {
     var $products = $('.products');
 
-    if (products.length > 0)
+    if ($products.length > 0)
     {
         for (var i = 0; i < products.length; i++) 
         {
