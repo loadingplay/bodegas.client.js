@@ -35,7 +35,7 @@ QUnit.test('render', function(assert)
         $product = $('.money', $products);
 
         // product price is formatted as money
-        assert.equal($product.html(), '$ 13.860');
+        assert.equal($product.html(), '$13.860');
 
         loaded();
     });
