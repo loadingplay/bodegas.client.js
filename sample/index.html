@@ -40,7 +40,7 @@
                 <div class="money" >{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
+                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart" >add to cart</button>
             </div>
         </div>
         <!-- products -->
@@ -63,7 +63,10 @@
         </div>
 
         <div type="template" id="shopping-cart-units-total" >
-        <span class="units-total" > Unidades: <span >{{ units_total }}</span> </span>
+        <span class="units-total" > 
+            Unidades: <span >{{ units_total }}</span> 
+            Unidades por producto : <span>{{ upp_total }}</span>
+        </span>
         </div>
 
         <div type="template" id="shopping-cart-total" >
