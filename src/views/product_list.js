@@ -66,7 +66,7 @@ ProductListView.prototype.renderTags = function(tags)
 
 ProductListView.prototype.renderProducts = function(products) 
 {
-    var $products = $('.products');
+    var $products_view = $('.products');
 
     if (products.length > 0)
     {
@@ -79,7 +79,7 @@ ProductListView.prototype.renderProducts = function(products)
 
             this.renderProductImage($('.product-image', $rendered), product.id);
 
-            $products.append($rendered);
+            $products_view.append($rendered);
         }
 
         this.renderLoading();
