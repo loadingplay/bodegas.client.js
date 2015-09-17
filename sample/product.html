@@ -56,11 +56,14 @@
                 <input name="success_url" class="form-control required" type="hidden" value="{{success_url}}">
                 <input name="failure_url" class="form-control required" type="hidden" value="{{failure_url}}">
                 <input name="webpay_url" class="form-control required" type="hidden" value="{{webpay_url}}">
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-outline">Pagar</button>
+                <div class="form-group text-center checkout-button">
                 </div>
             </form>
         </div>        <!-- shopping cart -->
+
+        <script type="text/x-template" id="shopping-cart-checkout-button" >
+            <button type="submit" class="btn btn-outline">Pagar {{ site_id }}</button>
+        </script>
 
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
