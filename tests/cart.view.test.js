@@ -86,8 +86,8 @@ QUnit.test('add button', function(assert)
 
         assert.equal(shopping_cart_view.controller.getProducts().length, 1, 'removed element');
 
-        // render total, with $ and point for thousands separator
-        assert.notEqual($('.total').html().indexOf('Total: <span class="money">$ 4.596</span>'), -1, '');
+        // render total, with $and point for thousands separator
+        assert.notEqual($('.total').html().indexOf('Total: <span class="money">$4.596</span>'), -1, '');
 
         html_loaded();
     });
