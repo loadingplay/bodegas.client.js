@@ -46,6 +46,8 @@ QUnit.test('get (product detail)', function(assert)
         {
             assert.equal(typeof product_data, 'object', 'product_data is object');
             assert.equal(p.description, product_data.description, 'descripcions are equal');
+            assert.equal(p.upp, product_data.upp, 'product upp are equals');
+            assert.equal(p.upp, 2);
             product_loaded();
         });
     });

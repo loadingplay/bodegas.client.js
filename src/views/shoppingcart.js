@@ -97,8 +97,9 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var id = $button.attr('product-id');
     var name = $button.attr('product-name');
     var price = $button.attr('product-price');
+    var upp = $button.attr('product-upp');
 
-    this.controller.addProduct(id, price, name);
+    this.controller.addProduct(id, price, name, upp);
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 
@@ -175,7 +176,8 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div)
     var $units_total = $(Utils.render(
         this.units_total_template, 
         { 
-            'units_total' : this.controller.getUnitsTotal()
+            'units_total' : this.controller.getUnitsTotal(),
+            'upp_total' : this.controller.getUPPTotal()
         }));
 
     Utils.processPrice($units_total);
