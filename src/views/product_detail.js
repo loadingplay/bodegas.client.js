@@ -62,6 +62,8 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
     {
         $el.replaceWith($aux);
     });
-
-    $aux.attr('src', image_url);
+    $aux.fadeOut(function(){
+        $aux.attr('src', image_url);
+    });
+    $aux.fadeIn();
 };
