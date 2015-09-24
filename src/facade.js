@@ -87,7 +87,7 @@ var EcommerceFacade = function(options)
 
 EcommerceFacade.prototype.showProductList = function(page) 
 {
-    console.log(page);
+    //console.log(page);
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
