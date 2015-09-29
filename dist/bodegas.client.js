@@ -731,7 +731,7 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
 
         if (data.images.length > 0)
         {
-            var src = data.images[0].thumb_200;
+            var src = data.images[0].thumb_500;
             var $aux = $image.clone();
 
             $aux.load(function()
