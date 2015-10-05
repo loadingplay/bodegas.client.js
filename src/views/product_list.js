@@ -131,7 +131,10 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
             {
                 $image.replaceWith($aux);
             });
-            $aux.attr('src', src);
+            $aux.fadeOut(function(){
+                $aux.attr('src', src);
+            });
+            $aux.fadeIn();
         }
     });
 };
