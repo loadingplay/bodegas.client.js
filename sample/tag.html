@@ -2,42 +2,121 @@
 <html>
     <head>
         <title></title>
-        <link rel="stylesheet" type="text/css" href="/sample/style.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/sample/style.css?v=5">
+        <link rel="stylesheet" type="text/css" href="/sample/custom_style.css" />
     </head>
     <body>
 
+        <!-- tags -->
         <div class="menu" >
             <ul>
-                <li><a href="index.html">Home</a></li>
+                <li><a href="/sample/" >Home</a></li>
             </ul>
         </div>
 
+        <div type="template" id="tag_template" >
+            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
+        </div>
+        <!-- tags -->
+
+        <!-- products -->
         <div class="products" >
         </div>
 
-        <script type="text/x-template" id="tag_template" >
-            <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
-        </script>
+        <div type="template" id="product_loading" >
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
 
-        <script type="text/x-template" id="product_template" >
+        <div type="template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
-                <img src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-                <div>{{ main_price }}</div>
+                <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+                <div class="money" >{{ main_price }}</div>
                 <div>{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button class="add-to-cart" productid="{{ id }}" >Add to cart</button>
+                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart" >add to cart</button>
+            </div>
+        </div>
+        <!-- products -->
+
+        <!-- shopping cart -->
+        <div class="shopping-cart" style="border : black solid 1px">
+        </div>
+
+        <div type="template" id="shopping-cart-product">
+            <div class="shopping-cart-product" >
+                <div>{{ id }}</div>
+                <div>{{ name }}</div>
+                <div class="money" >{{ price }}</div>
+                <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
+                <button class="add-one" product-id="{{ id }}">+</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="product-total money">{{ total }}</span>
+            </div>
+        </div>
+
+        <div type="template" id="shopping-cart-units-total" >
+        <span class="units-total" > 
+            Unidades: <span >{{ units_total }}</span> 
+            Unidades por producto : <span>{{ upp_total }}</span>
+        </span>
+        </div>
+
+        <div type="template" id="shopping-cart-total" >
+            <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
+            <div class="units-total"></div>
+            <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
+                <input name="site_id" class="form-control required" type="hidden" value="{{site_id}}">
+                <input name="order_id" class="form-control required" type="hidden" value="{{cart_id}}">
+                <input name="session_id" class="form-control required" type="hidden" value="{{session_id}}">
+                <input name="success_url" class="form-control required" type="hidden" value="{{success_url}}">
+                <input name="failure_url" class="form-control required" type="hidden" value="{{failure_url}}">
+                <input name="webpay_url" class="form-control required" type="hidden" value="{{webpay_url}}">
+                <div class="form-group text-center checkout-button">
+                </div>
+            </form>
+        </div>
+        <!-- shopping cart -->
+
+        <script type="text/x-template" id="shopping-cart-product" >
+            <div> {{ name }} | {{ quantity }}
+                <button class="remove-from-cart" product-id="{{ id }}" >Remove</button>
+                <button class="add-one" product-id="{{ id }}" >+</button>
+                <button class="remove-one" product-id="{{ id }}" >-</button>
+                <span class="product-total" >{{ total }}</span>
             </div>
         </script>
 
+        <script type="text/x-template" id="shopping-cart-total" >
+            <div>Total : <span class="money" >{{ total }}</span> </div>
+        </script>
+
+        <script type="text/x-template" id="shopping-cart-checkout-button" >
+            <button type="submit" class="btn btn-outline">Pagar {{ site_id }}</button>
+        </script>
+
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+
+        <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
         <script type="text/javascript" src="/dist/bodegas.client.js"></script>
-        <!-- <script type="text/javascript" src="tag.js" ></script> -->
+        <!-- <script type="text/javascript" src="sample.js" ></script> -->
         <script type="text/javascript" >
         $(document).ready(function()
             {
+
+                //alert("html: " + $('#tag_template').html());
                 $(document).ecommerce({
-                    'app_public' : 100
+                    'app_public' : 2,
+                    'base_url' : 'http://apibodegas.ondev.today/',
+                    'products_per_page' : 9
                 });
             });
         </script>
