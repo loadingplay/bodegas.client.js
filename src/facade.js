@@ -33,6 +33,12 @@
             page++;
 
             return facade;
+        },
+        set_data : function(data)
+        {
+            facade.setData(data);
+
+            return facade;
         }
     };
 
@@ -58,8 +64,11 @@
             options = options_or_method;
         }
 
-        options = $.extend({}, settings, options);
-        Utils.base_url = options.base_url;
+        if (method !== 'set_data')
+        {
+            options = $.extend({}, settings, options);
+            Utils.base_url = options.base_url;
+        }
 
         return methods[method](options);
     };
@@ -120,4 +129,24 @@ EcommerceFacade.prototype.showProductDetail = function()
         });
     });
 
+};
+
+
+EcommerceFacade.prototype.setData = function(data) 
+{
+    if (typeof data === 'object')
+    {
+        for (var k in data)
+        {
+            this.ecommerce.cart.extra_info.set_data(k, data[k]);
+        }
+    }
+    else if (typeof data === 'string')
+    {
+        this.ecommerce.cart.extra_info.set_data('extra', data);
+    }
+    else
+    {
+        this.ecommerce.cart.extra_info.set_data('extra', '' + data);
+    }
 };

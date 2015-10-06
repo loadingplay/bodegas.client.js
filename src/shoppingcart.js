@@ -1,11 +1,14 @@
 /*global Utils*/
 /*global $*/
 /*global ShoppingCartView*/
+/*global ExtraInfo*/
 
 'use strict';
 
 var ShoppingCart = function(site_id, checkout_url)
 {
+
+    this.extra_info = new ExtraInfo(1);
     this.model = [];
     this.guid = this.generateGUID();
     this.checkout_url = checkout_url === undefined ? '' : checkout_url;
@@ -25,6 +28,8 @@ ShoppingCart.prototype.generateGUID = function()
         guid = Utils.createUUID();  // request a new guid
         $.cookie('shopping-cart', guid);  // save to cookie
     }
+
+    this.extra_info.cart_id = guid;
     return guid;
 };
 

@@ -55,3 +55,12 @@ $.mockjax({
         this.responseText = {"message": "cart saved", "success": true};
     }
 });
+
+$.mockjax({
+    url: /^http:\/\/apibodegas.ondev.today\/cart\/extra_info\/(.+)$/,
+    urlParams: ["cart_id"],
+    response: function(settings)
+    {
+        this.responseText = {"message": "extra info saved", "success": true};
+    }
+});

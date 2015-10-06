@@ -36,6 +36,74 @@ BodegasClient.prototype.init = function(site_id)
     this.product = new Product(site_id);
     this.cart = new ShoppingCart(site_id, this.checkout_url);
 };
+/* global $ */
+/* global Utils */
+
+'use strict';
+
+var ExtraInfo = function(cart_id)
+{
+    this.model = [];
+    this.cart_id = cart_id;
+};
+
+ExtraInfo.prototype.set_data = function(index, data) 
+{
+    if (this._isValidIndex(index))
+    {
+        this.model[index] = data;
+
+        this.synchronize();
+        return true;
+    }
+
+    return false;
+};
+
+ExtraInfo.prototype.get_data = function(index) 
+{
+    try
+    {
+        return this.model[index];
+    }
+    catch(ex)
+    {
+        // nothing here
+    }
+
+    return false;
+};
+
+
+/******* private methods *********/
+
+/**
+ * only string and numbers are valid
+ * @param  {object}  index this value will be validated
+ * @return {Boolean}       true if is string or number
+ */ 
+ExtraInfo.prototype._isValidIndex = function(index) 
+{
+    if (typeof(index) === 'string')
+        return true;
+
+    if (!isNaN(parseInt(index)))
+        return true;
+
+    return false;
+};
+
+ExtraInfo.prototype.synchronize = function() 
+{
+    var json_string = JSON.stringify(this.model);
+    $.post(
+        Utils.getURL('cart', ['extra_info', this.cart_id]), 
+        {'data' : json_string}, 
+        function()
+        {
+            // nothing here...
+        });
+};
 /* global BodegasClient */
 /* global ProductListView */
 /* global Utils */
@@ -71,6 +139,12 @@ BodegasClient.prototype.init = function(site_id)
             page++;
 
             return facade;
+        },
+        set_data : function(data)
+        {
+            facade.setData(data);
+
+            return facade;
         }
     };
 
@@ -96,8 +170,11 @@ BodegasClient.prototype.init = function(site_id)
             options = options_or_method;
         }
 
-        options = $.extend({}, settings, options);
-        Utils.base_url = options.base_url;
+        if (method !== 'set_data')
+        {
+            options = $.extend({}, settings, options);
+            Utils.base_url = options.base_url;
+        }
 
         return methods[method](options);
     };
@@ -159,6 +236,26 @@ EcommerceFacade.prototype.showProductDetail = function()
     });
 
 };
+
+
+EcommerceFacade.prototype.setData = function(data) 
+{
+    if (typeof data === 'object')
+    {
+        for (var k in data)
+        {
+            this.ecommerce.cart.extra_info.set_data(k, data[k]);
+        }
+    }
+    else if (typeof data === 'string')
+    {
+        this.ecommerce.cart.extra_info.set_data('extra', data);
+    }
+    else
+    {
+        this.ecommerce.cart.extra_info.set_data('extra', '' + data);
+    }
+};
 /* globals jQuery */
 /* globals Utils */
 
@@ -212,11 +309,14 @@ Product.prototype.get = function(product_id, callback)
 /*global Utils*/
 /*global $*/
 /*global ShoppingCartView*/
+/*global ExtraInfo*/
 
 'use strict';
 
 var ShoppingCart = function(site_id, checkout_url)
 {
+
+    this.extra_info = new ExtraInfo(1);
     this.model = [];
     this.guid = this.generateGUID();
     this.checkout_url = checkout_url === undefined ? '' : checkout_url;
@@ -236,6 +336,8 @@ ShoppingCart.prototype.generateGUID = function()
         guid = Utils.createUUID();  // request a new guid
         $.cookie('shopping-cart', guid);  // save to cookie
     }
+
+    this.extra_info.cart_id = guid;
     return guid;
 };
 

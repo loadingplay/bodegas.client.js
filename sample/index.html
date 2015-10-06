@@ -49,15 +49,19 @@
         <div class="shopping-cart" style="border : black solid 1px">
         </div>
 
+        <div>
+            <button class="test-extra-data" >Test Extra Data</button>
+        </div>
+
         <div type="template" id="shopping-cart-product">
             <div class="shopping-cart-product" >
                 <div>{{ id }}</div>
                 <div>{{ name }}</div>
                 <div class="money" >{{ price }}</div>
                 <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
-                <button class="add-one" product-id="{{ id }}">+</button>
-                <span class="quantity" >{{ quantity }}</span>
                 <button class="remove-one" product-id="{{ id }}">-</button>
+                <span class="quantity" >{{ quantity }}</span>
+                <button class="add-one" product-id="{{ id }}">+</button>
                 <span class="product-total money">{{ total }}</span>
             </div>
         </div>
@@ -88,8 +92,8 @@
         <script type="text/x-template" id="shopping-cart-product" >
             <div> {{ name }} | {{ quantity }}
                 <button class="remove-from-cart" product-id="{{ id }}" >Remove</button>
-                <button class="add-one" product-id="{{ id }}" >+</button>
                 <button class="remove-one" product-id="{{ id }}" >-</button>
+                <button class="add-one" product-id="{{ id }}" >+</button>
                 <span class="product-total" >{{ total }}</span>
             </div>
         </script>
@@ -116,6 +120,14 @@
                     'app_public' : 2,
                     'base_url' : 'http://apibodegas.ondev.today/',
                     'products_per_page' : 9
+                });
+
+
+                $('.test-extra-data').click(function()
+                {
+                    $(document).ecommerce('set_data', { 'eeee' : {} });
+                    $(document).ecommerce('set_data', { 'foo' : 'bar' });
+                    $(document).ecommerce('set_data', 'eee');
                 });
             });
         </script>

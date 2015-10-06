@@ -34,3 +34,14 @@ $ grunt
 or unittest:
 
 [http://localhost:9000/tests/index.html!](http://localhost:9000/tests/index.html?coverage)
+
+
+# Extra Data
+
+```javascript
+// you can send json data
+$(document).ecommerce('set_data', { 'foo' : 'bar' }); 
+
+// or string
+$(document).ecommerce('set_data', 'un string');
+```
