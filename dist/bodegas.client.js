@@ -43,7 +43,7 @@ BodegasClient.prototype.init = function(site_id)
 
 var ExtraInfo = function(cart_id)
 {
-    this.model = [];
+    this.model = {};
     this.cart_id = cart_id;
 };
 
@@ -96,6 +96,7 @@ ExtraInfo.prototype._isValidIndex = function(index)
 ExtraInfo.prototype.synchronize = function() 
 {
     var json_string = JSON.stringify(this.model);
+
     $.post(
         Utils.getURL('cart', ['extra_info', this.cart_id]), 
         {'data' : json_string}, 

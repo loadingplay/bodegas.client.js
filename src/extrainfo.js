@@ -5,7 +5,7 @@
 
 var ExtraInfo = function(cart_id)
 {
-    this.model = [];
+    this.model = {};
     this.cart_id = cart_id;
 };
 
