@@ -816,6 +816,11 @@ ProductListView.prototype.renderProducts = function(products)
 
             this.renderProductImage($('.product-image', $rendered), product.id);
 
+            if (product.balance_units === 0)
+            {
+                this.showSoldOut($rendered);
+            }
+
             $products_view.append($rendered);
         }
 
@@ -828,6 +833,13 @@ ProductListView.prototype.renderProducts = function(products)
     }
 };
 
+
+ProductListView.prototype.showSoldOut = function($rendered) 
+{
+    $('.add-to-cart', $rendered).addClass('product-sold-out');
+    $('.add-to-cart', $rendered).html('Agotado');  // @todo: add dictionary
+    $('.add-to-cart', $rendered).val('Agotado');
+};
 
 ProductListView.prototype.removeLoading = function() 
 {
@@ -915,8 +927,12 @@ ShoppingCartView.prototype.init = function()
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
         evt.preventDefault();
-        self.addToCartClick($(this));
-        self.render();
+
+        if (!$(this).hasClass('product-sold-out'))
+        {
+            self.addToCartClick($(this));
+            self.render();
+        }
     });
 
     $(document).on('click', this.options.addOne, function(evt)

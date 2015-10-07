@@ -36,9 +36,9 @@
         <div type="template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
-                <img class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+                <img height="300" class="product-image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
                 <div class="money" >{{ main_price }}</div>
-                <div>{{ description }}</div>
+                <div style="height:200px;overflow:hidden" >{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
                 <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart" >add to cart</button>
             </div>

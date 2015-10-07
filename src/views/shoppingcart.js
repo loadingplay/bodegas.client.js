@@ -38,8 +38,12 @@ ShoppingCartView.prototype.init = function()
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
         evt.preventDefault();
-        self.addToCartClick($(this));
-        self.render();
+
+        if (!$(this).hasClass('product-sold-out'))
+        {
+            self.addToCartClick($(this));
+            self.render();
+        }
     });
 
     $(document).on('click', this.options.addOne, function(evt)
