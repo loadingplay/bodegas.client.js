@@ -52,7 +52,8 @@
             'products_per_page' : 12,
             'base_url' : 'http://localhost:8520/',
             'checkout_url': 'http://localhost:8522',
-            'product_id' : null
+            'product_id' : null,
+            'ignore_stock' : false   // if true, shows all products
         };
 
         if (typeof(options_or_method) === 'string')
@@ -106,12 +107,30 @@ EcommerceFacade.prototype.showProductList = function(page)
             self.view.renderTags(tags);
         });
 
-        self.ecommerce.product.list(
-            page, self.options.products_per_page, 
-            Utils.getUrlParameter('tag'), function(products)
+        var method = self.ecommerce.product.list;
+
+        if (self.options.ignore_stock)
         {
-            self.view.renderProducts(products);
-        });
+            self.ecommerce.product.listIgnoringStock(
+                page, 
+                self.options.products_per_page, 
+                Utils.getUrlParameter('tag'), 
+                function(products)
+                {
+                    self.view.renderProducts(products);
+                });
+        }
+        else
+        {
+            self.ecommerce.product.list(
+                page, 
+                self.options.products_per_page, 
+                Utils.getUrlParameter('tag'), 
+                function(products)
+                {
+                    self.view.renderProducts(products);
+                });
+        }
     });
 };
 
