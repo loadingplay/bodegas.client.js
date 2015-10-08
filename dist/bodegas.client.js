@@ -814,7 +814,7 @@ ProductListView.prototype.renderProducts = function(products)
             var $rendered = $(Utils.render(this.product_template, product));
             Utils.processPrice($rendered);
 
-            this.renderProductImage($('.product-image', $rendered), product.id);
+            this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
 
             if (product.balance_units === 0)
             {
@@ -860,7 +860,7 @@ ProductListView.prototype.renderLoading = function()
 };
 
 
-ProductListView.prototype.renderProductImage = function($image, product_id) 
+ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref) 
 {
     var url = Utils.getURL('product', ['images', product_id]);
 
@@ -881,12 +881,16 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
                 $image.replaceWith($aux);
             });
             $aux.fadeOut(function(){
+                if($imagehref.length>0){
+                    $imagehref.attr("href", src);
+                }
                 $aux.attr('src', src);
             });
             $aux.fadeIn();
         }
     });
 };
+
 /*global ShoppingCart*/
 /*global $*/
 /*global Utils*/
@@ -1034,15 +1038,22 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 
     //console.log("site id" + this.controller.getSiteId());
 
-    var html = Utils.render(
-        this.checkout_template, 
-        {
-            'site_id' : this.controller.getSiteId(),
-            'checkout_url': this.controller.getCheckoutUrl(),
-            'cart_id': this.controller.getGUID()
-        });
+    try
+    {
+        var html = Utils.render(
+            this.checkout_template, 
+            {
+                'site_id' : this.controller.getSiteId(),
+                'checkout_url': this.controller.getCheckoutUrl(),
+                'cart_id': this.controller.getGUID()
+            });
 
-    $('.checkout-form').html(html);
+        $('.checkout-form').html(html);
+    }
+    catch(ex)
+    {
+        // nothing here...
+    }
 };
 
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
@@ -1059,43 +1070,58 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
 
 ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart) 
 {
-    var $total = $(Utils.render(
-        this.total_template, 
-        { 
-            'total' : this.controller.getTotal()
-        }));
+    try
+    {
+        var $total = $(Utils.render(
+            this.total_template, 
+            { 
+                'total' : this.controller.getTotal()
+            }));
 
-    Utils.processPrice($total);
-    $cart_div.append($total);
+        Utils.processPrice($total);
+        $cart_div.append($total);
 
-    var $built = $(Utils.render(
-        this.total_cart_template, 
-        { 
-            'total' : this.controller.getTotal()
-        }));
+        var $built = $(Utils.render(
+            this.total_cart_template, 
+            { 
+                'total' : this.controller.getTotal()
+            }));
 
-    Utils.processPrice($built);
-    $total_cart.html($built);
+        Utils.processPrice($built);
+        $total_cart.html($built);
+
+    }
+    catch(ex)
+    {
+        // nothing here...
+    }
 };
 
 ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items) 
 {
-    var $units_total = $(Utils.render(
-        this.units_total_template, 
-        { 
-            'units_total' : this.controller.getUnitsTotal(),
-            'upp_total' : this.controller.getUPPTotal()
-        }));
+    try
+    {
+        var $units_total = $(Utils.render(
+            this.units_total_template, 
+            { 
+                'units_total' : this.controller.getUnitsTotal(),
+                'upp_total' : this.controller.getUPPTotal()
+            }));
 
-    Utils.processPrice($units_total);
-    // $cart_div.append($units_total);
-    $(".units-total").html($units_total);
+        Utils.processPrice($units_total);
+        // $cart_div.append($units_total);
+        $(".units-total").html($units_total);
 
-    var $built = $(Utils.render(
-        this.total_items_template, 
-        { 
-            'total' : this.controller.getUnitsTotal()
-        }));
+        var $built = $(Utils.render(
+            this.total_items_template, 
+            { 
+                'total' : this.controller.getUnitsTotal()
+            }));
 
-    $total_items.html($built);
+        $total_items.html($built);
+    }
+    catch(ex)
+    {
+        // nothing here ...
+    }
 };

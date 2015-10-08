@@ -77,7 +77,7 @@ ProductListView.prototype.renderProducts = function(products)
             var $rendered = $(Utils.render(this.product_template, product));
             Utils.processPrice($rendered);
 
-            this.renderProductImage($('.product-image', $rendered), product.id);
+            this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
 
             if (product.balance_units === 0)
             {
@@ -123,7 +123,7 @@ ProductListView.prototype.renderLoading = function()
 };
 
 
-ProductListView.prototype.renderProductImage = function($image, product_id) 
+ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref) 
 {
     var url = Utils.getURL('product', ['images', product_id]);
 
@@ -144,6 +144,9 @@ ProductListView.prototype.renderProductImage = function($image, product_id)
                 $image.replaceWith($aux);
             });
             $aux.fadeOut(function(){
+                if($imagehref.length>0){
+                    $imagehref.attr("href", src);
+                }
                 $aux.attr('src', src);
             });
             $aux.fadeIn();
