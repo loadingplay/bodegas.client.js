@@ -14,8 +14,11 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "qunit": "~1.18.0",
+    "qunit": "~1.19.0",
     "jquery.cookie": "~1.4.1",
     "jquery-mockjax": "~2.0.1"
+  },
+  "resolutions": {
+    "qunit": "~1.19.0"
   }
 }
