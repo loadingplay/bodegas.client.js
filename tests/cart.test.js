@@ -130,3 +130,23 @@ QUnit.test('load from cache', function(assert)
         products_loaded();
     });
 });
+
+
+QUnit.test('load from cache an expired cart', function(assert)
+{
+    var shopping_cart_loaded = assert.async();
+    var old_cookie = $.cookie('shopping-cart');
+
+    $('.cart').html('');
+
+    shopping_cart.guid = 'foo';
+    shopping_cart.loadCart(function(products)
+    {
+        assert.notEqual(shopping_cart.guid, 'foo', 'guids are not equals' );
+        assert.deepEqual(shopping_cart.model, [], 'model empty');
+        assert.notEqual(old_cookie, $.cookie('shopping-cart'));
+
+        shopping_cart_loaded();
+    });
+
+});

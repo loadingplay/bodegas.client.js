@@ -541,6 +541,14 @@ ShoppingCart.prototype.loadCart = function(callback)
             this.getGUID()
         ]), function(cart_products)
     {
+        if (cart_products.expired)
+        {
+            $.removeCookie('shopping-cart');
+            self.guid = self.generateGUID();
+            onload([]);
+            return;
+        }
+
         self.model = cart_products.products;
         self.recalcTotals();
         self.view.render();
