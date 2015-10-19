@@ -758,7 +758,9 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
     var src = '';
     var $image = null;
     var url = Utils.getURL('product', ['images', product_id]);
-    var counter = 0;
+    var max_images = parseInt($images.attr('max-images'));  // one by default
+
+    max_images = isNaN(max_images) ? 1 : max_images;
 
     $.get(url, function(data)
     {
@@ -767,18 +769,23 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
             data = $.parseJSON(data);
         }
 
-        $images.each(function()
+        if (max_images === 0)
+            max_images = data.images.length;
+
+        for (var i = 0; i < max_images; i++) 
         {
-            if (data.images.length > counter)
+            if (data.images.length > i) 
             {
-                src = data.images[counter].thumb_500;
-                $image = $($images[counter]); // ensure jquery element
+                $image = $images.clone();
+                $image.insertAfter($images);
+                src = data.images[i].thumb_500;
 
                 self.loadImageToElement(src, $image);
             }
+        }
 
-            counter++;
-        });
+        $images.remove();
+
     });
 
 };

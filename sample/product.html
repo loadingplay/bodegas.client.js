@@ -24,9 +24,7 @@
         <div type="template" id="product_detail" >
         <div class="product" >
             <div>{{ name }}</div>
-            <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-            <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
-            <img class="image" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
+            <img class="image" max-images="0" src="http://bodegas.gianidafirenze.cl/image/{{ image }}?mw=100" />
             <div class="money" >{{ main_price }}</div>
             <div>{{ description }}</div>
             <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
