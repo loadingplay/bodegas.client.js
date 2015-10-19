@@ -33,6 +33,21 @@ QUnit.test('render', function(assert)
 
     rendered_html = Utils.render('{{test}} {{ test}}', {'test' : 'foo'});
     assert.equal(rendered_html, 'foo foo', 'multiple instances with diferent formatting');
+
+    // more complex test
+    var template = '<div><img class="product-image" />{{ foo }} <span class="money" >{{ bar }}</span></div>';
+    rendered_html = Utils.render(template, { 'foo' : 'foo', 'bar' : 'bar' });
+
+    assert.equal(
+        rendered_html,
+        '<div><img class="product-image" />foo <span class="money" >bar</span></div>');
+});
+
+
+QUnit.test('render with function', function(assert)
+{
+    var rendered_html = Utils.render('{{ foo|friendly }}', {'foo' : 'foo bar baz'});
+    assert.equal(rendered_html, 'foo_bar_baz');
 });
 
 
@@ -63,4 +78,19 @@ QUnit.test('format money', function(assert)
     assert.equal(Utils.formatMoney(12700000), '$12.700.000');
     assert.equal(Utils.formatMoney(127000000), '$127.000.000');
     assert.equal(Utils.formatMoney(200072), '$200.072');
+});
+
+QUnit.test('friendly url', function(assert)
+{
+    // replace spaces
+    assert.equal(Utils.URLBeautify('foo bar baz'), 'foo_bar_baz');
+
+    // lower case
+    assert.equal(Utils.URLBeautify('FOOBARBAZ'), 'foobarbaz');
+
+    // ñáéíóú
+    assert.equal(Utils.URLBeautify('ñáéíóú'), 'naeiou');
+
+    // ?%$&
+    assert.equal(Utils.URLBeautify('?%$&/'), '');
 });

@@ -598,19 +598,46 @@ var Utils = {  //jshint ignore: line
 
         return url;
     },
+    friendly:function(t)
+    {
+        return Utils.URLBeautify(t);
+    },
+    extract_data:function(name, data)
+    {
+        var name = $.trim(name);
+        var splitted = [name];
+        var fn = function(t){return t;};
+        var d = '';
+
+        if (name.indexOf('|') !== -1)
+        {
+            splitted = name.split('|');
+            name = splitted[0];
+            fn = Utils[splitted[1]];
+        }
+        
+        d = data[$.trim(name)];
+
+        d = d === undefined ? '' : d;
+        return fn(d);
+    },
     render : function(template, data)
     {
         if (template === undefined) return '';
-        var builder = template;
+        var builder = '';
 
-        for(var d in data)
+        var splitted_template = template.split('{{');
+
+        for (var i = 0; i < splitted_template.length; i++) 
         {
-            var reg = new RegExp('\\{{2}(\\s|)' + d + '(\\s|)\\}{2}');
+            var name = splitted_template[i].split('}}')[0];
+            var html = splitted_template[i].split('}}')[1];
+            html = html === undefined ? name : html;
 
-            while (builder.split(reg).length > 1)
-            {
-                builder = builder.replace(reg, data[d]);
-            }
+            var d = Utils.extract_data(name, data);
+
+            builder += d;
+            builder += html;
         }
 
         return builder;
@@ -669,6 +696,29 @@ var Utils = {  //jshint ignore: line
             var html = $(this).html();
             $(this).html(Utils.formatMoney(html));
         });
+    },
+    URLBeautify : function(text)
+    {
+        text = text.toLowerCase();
+
+        var splitted = text.split(' ');
+        text = splitted.join('_');
+
+        text = text.split('ñ').join('n');
+        text = text.split('á').join('a');
+        text = text.split('é').join('e');
+        text = text.split('í').join('i');
+        text = text.split('ó').join('o');
+        text = text.split('ú').join('u');
+
+        text = text.split('?').join('');
+        text = text.split('%').join('');
+        text = text.split('$').join('');
+        text = text.split('&').join('');
+
+        text = text.split('/').join('');
+
+        return text;
     }
 };
 
