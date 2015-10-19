@@ -92,5 +92,5 @@ QUnit.test('friendly url', function(assert)
     assert.equal(Utils.URLBeautify('ñáéíóú'), 'naeiou');
 
     // ?%$&
-    assert.equal(Utils.URLBeautify('?%$&/'), '');
+    assert.equal(Utils.URLBeautify('?%$&/,.'), '');
 });
