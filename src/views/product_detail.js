@@ -44,8 +44,9 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
         {
             if (data.images.length > counter)
             {
-                src = data.images[0].thumb_500;
+                src = data.images[counter].thumb_500;
                 $image = $($images[counter]); // ensure jquery element
+
                 self.loadImageToElement(src, $image);
             }
 

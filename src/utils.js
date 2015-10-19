@@ -29,7 +29,7 @@ var Utils = {  //jshint ignore: line
     },
     extract_data:function(name, data)
     {
-        var name = $.trim(name);
+        name = $.trim(name);
         var splitted = [name];
         var fn = function(t){return t;};
         var d = '';
