@@ -8,14 +8,14 @@ var Product = function(site_id)
     this.site_id = site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, term, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, term, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, term, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, term, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, callback);
 };
 
 Product.prototype.get = function(product_id, callback) 
@@ -26,10 +26,11 @@ Product.prototype.get = function(product_id, callback)
     });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, term, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, callback) 
 {
     var tags = 'false';
     var product_list = [];
+    var term = '';
 
     if (typeof callback_or_tags === 'function')
     {
@@ -43,6 +44,15 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
     if (tags === undefined || tags === '')
     {
         tags = 'false';
+    }
+
+    if (typeof search_query === 'function')
+    {
+        callback = search_query;
+    }
+    else if(search_query!==undefined)
+    {
+        term = search_query;
     }
 
     jQuery.post(Utils.getURLWithoutParam('product/search'), 
