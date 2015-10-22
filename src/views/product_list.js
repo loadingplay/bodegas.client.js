@@ -9,17 +9,20 @@ var ProductListView = function()
     this.loading_products = false;
     this.tag_template = '';
     this.product_template = '';
+    this.site_search_template = '';
     this.on_scroll_end = $.noop;
+    this.site_search = $("#site_search");
 
     this.renderLoading();
     this.initTemplates();
+    this.renderSiteSearch(this.site_search_template);
 };
 
 ProductListView.prototype.initTemplates = function() 
 {
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
-
+    this.site_search_template = $.trim($('#site_search_template').html());
     this.init();
 };
 
@@ -27,6 +30,7 @@ ProductListView.prototype.initTemplates = function()
 ProductListView.prototype.init = function() 
 {
     var self = this;
+
     $(document).on('scroll', function()
     {
         if (self.loading_products) return;  // if this flag is enabled then don`t load
@@ -152,4 +156,11 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
             $aux.fadeIn();
         }
     });
+};
+
+ProductListView.prototype.renderSiteSearch = function(template) 
+{
+    if(this.site_search.length){
+        this.site_search.append(template);
+    }
 };

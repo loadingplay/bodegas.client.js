@@ -23,6 +23,17 @@ var Utils = {  //jshint ignore: line
 
         return url;
     },
+    getURLWithoutParam : function(module) 
+    {
+        if (!Utils.strEndsWith(Utils.base_url, '/'))
+        {
+            Utils.base_url += '/';
+        }
+
+        var url = Utils.base_url + module;
+
+        return url;
+    },
     friendly:function(t)
     {
         return Utils.URLBeautify(t);

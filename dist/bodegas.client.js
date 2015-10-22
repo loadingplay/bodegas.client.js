@@ -221,6 +221,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
+                Utils.getUrlParameter('term'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -232,6 +233,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
+                Utils.getUrlParameter('term'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -285,14 +287,14 @@ var Product = function(site_id)
     this.site_id = site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, term, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, callback);
+    this._list(page, items_per_page, false, callback_or_tags, term, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, term, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, callback);
+    this._list(page, items_per_page, true, callback_or_tags, term, callback);
 };
 
 Product.prototype.get = function(product_id, callback) 
@@ -303,7 +305,7 @@ Product.prototype.get = function(product_id, callback)
     });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, term, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -322,9 +324,15 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         tags = 'false';
     }
 
-    jQuery.get(Utils.getURL(
-        'product', 
-        ['list', this.site_id, page, items_per_page, tags, ignore_stock]), 
+    jQuery.post(Utils.getURLWithoutParam('product/search'), 
+        {
+            "site_id": this.site_id, 
+            "page": page, 
+            "items_per_page": items_per_page, 
+            "tags": tags, 
+            "ignore_stock": ignore_stock,
+            "term": term
+        },
         function(data)
         {
             if (data.products !== undefined)
@@ -598,6 +606,17 @@ var Utils = {  //jshint ignore: line
 
         return url;
     },
+    getURLWithoutParam : function(module) 
+    {
+        if (!Utils.strEndsWith(Utils.base_url, '/'))
+        {
+            Utils.base_url += '/';
+        }
+
+        var url = Utils.base_url + module;
+
+        return url;
+    },
     friendly:function(t)
     {
         return Utils.URLBeautify(t);
@@ -814,17 +833,20 @@ var ProductListView = function()
     this.loading_products = false;
     this.tag_template = '';
     this.product_template = '';
+    this.site_search_template = '';
     this.on_scroll_end = $.noop;
+    this.site_search = $("#site_search");
 
     this.renderLoading();
     this.initTemplates();
+    this.renderSiteSearch(this.site_search_template);
 };
 
 ProductListView.prototype.initTemplates = function() 
 {
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
-
+    this.site_search_template = $.trim($('#site_search_template').html());
     this.init();
 };
 
@@ -832,6 +854,7 @@ ProductListView.prototype.initTemplates = function()
 ProductListView.prototype.init = function() 
 {
     var self = this;
+
     $(document).on('scroll', function()
     {
         if (self.loading_products) return;  // if this flag is enabled then don`t load
@@ -957,6 +980,13 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
             $aux.fadeIn();
         }
     });
+};
+
+ProductListView.prototype.renderSiteSearch = function(template) 
+{
+    if(this.site_search.length){
+        this.site_search.append(template);
+    }
 };
 
 /*global ShoppingCart*/
