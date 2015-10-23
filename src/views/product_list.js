@@ -163,11 +163,17 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
 ProductListView.prototype.renderSiteSearch = function(template) 
 {
     if(this.site_search.length){
+        var tag = Utils.getUrlParameter('tag');
+        var search_query = Utils.getUrlParameter('search_query');
+
+        if(search_query !== undefined){
+            search_query.replace(/\+/g, ' ');
+        }
         var rendered = Utils.render(
                         template, 
                         { 
-                            'tag' : Utils.getUrlParameter('tag'),
-                            'search_query' : Utils.getUrlParameter('search_query').replace(/\+/g, ' ')
+                            'tag' : tag,
+                            'search_query' : search_query
                         });
         this.site_search.append(rendered);
     }
