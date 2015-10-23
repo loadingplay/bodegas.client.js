@@ -176,5 +176,11 @@ ProductListView.prototype.renderSiteSearch = function(template)
                             'search_query' : search_query
                         });
         this.site_search.append(rendered);
+        $("#site_search input[name=search_query]").tagsInput({
+            'height':'45px',
+            'width':'490px',
+            'defaultText':'',
+            'delimiter': ' '
+        });
     }
 };
