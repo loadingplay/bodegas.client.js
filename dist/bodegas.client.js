@@ -221,7 +221,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
-                Utils.getUrlParameter('term'), 
+                Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -233,7 +233,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
-                Utils.getUrlParameter('term'), 
+                Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -341,7 +341,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "items_per_page": items_per_page, 
             "tags": tags, 
             "ignore_stock": ignore_stock,
-            "term": term
+            "search_query": term
         },
         function(data)
         {
@@ -846,6 +846,7 @@ var ProductListView = function()
     this.site_search_template = '';
     this.on_scroll_end = $.noop;
     this.site_search = $("#site_search");
+    this.site_search_button = $("#site_search .btn-search");
 
     this.renderLoading();
     this.initTemplates();
@@ -879,6 +880,7 @@ ProductListView.prototype.init = function()
             self.on_scroll_end();
         }
     });
+
 };
 
 ProductListView.prototype.onScrollEnd = function(callback) 
@@ -995,7 +997,13 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
 ProductListView.prototype.renderSiteSearch = function(template) 
 {
     if(this.site_search.length){
-        this.site_search.append(template);
+        var rendered = Utils.render(
+                        template, 
+                        { 
+                            'tag' : Utils.getUrlParameter('tag'),
+                            'search_query' : Utils.getUrlParameter('search_query').replace(/\+/g, ' ')
+                        });
+        this.site_search.append(rendered);
     }
 };
 

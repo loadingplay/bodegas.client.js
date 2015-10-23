@@ -115,7 +115,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
-                Utils.getUrlParameter('term'), 
+                Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -127,7 +127,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 page, 
                 self.options.products_per_page, 
                 Utils.getUrlParameter('tag'), 
-                Utils.getUrlParameter('term'), 
+                Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
                     self.view.renderProducts(products);
