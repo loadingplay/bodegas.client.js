@@ -1001,7 +1001,7 @@ ProductListView.prototype.renderSiteSearch = function(template)
         var search_query = Utils.getUrlParameter('search_query');
 
         if(search_query !== undefined){
-            search_query.replace(/\+/g, ' ');
+            search_query = search_query.replace(/\+/g, ' ');
         }
         var rendered = Utils.render(
                         template, 
