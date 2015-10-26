@@ -52,6 +52,10 @@ div[type=template]
     width: 600px;
 }
 
+.add-to-cart{
+    background-color: red;
+}
+
 
 /* animation */
 .spinner {
