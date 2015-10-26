@@ -448,7 +448,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "items_per_page": items_per_page, 
             "tags": tags, 
             "ignore_stock": ignore_stock,
-            "search_query": term
+            "search_query": decodeURIComponent(term)
         },
         function(data)
         {
@@ -947,6 +947,7 @@ var ProductListView = function()
     this.on_scroll_end = $.noop;
     this.site_search = $("#site_search");
     this.site_search_button = $("#site_search .btn-search");
+    this.tag_search = $(".tag-search");
 
     this.renderLoading();
     this.initTemplates();
@@ -1101,7 +1102,7 @@ ProductListView.prototype.renderSiteSearch = function(template)
         var search_query = Utils.getUrlParameter('search_query');
 
         if(search_query !== undefined){
-            search_query = search_query.replace(/\+/g, ' ');
+            search_query = decodeURIComponent(search_query).replace(/\+/g, ' ');
         }
         var rendered = Utils.render(
                         template, 
@@ -1110,12 +1111,21 @@ ProductListView.prototype.renderSiteSearch = function(template)
                             'search_query' : search_query
                         });
         this.site_search.append(rendered);
-        $("#site_search input[name=search_query]").tagsInput({
-            'height':'45px',
-            'width':'490px',
-            'defaultText':'',
-            'delimiter': ' '
-        });
+
+        if(tag === undefined) {
+            if(this.tag_search.length){
+                this.tag_search.css("display","none");
+            }
+        }
+
+        // if(tag !== undefined){
+        //     $("#site_search input[name=tag]").tagsInput({
+        //         'height':'45px',
+        //         'width':'auto',
+        //         'defaultText':''
+        //     });
+        // }
+        // $("#site_search input[name=search_query]").tagEditor({ initialTags: tag.split(",") });
     }
 };
 
