@@ -289,7 +289,7 @@ ExtraInfo.prototype.synchronize = function()
             'base_url' : 'http://localhost:8520/',
             'checkout_url': 'http://localhost:8522',
             'product_id' : null,
-            'animation' : 'basic',
+            'animation' : 'none',  // none|basic
             'ignore_stock' : false   // if true, shows all products
         };
 
