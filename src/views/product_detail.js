@@ -31,9 +31,7 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
     var src = '';
     var $image = null;
     var url = Utils.getURL('product', ['images', product_id]);
-    var max_images = parseInt($images.attr('max-images'));  // one by default
-
-    max_images = isNaN(max_images) ? 1 : max_images;
+    var counter = 0;
 
     $.get(url, function(data)
     {
@@ -42,23 +40,18 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
             data = $.parseJSON(data);
         }
 
-        if (max_images === 0)
-            max_images = data.images.length;
-
-        for (var i = 0; i < max_images; i++) 
+        $images.each(function()
         {
-            if (data.images.length > i) 
+            if (data.images.length > counter)
             {
-                $image = $images.clone();
-                $image.insertAfter($images);
-                src = data.images[i].thumb_500;
+                src = data.images[counter].thumb_500;
+                $image = $($images[counter]); // ensure jquery element
 
                 self.loadImageToElement(src, $image);
             }
-        }
 
-        $images.remove();
-
+            counter++;
+        });
     });
 
 };
