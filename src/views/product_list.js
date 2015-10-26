@@ -12,8 +12,6 @@ var ProductListView = function()
     this.site_search_template = '';
     this.on_scroll_end = $.noop;
     this.site_search = $("#site_search");
-    this.site_search_button = $("#site_search .btn-search");
-    this.tag_search = $(".tag-search");
 
     this.renderLoading();
     this.initTemplates();
@@ -178,10 +176,18 @@ ProductListView.prototype.renderSiteSearch = function(template)
                         });
         this.site_search.append(rendered);
 
-        if(tag === undefined) {
-            if(this.tag_search.length){
-                this.tag_search.css("display","none");
+        if(tag === undefined || tag === '') {
+            if($("input[name=tag]", this.site_search).length){
+                $(".tag-search", this.site_search).css("display","none");
             }
+        }
+
+        if($("a.remove-tag", this.site_search).length){
+            $("a.remove-tag", this.site_search).on('click', function(){
+                $("input[name=tag]", this.site_search).val('');
+                $("input[name=search_query]", this.site_search).val($("input[name=search_query]", this.site_search).val());
+                $(".btn-search", this.site_search).trigger("click");
+            });
         }
 
         // if(tag !== undefined){
