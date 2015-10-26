@@ -15,32 +15,51 @@ var SimpleAnimation = function()
     this.animation = {
         name : 'test',
         '0%' : {
-            'transform' : 'translate(0px,0px)',
-            'opacity' : '1',
+            // 'transform' : 'translate(0px,0px)',
             'border-radius' : '0px'
         },
         '50%': {
-            'transform' : 'translate(0px,0px)',
-            'border-radius' : '50%',
-            'width' : '30%',
-            'height' : '30%',
-            'opacity' : '1',
-            'margin-left' : '25%',
-            'margin-top' : '10%'
+            'transform' : 'translate(0px,0px)'
         },
         '100%': {
-            'transform' : 'translate(0px, 0px)',
-            'border-radius' : '50px',
-            'width' : '30px',
-            'height' : '30px',
-            'opacity' : '1',
-            'margin-left' : '25px',
-            'margin-top' : '10px'
+            // 'transform' : 'translate(0px, 0px)',
         }
     };
+    this.animation_supported = this.isAnimationAvailable();
 
 
     this.init();
+};
+
+
+/**
+ * detect if animation interfaz is available for this browser,
+ * i copied from internet, so, in god we trust!!
+ * @return {Boolean} true if css3 animations are supported
+ */
+SimpleAnimation.prototype.isAnimationAvailable = function() 
+{
+    var animation = false,
+    animationstring = 'animation',
+    keyframeprefix = '',
+    domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+    pfx  = '',
+    elm = document.createElement('div');
+
+    if( elm.style.animationName !== undefined ) { animation = true; }    
+
+    if( animation === false ) {
+      for( var i = 0; i < domPrefixes.length; i++ ) {
+        if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+          pfx = domPrefixes[ i ];
+          animationstring = pfx + 'Animation';
+          keyframeprefix = '-' + pfx.toLowerCase() + '-';
+          break;
+        }
+      }
+    }
+
+    return animation;
 };
 
 SimpleAnimation.prototype.init = function() 
@@ -55,18 +74,29 @@ SimpleAnimation.prototype.init = function()
             var $tthis = $(this);
             var $clone = $tthis.clone();
             var agotado = ($tthis.html().indexOf('Agotado') !== -1);
+            var outer_height = $tthis.outerHeight();
+            var hwidth = $tthis.width() * 0.5 - outer_height * 0.5;
 
-            if (self.working || agotado)
+            if (self.working || agotado || !self.animation_supported)
             {
                 return;
             }
 
+            self.animation['50%']['margin-left'] 
+            self.animation['50%']['border-radius'] = outer_height + 'px';
+            self.animation['50%']['width'] = outer_height + 'px';
+            self.animation['50%']['transform'] = 'translate('+hwidth+'px,0px)';
+
+            self.animation['100%']['border-radius'] = outer_height + 'px';
+            self.animation['100%']['width'] = outer_height + 'px';
             self.animation['100%'].transform = 'translate('+ (go_to.left - imin.left) +'px,'+(go_to.top - imin.top)+'px)';
 
             $.keyframe.define(self.animation);
             $clone.insertAfter($tthis);
-            $tthis.css('display', 'none');
+            $clone.css('width', $tthis.width());
+            $clone.css('height', outer_height);
 
+            $tthis.css('display', 'none');
             $clone.html('');
             $clone.val('');
             $clone.css('outline', 'none');
@@ -86,11 +116,12 @@ SimpleAnimation.prototype.init = function()
                     $tthis.css('opacity', 1);
                 });
             });
+
             self.working = true;
         }
         catch(ex)
         {
-            console.log(ex);
+            // nothing here...
         }
     });
 
