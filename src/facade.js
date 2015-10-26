@@ -2,6 +2,7 @@
 /* global ProductListView */
 /* global Utils */
 /* global ProductDetailView */
+/* global SimpleAnimation*/
 
 'use strict';
 
@@ -53,6 +54,7 @@
             'base_url' : 'http://localhost:8520/',
             'checkout_url': 'http://localhost:8522',
             'product_id' : null,
+            'animation' : 'none',  // none|basic
             'ignore_stock' : false   // if true, shows all products
         };
 
@@ -86,7 +88,14 @@ var EcommerceFacade = function(options)
     this.ecommerce = new BodegasClient(this.options.checkout_url);
     this.view  = new ProductListView();
     this.product_view = new ProductDetailView();
+    this.animation = null;
 
+    // initialize animation
+    if (options.animation !== 'none') 
+    {
+        // init simmple animations (the only one for now)
+        this.animation = new SimpleAnimation();
+    }
 
     this.view.onScrollEnd(function(){
         self.page++;

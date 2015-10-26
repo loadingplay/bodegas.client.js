@@ -66,7 +66,7 @@ ShoppingCartView.prototype.init = function()
         self.removeProduct($(this));
         self.render();
     });
-    
+
     this.render();
 };
 
