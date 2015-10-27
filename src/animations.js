@@ -11,14 +11,16 @@
 
 var SimpleAnimation = function()
 {
-    this.working = false;
     this.animation = {
         name : 'test',
         '0%' : {
             // 'transform' : 'translate(0px,0px)',
-            'border-radius' : '0px'
+            'border-radius' : '0px',
+            'outline': 'none',
+            'display': 'block',
+            'overflow': 'hidden'
         },
-        '50%': {
+        '30%': {
             'transform' : 'translate(0px,0px)'
         },
         '100%': {
@@ -72,52 +74,61 @@ SimpleAnimation.prototype.init = function()
             var go_to = $('.shopping-cart-animation').offset();
             var imin = $(this).offset();
             var $tthis = $(this);
-            var $clone = $tthis.clone();
+            var $clone = $('<div></div>');
             var agotado = ($tthis.html().indexOf('Agotado') !== -1);
             var outer_height = $tthis.outerHeight();
             var hwidth = $tthis.width() * 0.5 - outer_height * 0.5;
 
-            if (self.working || agotado || !self.animation_supported)
+            if ($tthis.data('working') || agotado || !self.animation_supported)
             {
                 return;
             }
 
-            self.animation['50%']['margin-left'] 
-            self.animation['50%']['border-radius'] = outer_height + 'px';
-            self.animation['50%']['width'] = outer_height + 'px';
-            self.animation['50%']['transform'] = 'translate('+hwidth+'px,0px)';
+            $clone.css('width', $tthis.outerWidth());
+            $clone.css('height', outer_height);
+            $clone.insertAfter($tthis);
 
-            self.animation['100%']['border-radius'] = outer_height + 'px';
+            $clone_html = $('<div></div>');
+            $clone.html($clone_html);
+
+            $clone_html.css('width', '100%');
+            $clone_html.css('height', '100%');
+            $clone_html.css('border', $tthis.css('border'));
+            $clone_html.css('margin-left', 'auto');
+            $clone_html.css('margin-right', 'auto');
+            $clone_html.css('position', 'relative');
+            $clone_html.css('z-index', 99);
+
+            $tthis.css('display', 'none');
+
+            self.animation['30%']['width'] = outer_height + 'px';
+            self.animation['30%']['border-radius'] = (outer_height * 0.5) + 'px';
+            self.animation['30%']['background'] = $tthis.css('background');
+
             self.animation['100%']['width'] = outer_height + 'px';
+            self.animation['100%']['border-radius'] = (outer_height * 0.5) + 'px';
+            self.animation['100%']['background'] = $tthis.css('background');
             self.animation['100%'].transform = 'translate('+ (go_to.left - imin.left) +'px,'+(go_to.top - imin.top)+'px)';
 
             $.keyframe.define(self.animation);
-            $clone.insertAfter($tthis);
-            $clone.css('width', $tthis.width());
-            $clone.css('height', outer_height);
 
-            $tthis.css('display', 'none');
-            $clone.html('');
-            $clone.val('');
-            $clone.css('outline', 'none');
-
-            $clone.playKeyframe([
-            'test 0.5s ease-in-out 0s forwards',
+            $clone_html.playKeyframe([
+            'test 0.7s ease-in-out 0s forwards',
             {
                 name: 'ball-roll',
-                duration: '3s',
+                duration: '0.7s',
                 timingFunction: 'ease',
                 iterationCount: 1
             }], function(){
                 $clone.remove();
 
                 $tthis.fadeIn(200, function() {
-                    self.working = false;
+                    $tthis.data('working', false);
                     $tthis.css('opacity', 1);
                 });
             });
 
-            self.working = true;
+            $tthis.data('working', true);
         }
         catch(ex)
         {
