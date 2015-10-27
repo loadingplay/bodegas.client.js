@@ -699,7 +699,7 @@ ShoppingCart.prototype.getTotal = function()
         var product = this.model[i];
         total += product.price * product.quantity;
     }
-
+    // console.log("total " + total);
     return total;
 };
 
@@ -712,6 +712,8 @@ ShoppingCart.prototype.getUnitsTotal = function()
         var product = this.model[i];
         units_total += product.quantity;
     }
+
+    // console.log("units total " + units_total);
 
     return units_total;
 };
@@ -727,6 +729,7 @@ ShoppingCart.prototype.getUPPTotal = function()
         units_total += parseInt(product.upp_total);
     }
 
+    // console.log("upp units total " + units_total);
     return units_total;
 };
 
@@ -735,26 +738,30 @@ ShoppingCart.prototype.loadCart = function(callback)
     var self = this;
     var onload = callback === undefined ? $.noop : callback;
 
-    $.get(Utils.getURL(
-        'cart', 
-        [
-            'load', 
+    var url = Utils.getURL(
+        'cart', [
+            'load',
             this.getGUID()
-        ]), function(cart_products)
-    {
-        if (cart_products.expired)
-        {
-            $.removeCookie('shopping-cart');
-            self.guid = self.generateGUID();
-            onload([]);
-            return;
+        ]);
+
+    $.ajax({
+        url: url,
+        cache: false,
+        success: function(cart_products){
+            if (cart_products.expired)
+            {
+                $.removeCookie('shopping-cart');
+                self.guid = self.generateGUID();
+                onload([]);
+                return;
+            }
+            // console.log(cart_products.products);
+            self.model = cart_products.products;
+            self.recalcTotals();
+            self.view.render();
+
+            onload(cart_products);
         }
-
-        self.model = cart_products.products;
-        self.recalcTotals();
-        self.view.render();
-
-        onload(cart_products);
     });
 };
 /* globals $*/
