@@ -1028,7 +1028,7 @@ var ProductListView = function()
     this.product_template = '';
     this.site_search_template = '';
     this.on_scroll_end = $.noop;
-    this.site_search = $("#site_search");
+    this.site_search = $(".site_search");
 
     this.renderLoading();
     this.initTemplates();
