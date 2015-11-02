@@ -62,7 +62,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "items_per_page": items_per_page, 
             "tags": tags, 
             "ignore_stock": ignore_stock,
-            "search_query": decodeURIComponent(term)
+            "search_query": decodeURIComponent(term),
+            "search": true
         },
         function(data)
         {

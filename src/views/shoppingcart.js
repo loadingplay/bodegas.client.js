@@ -17,8 +17,8 @@ var ShoppingCartView = function(controller)
 
     this.$cart_div = $('.shopping-cart');
     this.$cart_container = $('.cart-container');
-    this.$total_items = $('#total_items');
-    this.$total_cart = $('#total_cart');
+    this.$total_items = $('.total_items');
+    this.$total_cart = $('.total_cart');
     this.cart_item_template = $('#shopping-cart-product').html();
     this.total_template = $('#shopping-cart-total').html();
     this.checkout_template = $('#shopping-cart-checkout-form').html();
