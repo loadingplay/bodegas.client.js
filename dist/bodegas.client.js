@@ -21,22 +21,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 var SimpleAnimation = function()
 {
-    this.animation = {
-        name : 'test',
-        '0%' : {
-            // 'transform' : 'translate(0px,0px)',
-            'border-radius' : '0px',
-            'outline': 'none',
-            'display': 'block',
-            'overflow': 'hidden'
-        },
-        '30%': {
-            'transform' : 'translate(0px,0px)'
-        },
-        '100%': {
-            // 'transform' : 'translate(0px, 0px)',
-        }
-    };
     this.animation_supported = this.isAnimationAvailable();
 
 
@@ -77,28 +61,34 @@ SimpleAnimation.prototype.isAnimationAvailable = function()
 SimpleAnimation.prototype.init = function() 
 {
     var self = this;
-    $(document).on('click', '.add-to-cart-animation', function()
+    var cart_animation_working = false;
+    var original_color = $('.shopping-cart-animation').css('color');
+
+    function addToCartAnimationClick ()
     {
         try
         {
-            var go_to = $('.shopping-cart-animation').offset();
-            var imin = $(this).offset();
             var $tthis = $(this);
             var $clone = $('<div></div>');
-            var agotado = ($tthis.html().indexOf('Agotado') !== -1);
+            var $clone_html = $('<div></div>');
+
+            var go_to = $('.shopping-cart-animation').offset();
+            var imin = $(this).offset();
+            var out_of_stock = ($tthis.html().indexOf('Agotado') !== -1);
             var outer_height = $tthis.outerHeight();
+            var outer_width = $tthis.outerWidth();
             var hwidth = $tthis.width() * 0.5 - outer_height * 0.5;
 
-            if ($tthis.data('working') || agotado || !self.animation_supported)
+            if ($tthis.data('working') || out_of_stock || !self.animation_supported)
             {
                 return;
             }
 
+            // initial config
             $clone.css('width', $tthis.outerWidth());
             $clone.css('height', outer_height);
             $clone.insertAfter($tthis);
 
-            $clone_html = $('<div></div>');
             $clone.html($clone_html);
 
             $clone_html.css('width', '100%');
@@ -113,62 +103,65 @@ SimpleAnimation.prototype.init = function()
             $tthis.data('clone', $clone);
             $tthis.data('clone_html', $clone_html);
 
-            TweenMax.to($clone_html, '0.3', {
+            function initThirdAnimation()
+            {
+                // reset values
+                $tthis.data('clone').remove();
+
+                $tthis.fadeIn(200, function() {
+                    $tthis.data('working', false);
+                    $tthis.css('opacity', 1);
+                });
+
+                // animation 3
+                if (!cart_animation_working)
+                {
+                    cart_animation_working = true;
+                    TweenMax.to($('.shopping-cart-animation'), '0.5',
+                    {
+                        'color' : 'red',
+                        onComplete : function()
+                        {
+                            TweenMax.to($('.shopping-cart-animation'), '0.5', {
+                                'color' : original_color
+                            });
+                            cart_animation_working = false;
+                        }
+                    });
+                }
+            }
+
+            function initSecondAnimation()
+            {
+                // animation 2
+                TweenMax.to($tthis.data('clone_html'), '0.7', 
+                {
+                    'ease': Power1.easeIn,
+                    x : (go_to.left - (imin.left + ((outer_width - outer_height) * 0.5))),
+                    y : (go_to.top - imin.top),
+                    onComplete : initThirdAnimation
+                });
+            }
+
+            // animation 1
+            TweenMax.to($clone_html, '0.3', 
+            {
                 'ease': Power1.easeIn,
                 'width' : outer_height + 'px',
                 'border-radius' : (outer_height * 0.5) + 'px',
                 'background' : $tthis.css('background'),
-                onComplete : function(){
-                    TweenMax.to($tthis.data('clone_html'), '0.7', {
-                        'ease': Power1.easeIn,
-                        x : (go_to.left - imin.left),
-                        y : (go_to.top - imin.top),
-                        onComplete : function(){
-                            $tthis.data('clone').remove();
-
-                            $tthis.fadeIn(200, function() {
-                                $tthis.data('working', false);
-                                $tthis.css('opacity', 1);
-                            });
-                        }
-                    });
-                }
+                onComplete : initSecondAnimation
             });
 
-            // self.animation['30%']['width'] = outer_height + 'px';
-            // self.animation['30%']['border-radius'] = (outer_height * 0.5) + 'px';
-            // self.animation['30%']['background'] = $tthis.css('background');
-
-            // self.animation['100%']['width'] = outer_height + 'px';
-            // self.animation['100%']['border-radius'] = (outer_height * 0.5) + 'px';
-            // self.animation['100%']['background'] = $tthis.css('background');
-            // self.animation['100%'].transform = 'translate('+ (go_to.left - imin.left) +'px,'+(go_to.top - imin.top)+'px)';
-
-            // $.keyframe.define(self.animation);
-
-            // $clone_html.playKeyframe([
-            // 'test 0.7s ease-in-out 0s forwards',
-            // {
-            //     name: 'ball-roll',
-            //     duration: '0.7s',
-            //     timingFunction: 'ease',
-            //     iterationCount: 1
-            // }], function(){
-            //     $clone.remove();
-
-            //     $tthis.fadeIn(200, function() {
-            //         $tthis.data('working', false);
-            //         $tthis.css('opacity', 1);
-            //     });
-            // });
-
-            // $tthis.data('working', true);
         }
         catch(ex)
         {
             // nothing here...
         }
-    });
+
+    }
+
+    $(document).on('click', '.add-to-cart-animation', addToCartAnimationClick);
 
 };
 
