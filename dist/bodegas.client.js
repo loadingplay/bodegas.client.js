@@ -600,7 +600,7 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp) 
+ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3) 
 {
     if (!this.productExist(id))
     {
@@ -613,7 +613,10 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp)
             'quantity' : 0,
             'upp': upp,
             'upp_total' : upp,
-            'total' : price
+            'total' : price,
+            'bullet_1': bullet1,
+            'bullet_2': bullet2,
+            'bullet_3': bullet3
         });
     } 
 
@@ -624,6 +627,9 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp)
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
+            this.model[i].bullet1 = this.model[i].bullet1;
+            this.model[i].bullet2 = this.model[i].bullet2;
+            this.model[i].bullet3 = this.model[i].bullet3;
             this.saveModel();
             return;
         }
@@ -1320,8 +1326,11 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var name = $button.attr('product-name');
     var price = $button.attr('product-price');
     var upp = $button.attr('product-upp');
+    var bullet1 = $button.attr('product-bullet1');
+    var bullet2 = $button.attr('product-bullet2');
+    var bullet3 = $button.attr('product-bullet3');
 
-    this.controller.addProduct(id, price, name, upp);
+    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3);
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 

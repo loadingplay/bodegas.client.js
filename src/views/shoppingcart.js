@@ -106,8 +106,11 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var name = $button.attr('product-name');
     var price = $button.attr('product-price');
     var upp = $button.attr('product-upp');
+    var bullet1 = $button.attr('product-bullet1');
+    var bullet2 = $button.attr('product-bullet2');
+    var bullet3 = $button.attr('product-bullet3');
 
-    this.controller.addProduct(id, price, name, upp);
+    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3);
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 
