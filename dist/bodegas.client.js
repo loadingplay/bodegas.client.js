@@ -602,6 +602,10 @@ ShoppingCart.prototype.recalcTotals = function()
 
 ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3) 
 {
+    bullet1 = bullet1 === undefined ? '' : bullet1;
+    bullet2 = bullet2 === undefined ? '' : bullet2;
+    bullet3 = bullet3 === undefined ? '' : bullet3;
+
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
@@ -627,10 +631,11 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-            this.model[i].bullet1 = this.model[i].bullet1;
-            this.model[i].bullet2 = this.model[i].bullet2;
-            this.model[i].bullet3 = this.model[i].bullet3;
+            this.model[i].bullet_1 = this.model[i].bullet_1;
+            this.model[i].bullet_2 = this.model[i].bullet_2;
+            this.model[i].bullet_3 = this.model[i].bullet_3;
             this.saveModel();
+
             return;
         }
     }

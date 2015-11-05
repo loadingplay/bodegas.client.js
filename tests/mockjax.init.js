@@ -20,7 +20,16 @@ $.mockjax({
         var products = shopping_carts[settings.urlParams.cart_id] === undefined ? [] : shopping_carts[settings.urlParams.cart_id];
         var expired = (settings.urlParams.cart_id === "foo");
 
-        this.responseText = {"checkout_url": "", "expired" : expired, "failure_url": "", "products": products, "webpay_url": "", "success_url": "", "total": 0, "cart_id": settings.urlParams.cart_id, "session_id": ""};
+        this.responseText = {
+            "checkout_url": "", 
+            "expired" : expired, 
+            "failure_url": "", 
+            "products": products, 
+            "webpay_url": "", 
+            "success_url": "", 
+            "total": 0, 
+            "cart_id": settings.urlParams.cart_id, 
+            "session_id": ""};
     }
 });
 
