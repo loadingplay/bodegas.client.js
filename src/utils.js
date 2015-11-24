@@ -38,6 +38,13 @@ var Utils = {  //jshint ignore: line
     {
         return Utils.URLBeautify(t);
     },
+    hide_if_empty:function(t)
+    {
+        if ($.trim(t) === '')
+            return 'hidden';
+
+        return '';
+    },
     extract_data:function(name, data)
     {
         name = $.trim(name);
