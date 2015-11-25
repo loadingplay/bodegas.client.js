@@ -13,6 +13,10 @@ var BodegasClient = function(checkout_url)
     this.site_id = 2;
     this.tag = null;
     this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+
+    this.tag = new Tag();
+    this.product = new Product();
+    this.cart = new ShoppingCart();
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback) 
@@ -31,8 +35,10 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
 
 BodegasClient.prototype.init = function(site_id) 
 {
-    this.site_id = site_id;
-    this.tag = new Tag(site_id);
-    this.product = new Product(site_id);
-    this.cart = new ShoppingCart(site_id, this.checkout_url);
+    this.tag.site_id = site_id;
+    this.product.site_id = site_id;
+
+    this.cart.site_id = site_id;
+    this.cart.checkout_url = this.checkout_url;
+    this.cart.loadCart();
 };

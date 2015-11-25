@@ -5,7 +5,7 @@
 
 var Product = function(site_id)
 {
-    this.site_id = site_id;
+    this.site_id = site_id === undefined ? 0 : site_id;
 };
 
 Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 

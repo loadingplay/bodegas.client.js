@@ -15,7 +15,7 @@
     var methods = {
         main : function(options)
         {
-            facade = new EcommerceFacade(options);
+            methods.init_facade(options);
             facade.showProductList(page);
             page++;
 
@@ -23,7 +23,7 @@
         },
         product_detail : function(options)
         {
-            var facade = new EcommerceFacade(options);
+            methods.init_facade(options);
             facade.showProductDetail();
 
             return facade;
@@ -40,6 +40,18 @@
             facade.setData(data);
 
             return facade;
+        },
+        set_shipping_cost : function(data)
+        {
+            facade.setShippingCost(data);
+            return facade;
+        },
+        init_facade : function(options)
+        {
+            if (facade === undefined)
+            {
+                facade = new EcommerceFacade(options);
+            }
         }
     };
 
@@ -179,4 +191,9 @@ EcommerceFacade.prototype.setData = function(data)
     {
         this.ecommerce.cart.extra_info.set_data('extra', '' + data);
     }
+};
+
+EcommerceFacade.prototype.setShippingCost = function(data) 
+{
+    this.ecommerce.cart.setShippingCost(data);
 };

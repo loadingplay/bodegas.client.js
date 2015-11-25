@@ -7,7 +7,7 @@
 
 var ShoppingCart = function(site_id, checkout_url)
 {
-
+    this.shipping_cost = 0;
     this.extra_info = new ExtraInfo(1);
     this.model = [];
     this.guid = this.generateGUID();
@@ -173,7 +173,8 @@ ShoppingCart.prototype.getTotal = function()
         var product = this.model[i];
         total += product.price * product.quantity;
     }
-    // console.log("total " + total);
+    total += this.shipping_cost;
+
     return total;
 };
 
@@ -237,4 +238,10 @@ ShoppingCart.prototype.loadCart = function(callback)
             onload(cart_products);
         }
     });
+};
+
+ShoppingCart.prototype.setShippingCost = function(shipping_cost) 
+{
+    this.shipping_cost = shipping_cost;
+    this.view.render();
 };
