@@ -35,6 +35,7 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
 
 BodegasClient.prototype.init = function(site_id) 
 {
+    this.site_id = site_id;
     this.tag.site_id = site_id;
     this.product.site_id = site_id;
 

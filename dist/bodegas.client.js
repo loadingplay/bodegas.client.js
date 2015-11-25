@@ -180,6 +180,10 @@ var BodegasClient = function(checkout_url)
     this.site_id = 2;
     this.tag = null;
     this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+
+    this.tag = new Tag();
+    this.product = new Product();
+    this.cart = new ShoppingCart();
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback) 
@@ -199,9 +203,12 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
 BodegasClient.prototype.init = function(site_id) 
 {
     this.site_id = site_id;
-    this.tag = new Tag(site_id);
-    this.product = new Product(site_id);
-    this.cart = new ShoppingCart(site_id, this.checkout_url);
+    this.tag.site_id = site_id;
+    this.product.site_id = site_id;
+
+    this.cart.site_id = site_id;
+    this.cart.checkout_url = this.checkout_url;
+    this.cart.loadCart();
 };
 /* global $ */
 /* global Utils */
@@ -288,7 +295,7 @@ ExtraInfo.prototype.synchronize = function()
     var methods = {
         main : function(options)
         {
-            facade = new EcommerceFacade(options);
+            methods.init_facade(options);
             facade.showProductList(page);
             page++;
 
@@ -296,7 +303,7 @@ ExtraInfo.prototype.synchronize = function()
         },
         product_detail : function(options)
         {
-            var facade = new EcommerceFacade(options);
+            methods.init_facade(options);
             facade.showProductDetail();
 
             return facade;
@@ -313,6 +320,18 @@ ExtraInfo.prototype.synchronize = function()
             facade.setData(data);
 
             return facade;
+        },
+        set_shipping_cost : function(data)
+        {
+            facade.setShippingCost(data);
+            return facade;
+        },
+        init_facade : function(options)
+        {
+            if (facade === undefined)
+            {
+                facade = new EcommerceFacade(options);
+            }
         }
     };
 
@@ -340,7 +359,7 @@ ExtraInfo.prototype.synchronize = function()
             options = options_or_method;
         }
 
-        if (method !== 'set_data')
+        if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
             options = $.extend({}, settings, options);
             Utils.base_url = options.base_url;
@@ -379,7 +398,6 @@ var EcommerceFacade = function(options)
 
 EcommerceFacade.prototype.showProductList = function(page) 
 {
-    //console.log(page);
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
@@ -453,6 +471,11 @@ EcommerceFacade.prototype.setData = function(data)
         this.ecommerce.cart.extra_info.set_data('extra', '' + data);
     }
 };
+
+EcommerceFacade.prototype.setShippingCost = function(data) 
+{
+    this.ecommerce.cart.setShippingCost(data);
+};
 /* globals jQuery */
 /* globals Utils */
 
@@ -460,7 +483,7 @@ EcommerceFacade.prototype.setData = function(data)
 
 var Product = function(site_id)
 {
-    this.site_id = site_id;
+    this.site_id = site_id === undefined ? 0 : site_id;
 };
 
 Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 
@@ -538,7 +561,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
 
 var ShoppingCart = function(site_id, checkout_url)
 {
-
+    this.shipping_cost = 0;
     this.extra_info = new ExtraInfo(1);
     this.model = [];
     this.guid = this.generateGUID();
@@ -704,7 +727,8 @@ ShoppingCart.prototype.getTotal = function()
         var product = this.model[i];
         total += product.price * product.quantity;
     }
-    // console.log("total " + total);
+    total += this.shipping_cost;
+
     return total;
 };
 
@@ -769,6 +793,13 @@ ShoppingCart.prototype.loadCart = function(callback)
         }
     });
 };
+
+ShoppingCart.prototype.setShippingCost = function(shipping_cost) 
+{
+    this.shipping_cost = shipping_cost;
+    this.view.render();
+};
+
 /* globals $*/
 /* globals Utils */
 
@@ -776,7 +807,7 @@ ShoppingCart.prototype.loadCart = function(callback)
 
 var Tag = function(site_id)
 {
-    this.site_id = site_id;
+    this.site_id = site_id === undefined ? 0 : site_id;
 };
 
 Tag.prototype.listAll = function(callback) 
@@ -1417,7 +1448,8 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
         var $total = $(Utils.render(
             this.total_template, 
             { 
-                'total' : this.controller.getTotal()
+                'total' : this.controller.getTotal(),
+                'shipping_cost': this.controller.shipping_cost
             }));
 
         Utils.processPrice($total);
