@@ -185,7 +185,8 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
         var $total = $(Utils.render(
             this.total_template, 
             { 
-                'total' : this.controller.getTotal()
+                'total' : this.controller.getTotal(),
+                'shipping_cost': this.controller.shipping_cost
             }));
 
         Utils.processPrice($total);

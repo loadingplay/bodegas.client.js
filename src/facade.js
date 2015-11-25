@@ -79,7 +79,7 @@
             options = options_or_method;
         }
 
-        if (method !== 'set_data')
+        if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
             options = $.extend({}, settings, options);
             Utils.base_url = options.base_url;
@@ -118,7 +118,6 @@ var EcommerceFacade = function(options)
 
 EcommerceFacade.prototype.showProductList = function(page) 
 {
-    //console.log(page);
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
