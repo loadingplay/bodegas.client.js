@@ -877,8 +877,15 @@ var Utils = {  //jshint ignore: line
             name = splitted[0];
             fn = Utils[splitted[1]];
         }
-        
-        d = data[$.trim(name)];
+
+        try
+        {
+            d = eval('data.' + $.trim(name));  // jshint ignore: line
+        }
+        catch(e)
+        {
+            // nothing here...
+        }
 
         d = d === undefined ? '' : d;
         return fn(d);

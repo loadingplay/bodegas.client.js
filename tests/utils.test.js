@@ -94,3 +94,10 @@ QUnit.test('friendly url', function(assert)
     // ?%$&
     assert.equal(Utils.URLBeautify('?%$&/,.'), '');
 });
+
+
+QUnit.test('render list', function(assert)
+{
+    assert.equal(Utils.render('n : {{ list[0] }}', { 'list' : [1] }), 'n : 1', 'render list[0]');
+    assert.equal(Utils.render('n : {{ list[0][0] }}', { 'list' : [[1]] }), 'n : 1', 'render list[0][0]');
+});
