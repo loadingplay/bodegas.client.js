@@ -36,8 +36,7 @@
         <div type="template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
-                aaaa : {{ images[0][0] }}
-                <img height="300" class="product-image" src="{{ images }}" />
+                <img height="300" width="300" class="product-image" src="{{ images[0][0] }}" />
                 <div class="money" >{{ main_price }}</div>
                 <div style="height:200px;overflow:hidden" >{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
@@ -120,7 +119,7 @@
                 //alert("html: " + $('#tag_template').html());
                 $(document).ecommerce({
                     'ignore_stock' : true,
-                    'app_public' : 4,
+                    'app_public' : 2,
                     'animation' : 'simple',
                     'base_url' : 'http://apibodegas.ondev.today/',
                     'products_per_page' : 9

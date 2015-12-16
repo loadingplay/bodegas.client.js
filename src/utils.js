@@ -1,3 +1,10 @@
+/**
+ * Set of utilities for rendering html templates
+ * @see http://gogs.ondev.today/loadingplay/bodegas.cliente.js
+ * @author Ricardo Silva
+ */
+
+
 /*global $*/
 'use strict';
 
