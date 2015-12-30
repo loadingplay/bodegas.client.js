@@ -153,10 +153,12 @@ ShoppingCartView.prototype.buyProductClick = function($button)
             product.upp, 
             product.bullet1, 
             product.bullet2, 
-            product.bullet3);
-
-        // proceed to checkout
-        self.goToCheckout(checkout);
+            product.bullet3, 
+            function()
+            {
+                // proceed to checkout
+                self.goToCheckout(checkout);
+            });
     });
 };
 

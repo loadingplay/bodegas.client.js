@@ -72,7 +72,7 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3) 
+ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, callback) 
 {
     bullet1 = bullet1 === undefined ? '' : bullet1;
     bullet2 = bullet2 === undefined ? '' : bullet2;
@@ -106,7 +106,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].bullet_1 = this.model[i].bullet_1;
             this.model[i].bullet_2 = this.model[i].bullet_2;
             this.model[i].bullet_3 = this.model[i].bullet_3;
-            this.saveModel();
+            this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
 
             return;
