@@ -139,7 +139,7 @@ ShoppingCartView.prototype.buyProductClick = function($button)
     var checkout = {
         checkout_url : this.controller.getCheckoutUrl(),
         site_id : this.controller.getSiteId(),
-        order_id : this.controller.getGUID()
+        cart_id : this.controller.getGUID()
     };
 
     // delete all other products
@@ -164,7 +164,7 @@ ShoppingCartView.prototype.goToCheckout = function(checkout)
 {
     document.location.href = checkout.checkout_url + '?' + 
                             'site_id=' + checkout.site_id +
-                            '&order_id=' + checkout.order_id;
+                            '&cart_id=' + checkout.cart_id;
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 
