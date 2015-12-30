@@ -4,6 +4,7 @@
 var ProductDetailView = function()
 {
     this.template = '';
+    this.is_ga_enabled = false;
 
     this.initTemplates();
 };
@@ -23,6 +24,8 @@ ProductDetailView.prototype.render = function(product)
 
     $el.append($prod);
     Utils.processPrice($prod);
+
+    this.sendPageView(product);
 };
 
 ProductDetailView.prototype.renderImages = function($images, product_id) 
@@ -67,4 +70,29 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
         $aux.attr('src', image_url);
     });
     $aux.fadeIn();
+};
+
+ProductDetailView.prototype.enableGA = function() 
+{
+    this.is_ga_enabled = true;
+};
+
+ProductDetailView.prototype.sendPageView = function(product) 
+{
+    try
+    {
+        window.ga('ec:addImpression', {
+          'id': product.id,
+          'name': product.name,
+          'price' : product.main_price,
+          'type': 'view'
+        });
+
+        window.ga('ec:setAction', 'detail');
+        window.ga('send', 'pageview');
+    }
+    catch(e)
+    {
+        // nothing here...
+    }
 };

@@ -15,6 +15,9 @@ var ShoppingCart = function(site_id, checkout_url)
     this.site_id = site_id === undefined ? 2 : site_id;
     this.view = new ShoppingCartView(this);
 
+    // google analytics
+    this.is_ga_enabled = true;
+
     this.loadCart();
 };
 
@@ -48,13 +51,13 @@ ShoppingCart.prototype.getSiteId = function()
     return this.site_id;
 };
 
-ShoppingCart.prototype.saveModel = function() 
+ShoppingCart.prototype.saveModel = function(callback) 
 {
     $.post( 
         Utils.getURL('cart', ['save', this.guid]), 
-        { 'json_data' : JSON.stringify(this.model) }, function()
+        { 'json_data' : JSON.stringify(this.model) }, function(e)
         {
-            //nothing here
+            (callback === undefined ? $.noop:callback)(e);
         });
 };
 
@@ -91,7 +94,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             'bullet_2': bullet2,
             'bullet_3': bullet3
         });
-    } 
+    }
 
     for (var i = 0; i < this.model.length; i++) 
     {
@@ -104,10 +107,12 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].bullet_2 = this.model[i].bullet_2;
             this.model[i].bullet_3 = this.model[i].bullet_3;
             this.saveModel();
+            this.gaAddProduct(this.model[i], i);
 
             return;
         }
     }
+
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
@@ -116,6 +121,7 @@ ShoppingCart.prototype.removeProduct = function(id)
     {
         if (parseInt(id) === this.model[i].id)
         {
+            this.gaRemoveProduct(this.model[i]);
             this.model.splice(i, 1);
             this.saveModel();
             return;
@@ -244,4 +250,69 @@ ShoppingCart.prototype.setShippingCost = function(shipping_cost)
 {
     this.shipping_cost = shipping_cost;
     this.view.render();
+};
+
+/**
+ * set google analytics enhanced for ecommerce enabled
+ * @param  {function} ga google analytics function
+ */
+ShoppingCart.prototype.enableGA = function() 
+{
+    this.is_ga_enabled = true;
+
+    window.ga( 'require', 'ec');
+};
+
+ShoppingCart.prototype.gaAddProduct = function(product, position) 
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, position);
+
+            window.ga( 'ec:setAction', 'add');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+            // window.ga( 'ec:setAction', 'add');
+            // window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothing here...
+    }
+};
+
+ShoppingCart.prototype.gaRemoveProduct = function(product) 
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, 0);
+
+            window.ga( 'ec:setAction', 'remove');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothin here...
+    }
+};
+
+ShoppingCart.prototype.gaSetProduct = function(product, position) 
+{
+    window.ga( 'ec:addProduct', {
+      'id': product.id,
+      'name': product.name,
+      'price' : product.main_price,
+      'position': position
+    });
+};
+
+ShoppingCart.prototype.clearCart = function(callback) 
+{
+    this.model = [];
+    this.saveModel(callback);
 };

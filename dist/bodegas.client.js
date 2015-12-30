@@ -210,6 +210,13 @@ BodegasClient.prototype.init = function(site_id)
     this.cart.checkout_url = this.checkout_url;
     this.cart.loadCart();
 };
+
+
+BodegasClient.prototype.enableGA = function() 
+{
+    this.cart.enableGA();
+};
+
 /* global $ */
 /* global Utils */
 
@@ -392,6 +399,11 @@ var EcommerceFacade = function(options)
     }
 
     // initialize analytics
+    if (options.analytics !== '' && window.ga !== undefined)
+    {
+        this.ecommerce.enableGA();
+        this.product_view.enableGA();
+    }
 
     // infinite scroll
     if (options.infinite_scroll)
@@ -578,6 +590,9 @@ var ShoppingCart = function(site_id, checkout_url)
     this.site_id = site_id === undefined ? 2 : site_id;
     this.view = new ShoppingCartView(this);
 
+    // google analytics
+    this.is_ga_enabled = true;
+
     this.loadCart();
 };
 
@@ -611,13 +626,13 @@ ShoppingCart.prototype.getSiteId = function()
     return this.site_id;
 };
 
-ShoppingCart.prototype.saveModel = function() 
+ShoppingCart.prototype.saveModel = function(callback) 
 {
     $.post( 
         Utils.getURL('cart', ['save', this.guid]), 
-        { 'json_data' : JSON.stringify(this.model) }, function()
+        { 'json_data' : JSON.stringify(this.model) }, function(e)
         {
-            //nothing here
+            (callback === undefined ? $.noop:callback)(e);
         });
 };
 
@@ -654,7 +669,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             'bullet_2': bullet2,
             'bullet_3': bullet3
         });
-    } 
+    }
 
     for (var i = 0; i < this.model.length; i++) 
     {
@@ -667,10 +682,12 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].bullet_2 = this.model[i].bullet_2;
             this.model[i].bullet_3 = this.model[i].bullet_3;
             this.saveModel();
+            this.gaAddProduct(this.model[i], i);
 
             return;
         }
     }
+
 };
 
 ShoppingCart.prototype.removeProduct = function(id) 
@@ -679,6 +696,7 @@ ShoppingCart.prototype.removeProduct = function(id)
     {
         if (parseInt(id) === this.model[i].id)
         {
+            this.gaRemoveProduct(this.model[i]);
             this.model.splice(i, 1);
             this.saveModel();
             return;
@@ -807,6 +825,71 @@ ShoppingCart.prototype.setShippingCost = function(shipping_cost)
 {
     this.shipping_cost = shipping_cost;
     this.view.render();
+};
+
+/**
+ * set google analytics enhanced for ecommerce enabled
+ * @param  {function} ga google analytics function
+ */
+ShoppingCart.prototype.enableGA = function() 
+{
+    this.is_ga_enabled = true;
+
+    window.ga( 'require', 'ec');
+};
+
+ShoppingCart.prototype.gaAddProduct = function(product, position) 
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, position);
+
+            window.ga( 'ec:setAction', 'add');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+            // window.ga( 'ec:setAction', 'add');
+            // window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothing here...
+    }
+};
+
+ShoppingCart.prototype.gaRemoveProduct = function(product) 
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, 0);
+
+            window.ga( 'ec:setAction', 'remove');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothin here...
+    }
+};
+
+ShoppingCart.prototype.gaSetProduct = function(product, position) 
+{
+    window.ga( 'ec:addProduct', {
+      'id': product.id,
+      'name': product.name,
+      'price' : product.main_price,
+      'position': position
+    });
+};
+
+ShoppingCart.prototype.clearCart = function(callback) 
+{
+    this.model = [];
+    this.saveModel(callback);
 };
 
 /* globals $*/
@@ -1016,6 +1099,7 @@ var Utils = {  //jshint ignore: line
 var ProductDetailView = function()
 {
     this.template = '';
+    this.is_ga_enabled = false;
 
     this.initTemplates();
 };
@@ -1035,6 +1119,8 @@ ProductDetailView.prototype.render = function(product)
 
     $el.append($prod);
     Utils.processPrice($prod);
+
+    this.sendPageView(product);
 };
 
 ProductDetailView.prototype.renderImages = function($images, product_id) 
@@ -1079,6 +1165,31 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
         $aux.attr('src', image_url);
     });
     $aux.fadeIn();
+};
+
+ProductDetailView.prototype.enableGA = function() 
+{
+    this.is_ga_enabled = true;
+};
+
+ProductDetailView.prototype.sendPageView = function(product) 
+{
+    try
+    {
+        window.ga('ec:addImpression', {
+          'id': product.id,
+          'name': product.name,
+          'price' : product.main_price,
+          'type': 'view'
+        });
+
+        window.ga('ec:setAction', 'detail');
+        window.ga('send', 'pageview');
+    }
+    catch(e)
+    {
+        // nothing here...
+    }
 };
 
 /* global Utils */
@@ -1296,6 +1407,7 @@ var ShoppingCartView = function(controller)
     this.options = {
         cartSelector : '.shopping-cart',
         addToCartbutton : '.add-to-cart',
+        buyProductButton : '.buy-product',
         removeFromCart : '.remove-from-cart',
         addOne : '.add-one',
         removeOne : '.remove-one'
@@ -1330,6 +1442,12 @@ ShoppingCartView.prototype.init = function()
             self.addToCartClick($(this));
             self.render();
         }
+    });
+
+    $(document).on('click', this.options.buyProductButton, function(evt)
+    {
+        evt.preventDefault();
+        self.buyProductClick($(this));
     });
 
     $(document).on('click', this.options.addOne, function(evt)
@@ -1397,6 +1515,54 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var bullet3 = $button.attr('product-bullet3');
 
     this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3);
+};
+
+ShoppingCartView.prototype.buyProductClick = function($button) 
+{
+    var self = this;
+    var product = {
+        id : $button.attr('product-id'),
+        name : $button.attr('product-name'),
+        price : $button.attr('product-price'),
+        upp : $button.attr('product-upp'),
+        bullet1 : $button.attr('product-bullet1'),
+        bullet2 : $button.attr('product-bullet2'),
+        bullet3 : $button.attr('product-bullet3')
+    };
+
+    var checkout = {
+        checkout_url : $button.attr('checkout_url'),
+        site_id : $button.attr('site_id'),
+        order_id : $button.attr('order_id'),
+        session_id : $button.attr('session_id'),
+        success_url : $button.attr('success_url'),
+        failure_url : $button.attr('failure_url'),
+        webpay_url : $button.attr('webpay_url')
+    }
+
+    this.controller.clearCart(function(){
+        self.controller.addProduct(
+            product.id, 
+            product.price, 
+            product.name, 
+            product.upp, 
+            product.bullet1, 
+            product.bullet2, 
+            product.bullet3);
+
+        self.goToCheckout(checkout);
+    });
+};
+
+ShoppingCartView.prototype.goToCheckout = function(checkout) 
+{
+    document.location.href = checkout.checkout_url + '?' + 
+                            'site_id=' + checkout.site_id +
+                            '&order_id=' + checkout.order_id +
+                            '&session_id=' + checkout.session_id +
+                            '&success_url=' + checkout.success_url +
+                            '&failure_url=' + checkout.failure_url +
+                            '&webpay_url=' + checkout.webpay_url;
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 

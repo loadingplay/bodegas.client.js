@@ -10,6 +10,7 @@ var ShoppingCartView = function(controller)
     this.options = {
         cartSelector : '.shopping-cart',
         addToCartbutton : '.add-to-cart',
+        buyProductButton : '.buy-product',
         removeFromCart : '.remove-from-cart',
         addOne : '.add-one',
         removeOne : '.remove-one'
@@ -44,6 +45,12 @@ ShoppingCartView.prototype.init = function()
             self.addToCartClick($(this));
             self.render();
         }
+    });
+
+    $(document).on('click', this.options.buyProductButton, function(evt)
+    {
+        evt.preventDefault();
+        self.buyProductClick($(this));
     });
 
     $(document).on('click', this.options.addOne, function(evt)
@@ -111,6 +118,54 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var bullet3 = $button.attr('product-bullet3');
 
     this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3);
+};
+
+ShoppingCartView.prototype.buyProductClick = function($button) 
+{
+    var self = this;
+    var product = {
+        id : $button.attr('product-id'),
+        name : $button.attr('product-name'),
+        price : $button.attr('product-price'),
+        upp : $button.attr('product-upp'),
+        bullet1 : $button.attr('product-bullet1'),
+        bullet2 : $button.attr('product-bullet2'),
+        bullet3 : $button.attr('product-bullet3')
+    };
+
+    var checkout = {
+        checkout_url : $button.attr('checkout_url'),
+        site_id : $button.attr('site_id'),
+        order_id : $button.attr('order_id'),
+        session_id : $button.attr('session_id'),
+        success_url : $button.attr('success_url'),
+        failure_url : $button.attr('failure_url'),
+        webpay_url : $button.attr('webpay_url')
+    }
+
+    this.controller.clearCart(function(){
+        self.controller.addProduct(
+            product.id, 
+            product.price, 
+            product.name, 
+            product.upp, 
+            product.bullet1, 
+            product.bullet2, 
+            product.bullet3);
+
+        self.goToCheckout(checkout);
+    });
+};
+
+ShoppingCartView.prototype.goToCheckout = function(checkout) 
+{
+    document.location.href = checkout.checkout_url + '?' + 
+                            'site_id=' + checkout.site_id +
+                            '&order_id=' + checkout.order_id +
+                            '&session_id=' + checkout.session_id +
+                            '&success_url=' + checkout.success_url +
+                            '&failure_url=' + checkout.failure_url +
+                            '&webpay_url=' + checkout.webpay_url;
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 

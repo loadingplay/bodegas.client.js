@@ -28,6 +28,21 @@
             <div class="money" >{{ main_price }}</div>
             <div>{{ description }}</div>
             <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
+
+            <button 
+                product-id="{{ id }}" 
+                product-name="{{ name }}" 
+                product-price="{{ main_price }}" 
+
+                checkout_url="{{checkout_url}}"
+                site_id="{{ site_id }}"
+                order_id="{{ order_id }}"
+                session_id="{{ session_id }}"
+                success_url="{{success_url}}"
+                failure_url="{{ failure_url }}"
+                webpay_url="{{ webpay_url }}"
+
+                class="buy-product" >Proceed to checkout</button>
         </div>
         </div>
         <!-- product detail -->
@@ -71,13 +86,27 @@
         <script type="text/javascript" src="/dist/bodegas.client.js"></script>
         <!-- <script type="text/javascript" src="/sample/product.js"></script> -->
         <script type="text/javascript">
+        var analytics = 'UA-71569859-1';
+        </script>
+        <script type="text/javascript">
         $(document).ready(function()
             {
                 $(document).ecommerce('product_detail', {
                     'app_public' : 100,
-                    'base_url' : 'http://apibodegas.ondev.today/'
+                    'base_url' : 'http://apibodegas.ondev.today/',
+                    'analytics' : analytics
                 });
             });
+        </script>
+
+        <script type="text/javascript">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics_debug.js','ga');
+
+            ga('create', analytics, 'auto');
+            ga('send', 'pageview');
         </script>
     </body>
 </html>

@@ -7,6 +7,7 @@
 var product;
 var shopping_cart;
 
+
 QUnit.module(
     'Shopping cart', 
     {
@@ -28,6 +29,7 @@ QUnit.test('cart', function(assert)
 
     product.list(1, 10, function(products)
     {
+
         var product = products[0];
         var product2= products[1];
 
@@ -150,3 +152,15 @@ QUnit.test('load from cache an expired cart', function(assert)
     });
 
 });
+
+
+QUnit.test('callback on save cart', function(assert)
+{
+    var callback_executed = assert.async();
+
+    shopping_cart.saveModel(function(e)
+    {
+        assert.notEqual(e, undefined, 'callback is executed');
+        callback_executed();
+    })
+})

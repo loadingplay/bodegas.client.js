@@ -43,3 +43,9 @@ BodegasClient.prototype.init = function(site_id)
     this.cart.checkout_url = this.checkout_url;
     this.cart.loadCart();
 };
+
+
+BodegasClient.prototype.enableGA = function() 
+{
+    this.cart.enableGA();
+};

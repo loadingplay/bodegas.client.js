@@ -112,6 +112,11 @@ var EcommerceFacade = function(options)
     }
 
     // initialize analytics
+    if (options.analytics !== '' && window.ga !== undefined)
+    {
+        this.ecommerce.enableGA();
+        this.product_view.enableGA();
+    }
 
     // infinite scroll
     if (options.infinite_scroll)
