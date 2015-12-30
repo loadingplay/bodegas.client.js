@@ -1520,6 +1520,8 @@ ShoppingCartView.prototype.addToCartClick = function($button)
 ShoppingCartView.prototype.buyProductClick = function($button) 
 {
     var self = this;
+
+    // get product data
     var product = {
         id : $button.attr('product-id'),
         name : $button.attr('product-name'),
@@ -1530,17 +1532,17 @@ ShoppingCartView.prototype.buyProductClick = function($button)
         bullet3 : $button.attr('product-bullet3')
     };
 
+    // get checkout data
     var checkout = {
-        checkout_url : $button.attr('checkout_url'),
-        site_id : $button.attr('site_id'),
-        order_id : $button.attr('order_id'),
-        session_id : $button.attr('session_id'),
-        success_url : $button.attr('success_url'),
-        failure_url : $button.attr('failure_url'),
-        webpay_url : $button.attr('webpay_url')
-    }
+        checkout_url : this.controller.getCheckoutUrl(),
+        site_id : this.controller.getSiteId(),
+        order_id : this.controller.getGUID()
+    };
 
+    // delete all other products
     this.controller.clearCart(function(){
+
+        // add the current product
         self.controller.addProduct(
             product.id, 
             product.price, 
@@ -1550,6 +1552,7 @@ ShoppingCartView.prototype.buyProductClick = function($button)
             product.bullet2, 
             product.bullet3);
 
+        // proceed to checkout
         self.goToCheckout(checkout);
     });
 };
@@ -1558,11 +1561,7 @@ ShoppingCartView.prototype.goToCheckout = function(checkout)
 {
     document.location.href = checkout.checkout_url + '?' + 
                             'site_id=' + checkout.site_id +
-                            '&order_id=' + checkout.order_id +
-                            '&session_id=' + checkout.session_id +
-                            '&success_url=' + checkout.success_url +
-                            '&failure_url=' + checkout.failure_url +
-                            '&webpay_url=' + checkout.webpay_url;
+                            '&order_id=' + checkout.order_id;
 };
 
 ShoppingCartView.prototype.removeOne = function($button) 
