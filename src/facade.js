@@ -61,13 +61,15 @@
     {
         var method = 'main';
         var settings = {
-            'app_public' : 0,
-            'products_per_page' : 12,
-            'base_url' : 'http://localhost:8520/',
-            'checkout_url': 'http://localhost:8522',
-            'product_id' : null,
-            'animation' : 'none',  // none|basic
-            'ignore_stock' : false   // if true, shows all products
+            'app_public'            : 0,
+            'products_per_page'     : 12,
+            'base_url'              : 'http://localhost:8520/',
+            'checkout_url'          : 'http://localhost:8522',
+            'product_id'            : null,
+            'animation'             : 'none',  // none|basic
+            'ignore_stock'          : false,   // if true, shows all products
+            'infinite_scroll'       : true,
+            'analytics'             : ''  // analytics code
         };
 
         if (typeof(options_or_method) === 'string')
@@ -109,10 +111,21 @@ var EcommerceFacade = function(options)
         this.animation = new SimpleAnimation();
     }
 
-    this.view.onScrollEnd(function(){
-        self.page++;
-        self.showProductList(self.page);
-    });
+    // initialize analytics
+    if (options.analytics !== '' && window.ga !== undefined)
+    {
+        this.ecommerce.enableGA();
+        this.product_view.enableGA();
+    }
+
+    // infinite scroll
+    if (options.infinite_scroll)
+    {
+        this.view.onScrollEnd(function(){
+            self.page++;
+            self.showProductList(self.page);
+        });
+    }
 };
 
 

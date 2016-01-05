@@ -101,3 +101,21 @@ QUnit.test('render list', function(assert)
     assert.equal(Utils.render('n : {{ list[0] }}', { 'list' : [1] }), 'n : 1', 'render list[0]');
     assert.equal(Utils.render('n : {{ list[0][0] }}', { 'list' : [[1]] }), 'n : 1', 'render list[0][0]');
 });
+
+QUnit.test('render double', function(assert)
+{
+    assert.equal(
+        Utils.render('{{ foo }}::{{ foo }}', { 'foo' : 'bar' }),
+        'bar::bar',
+        'render twice a single variable');
+
+    assert.equal(
+        Utils.render('{{ foo }}:{{ bar }}:{{ foo }}', { 'foo' : 'bar', 'bar' : 'baz' }),
+        'bar:baz:bar',
+        'render twice a single variable');
+
+    assert.equal(
+        Utils.render('{{ foo }}:{{ bar }}:{{ foo }}', { 'foo' : 1, 'bar' : 1 }),
+        '1:1:1',
+        'render twice a single variable, numeric');
+});
