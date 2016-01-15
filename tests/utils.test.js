@@ -78,6 +78,9 @@ QUnit.test('format money', function(assert)
     assert.equal(Utils.formatMoney(12700000), '$12.700.000');
     assert.equal(Utils.formatMoney(127000000), '$127.000.000');
     assert.equal(Utils.formatMoney(200072), '$200.072');
+
+    assert.equal(Utils.render('{{ n }}', { 'n' : 2000 }), '2000', 'render number');
+    assert.equal(Utils.render('{{ n|money }}', { 'n' : 2000 }), '$2.000', 'render money number');
 });
 
 QUnit.test('friendly url', function(assert)

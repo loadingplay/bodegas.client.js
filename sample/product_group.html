@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/sample/style.css?v=5">
+        <link rel="stylesheet" type="text/css" href="/sample/custom_style.css" />
+    </head>
+    <body>
+
+        <!-- products -->
+        <div class="product-box-1" >
+            <div type="template" id="product_loading" >
+                <div class="spinner">
+                    <div class="rect1"></div>
+                    <div class="rect2"></div>
+                    <div class="rect3"></div>
+                    <div class="rect4"></div>
+                    <div class="rect5"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="template" id="product_template" >
+            <div class="product" >
+                <div>{{ name }}</div>
+                <img height="300" width="300" class="product-image" src="{{ images[0][0] }}" onload="this.src='{{ images[0][1] }}'" />
+                <div class="money" >{{ main_price }}</div>
+                <div style="height:200px;overflow:hidden" >{{ description }}</div>
+                <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
+                <!-- // <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart add-to-cart-animation" >add to cart</button> -->
+
+            </div>
+        </script>
+        <!-- products -->
+
+        <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+
+        <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/dist/bodegas.client.js"></script>
+        <!-- <script type="text/javascript" src="sample.js" ></script> -->
+        <script type="text/javascript" >
+        $(document).ready(function()
+        {
+            $('.product-box-1').ecommerce('product_box', {
+                'app_public' : 2,
+                'base_url' : 'http://apibodegas.ondev.today/',
+                'maxProducts' : 10,
+                'templateOrigin' : '#product_template'
+            });
+        });
+        </script>
+    </body>
+</html>

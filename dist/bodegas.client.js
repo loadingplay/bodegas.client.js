@@ -290,6 +290,7 @@ ExtraInfo.prototype.synchronize = function()
 /* global Utils */
 /* global ProductDetailView */
 /* global SimpleAnimation*/
+/* global ProductBox*/
 
 'use strict';
 
@@ -339,6 +340,21 @@ ExtraInfo.prototype.synchronize = function()
             {
                 facade = new EcommerceFacade(options);
             }
+        },
+        product_box : function(options)
+        {
+            $(this).each(function()
+            {
+                var data = $.data(this, 'product_box');
+
+                if (!data || data === undefined) 
+                {
+                    var product_box = new ProductBox($(this), options);
+                    product_box.view.render();
+
+                    $.data(this, 'product_box', product_box);
+                }
+            });
         }
     };
 
@@ -348,13 +364,21 @@ ExtraInfo.prototype.synchronize = function()
     {
         var method = 'main';
         var settings = {
+            /********* COMMON **********/
             'app_public'            : 0,
-            'products_per_page'     : 12,
             'base_url'              : 'http://localhost:8520/',
+
+            /********* PRODUCTBOX **********/
+            'tag' : '',
+            'maxProducts' : 2,
+            'templateOrigin' : '.product_template',
+
+            /********* OTHER **********/
             'checkout_url'          : 'http://localhost:8522',
-            'product_id'            : null,
+            'products_per_page'     : 12,
             'animation'             : 'none',  // none|basic
             'ignore_stock'          : false,   // if true, shows all products
+            'product_id'            : null,
             'infinite_scroll'       : true,
             'analytics'             : ''  // analytics code
         };
@@ -374,7 +398,7 @@ ExtraInfo.prototype.synchronize = function()
             Utils.base_url = options.base_url;
         }
 
-        return methods[method](options);
+        return methods[method].call($(this), options);
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -573,6 +597,53 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             callback(product_list);
         });
 };
+/*global $*/
+/*global ProductBoxView*/
+
+'use strict';
+
+var ProductBox = function($div, options)
+{
+    options = options || {};
+
+
+    this.max_products = options.maxProducts || 10;
+    this.template_origin = options.templateOrigin || '';
+    this.app_public = options.app_public || 1;
+    this.base_url = options.base_url || 'http://apibodegas.ondev.today/';
+    this.tag = options.tag || '';
+    this.$container = $div || $('<div></div>');
+
+    this.view = new ProductBoxView(this);
+};
+
+ProductBox.prototype.getURL = function() 
+{
+    var len = this.base_url.length;
+    var base_url_limit = this.base_url.endsWith('/') ? 1 : 0;
+    var base_url = this.base_url.substr(0, len - base_url_limit);
+    
+    var url = [base_url,
+                'product/list',
+                this.app_public,
+                1,
+                this.max_products,
+                (this.tag === '' ? 'false' : this.tag)].join('/');
+
+    return url;
+};
+
+
+ProductBox.prototype.loadProducts = function(callback) 
+{
+    callback = callback || $.noop;
+
+    $.get(this.getURL(), function(json)
+    {
+        callback(json.products);
+    });
+};
+
 /*global Utils*/
 /*global $*/
 /*global ShoppingCartView*/
@@ -989,6 +1060,11 @@ var Utils = {  //jshint ignore: line
         d = d === undefined ? '' : d;
         return fn(d);
     },
+    // formatMoney Alias
+    money:function(n)
+    {
+        return Utils.formatMoney(n);
+    },
     render : function(template, data)
     {
         if (template === undefined) return '';
@@ -1393,6 +1469,47 @@ ProductListView.prototype.renderSiteSearch = function(template)
         // }
         // $("#site_search input[name=search_query]").tagEditor({ initialTags: tag.split(",") });
     }
+};
+
+/*global $*/
+/*global Utils*/
+
+'use strict';
+
+
+var ProductBoxView = function(controller)
+{
+    this.controller = controller;
+};
+
+ProductBoxView.prototype.getTemplate = function() 
+{
+    return $(this.controller.template_origin).html();
+};
+
+ProductBoxView.prototype.productsLoaded = function(product_list) 
+{
+    var template = this.getTemplate();
+
+    for (var i = 0; i < product_list.length; i++) 
+    {
+        var product = product_list[i];
+        var rendered = Utils.render(template, product);
+
+        this.controller.$container.append(rendered);
+    }
+};
+
+ProductBoxView.prototype.render = function(cb) 
+{
+    cb = cb || $.noop;
+    var self = this;
+
+    this.controller.loadProducts(function(products){
+        self.productsLoaded(products);
+
+        cb();
+    });
 };
 
 /*global ShoppingCart*/

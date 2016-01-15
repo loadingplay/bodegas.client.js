@@ -78,6 +78,11 @@ var Utils = {  //jshint ignore: line
         d = d === undefined ? '' : d;
         return fn(d);
     },
+    // formatMoney Alias
+    money:function(n)
+    {
+        return Utils.formatMoney(n);
+    },
     render : function(template, data)
     {
         if (template === undefined) return '';

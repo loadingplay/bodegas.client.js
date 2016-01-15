@@ -3,6 +3,7 @@
 /* global Utils */
 /* global ProductDetailView */
 /* global SimpleAnimation*/
+/* global ProductBox*/
 
 'use strict';
 
@@ -52,6 +53,21 @@
             {
                 facade = new EcommerceFacade(options);
             }
+        },
+        product_box : function(options)
+        {
+            $(this).each(function()
+            {
+                var data = $.data(this, 'product_box');
+
+                if (!data || data === undefined) 
+                {
+                    var product_box = new ProductBox($(this), options);
+                    product_box.view.render();
+
+                    $.data(this, 'product_box', product_box);
+                }
+            });
         }
     };
 
@@ -61,13 +77,21 @@
     {
         var method = 'main';
         var settings = {
+            /********* COMMON **********/
             'app_public'            : 0,
-            'products_per_page'     : 12,
             'base_url'              : 'http://localhost:8520/',
+
+            /********* PRODUCTBOX **********/
+            'tag' : '',
+            'maxProducts' : 2,
+            'templateOrigin' : '.product_template',
+
+            /********* OTHER **********/
             'checkout_url'          : 'http://localhost:8522',
-            'product_id'            : null,
+            'products_per_page'     : 12,
             'animation'             : 'none',  // none|basic
             'ignore_stock'          : false,   // if true, shows all products
+            'product_id'            : null,
             'infinite_scroll'       : true,
             'analytics'             : ''  // analytics code
         };
@@ -87,7 +111,7 @@
             Utils.base_url = options.base_url;
         }
 
-        return methods[method](options);
+        return methods[method].call($(this), options);
     };
 
 })( jQuery, window, document ); // jshint ignore: line
