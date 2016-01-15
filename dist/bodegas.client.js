@@ -622,7 +622,7 @@ var ProductBox = function($div, options)
 ProductBox.prototype.getURL = function() 
 {
     var len = this.base_url.length;
-    var base_url_limit = this.base_url.endsWith('/') ? 1 : 0;
+    var base_url_limit = this.base_url.slice(len-1, len) === '/' ? 1 : 0;
     var base_url = this.base_url.substr(0, len - base_url_limit);
     
     var url = [base_url,
