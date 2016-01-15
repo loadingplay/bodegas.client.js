@@ -35,6 +35,7 @@ ProductBoxView.prototype.render = function(cb)
     this.controller.loadProducts(function(products){
         self.productsLoaded(products);
 
+        self.controller.onLoad.call(self.controller.$container, products);  // event
         cb();
     });
 };

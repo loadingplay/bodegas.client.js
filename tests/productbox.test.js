@@ -124,3 +124,27 @@ QUnit.test('facade', function(assert)
     });
 
 });
+
+QUnit.test('onReady', function(assert)
+{
+        var loaded = assert.async();
+
+    $('.product-box').load('html/product_template.html', function()
+    {
+        var $div = $('<div></div>');
+        $div.ecommerce('product_box', {
+            'maxProducts' : 5,
+            'templateOrigin' : '.product-template',
+            'app_public' : 1,
+            'base_url' : 'http://apibodegas.ondev.today/',
+            'tag' : '',
+            'onLoad' : function(products)
+            {
+                assert.ok(products.length === 10, 'method onload');
+                loaded();
+            }
+        });
+
+    });
+
+});

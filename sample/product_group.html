@@ -47,7 +47,11 @@
                 'base_url' : 'http://apibodegas.ondev.today/',
                 'maxProducts' : 10,
                 'templateOrigin' : '#product_template',
-                'tag' : 'gato'
+                'tag' : 'gato',
+                'onLoad' : function(products)
+                {
+                    console.log($(this));
+                }
             });
         });
         </script>

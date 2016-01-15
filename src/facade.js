@@ -85,6 +85,7 @@
             'tag' : '',
             'maxProducts' : 2,
             'templateOrigin' : '.product_template',
+            'onLoad' : $.noop,
 
             /********* OTHER **********/
             'checkout_url'          : 'http://localhost:8522',

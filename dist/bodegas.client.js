@@ -372,6 +372,7 @@ ExtraInfo.prototype.synchronize = function()
             'tag' : '',
             'maxProducts' : 2,
             'templateOrigin' : '.product_template',
+            'onLoad' : $.noop,
 
             /********* OTHER **********/
             'checkout_url'          : 'http://localhost:8522',
@@ -612,6 +613,7 @@ var ProductBox = function($div, options)
     this.app_public = options.app_public || 1;
     this.base_url = options.base_url || 'http://apibodegas.ondev.today/';
     this.tag = options.tag || '';
+    this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
 
     this.view = new ProductBoxView(this);
@@ -1508,6 +1510,7 @@ ProductBoxView.prototype.render = function(cb)
     this.controller.loadProducts(function(products){
         self.productsLoaded(products);
 
+        self.controller.onLoad.call(self.controller.$container, products);  // event
         cb();
     });
 };
