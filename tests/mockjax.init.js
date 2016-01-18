@@ -245,12 +245,12 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: "http://apibodegas.ondev.today/product/list/2/1/10/false",
+    url: "http://apibodegas.ondev.today/product/list/2/1/10/false/false",
     responseText: product_list
 });
 
 $.mockjax({
-    url: "http://apibodegas.ondev.today/product/list/1/1/5/false",
+    url: "http://apibodegas.ondev.today/product/list/1/1/5/false/false",
     responseText: product_list
 });
 

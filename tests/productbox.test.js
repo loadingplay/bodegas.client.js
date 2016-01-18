@@ -57,7 +57,7 @@ QUnit.test('load products', function(assert)
         'tag' : ''
     });
 
-    assert.equal(product_box.getURL(), 'http://apibodegas.ondev.today/product/list/1/1/5/false', 'generated url');
+    assert.equal(product_box.getURL(), 'http://apibodegas.ondev.today/product/list/1/1/5/false/false', 'generated url');
 
     product_box.loadProducts(function(products)
     {
