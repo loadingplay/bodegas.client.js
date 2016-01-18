@@ -615,6 +615,7 @@ var ProductBox = function($div, options)
     this.tag = options.tag || '';
     this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
+    this.ignore_stock = options.ignore_stock ? 'true' : 'false';
 
     this.view = new ProductBoxView(this);
 };
@@ -630,7 +631,8 @@ ProductBox.prototype.getURL = function()
                 this.app_public,
                 1,
                 this.max_products,
-                (this.tag === '' ? 'false' : this.tag)].join('/');
+                (this.tag === '' ? 'false' : this.tag),
+                this.ignore_stock].join('/');
 
     return url;
 };
