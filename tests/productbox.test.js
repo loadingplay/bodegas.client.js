@@ -127,7 +127,7 @@ QUnit.test('facade', function(assert)
 
 QUnit.test('onReady', function(assert)
 {
-        var loaded = assert.async();
+    var loaded = assert.async();
 
     $('.product-box').load('html/product_template.html', function()
     {
@@ -147,4 +147,37 @@ QUnit.test('onReady', function(assert)
 
     });
 
+});
+
+QUnit.test('double onReady', function(assert){
+    var loaded = assert.async();
+    var loaded_2 = assert.async(); 
+
+    $('.product-box').load('html/product_template.html', function()
+    {
+        var $div = $('<div></div>');
+        var $div2= $('<div></div>');
+
+        var config = {
+            'maxProducts' : 5,
+            'templateOrigin' : '.product-template',
+            'app_public' : 1,
+            'base_url' : 'http://apibodegas.ondev.today/',
+            'tag' : '',
+            'onLoad' : function(products)
+            {
+                assert.ok(true, 'loaded 1');
+                loaded();
+            }
+        };
+        $div.ecommerce('product_box', config);
+
+        config.onLoad = function(products) {
+            assert.ok(true, 'loaded 2');
+            loaded_2();
+        };
+
+        $div2.ecommerce('product_box', config);
+
+    });
 });

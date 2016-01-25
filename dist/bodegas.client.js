@@ -1038,6 +1038,10 @@ var Utils = {  //jshint ignore: line
 
         return '';
     },
+    hide_if_not_empty:function(t)
+    {
+        return !Utils.hide_if_empty(t);
+    },
     extract_data:function(name, data)
     {
         name = $.trim(name);
