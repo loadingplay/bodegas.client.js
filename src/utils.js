@@ -54,7 +54,10 @@ var Utils = {  //jshint ignore: line
     },
     hide_if_not_empty:function(t)
     {
-        return !Utils.hide_if_empty(t);
+        if ($.trim(t) !== '')
+            return 'hidden';
+
+        return '';
     },
     extract_data:function(name, data)
     {
