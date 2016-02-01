@@ -259,6 +259,12 @@ $.mockjax({
     responseText: {"error": {"message": "'success'", "code": 100, "type": ""}}
 });
 
+
+$.mockjax({
+    url : "http://apibodegas.ondev.today/product/get/1127",
+    responseText : {"bulk_price": 1, "stores": [], "bullet_3": "foo", "bullet_2": "3k", "site_id": 2, "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", "id": 1127, "sku": "2212107", "weight": null, "profit_margin": null, "main_price": 6494, "cost_price": 6494, "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", "tags": [1], "brand": "CAT CHOW", "manufacturer": "Nestle", "name": "Cat Chow Adultos", "enabled": false, "for_sale": true, "promotion_price": 0, "position": 0, "upp": 1}
+});
+
 $.mockjax({
     url: /^http:\/\/apibodegas.ondev.today\/product\/get\/(.+)$/,
     urlParams: ["product_id"],

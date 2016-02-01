@@ -296,6 +296,18 @@ ExtraInfo.prototype.synchronize = function()
 
 (function ( $, window, document, undefined ) 
 {
+    // test
+    Function.prototype.clone = function() {
+        var that = this;
+        var temp = function temporary() { return that.apply(this, arguments); };
+        for(var key in this) {
+            if (this.hasOwnProperty(key)) {
+                temp[key] = this[key];
+            }
+        }
+        return temp;
+    };
+
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
@@ -355,6 +367,8 @@ ExtraInfo.prototype.synchronize = function()
                     $.data(this, 'product_box', product_box);
                 }
             });
+
+            return $(this);
         }
     };
 
@@ -398,6 +412,8 @@ ExtraInfo.prototype.synchronize = function()
             options = $.extend({}, settings, options);
             Utils.base_url = options.base_url;
         }
+
+        options.onLoad = options.onLoad.clone();
 
         return methods[method].call($(this), options);
     };
@@ -491,7 +507,9 @@ EcommerceFacade.prototype.showProductDetail = function()
     {
         self.ecommerce.product.get(product_id, function(product)
         {
-            self.product_view.render(product);
+            self.product_view.render(
+                product,
+                self.options.onLoad);
         });
     });
 
@@ -613,7 +631,7 @@ var ProductBox = function($div, options)
     this.app_public = options.app_public || 1;
     this.base_url = options.base_url || 'http://apibodegas.ondev.today/';
     this.tag = options.tag || '';
-    this.onLoad = options.onLoad || $.noop;
+    this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
     this.ignore_stock = options.ignore_stock ? 'true' : 'false';
 
@@ -1196,8 +1214,10 @@ ProductDetailView.prototype.initTemplates = function()
     this.template = $.trim($('#product_detail').html());
 };
 
-ProductDetailView.prototype.render = function(product) 
+ProductDetailView.prototype.render = function(product, callback) 
 {
+
+    var callback = callback === undefined ? $.noop : callback;
     var $el = $('.container');
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
@@ -1206,6 +1226,8 @@ ProductDetailView.prototype.render = function(product)
 
     $el.append($prod);
     Utils.processPrice($prod);
+
+    callback.call($el, product);
 
     this.sendPageView(product);
 };

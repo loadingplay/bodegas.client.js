@@ -9,6 +9,18 @@
 
 (function ( $, window, document, undefined ) 
 {
+    // test
+    Function.prototype.clone = function() {
+        var that = this;
+        var temp = function temporary() { return that.apply(this, arguments); };
+        for(var key in this) {
+            if (this.hasOwnProperty(key)) {
+                temp[key] = this[key];
+            }
+        }
+        return temp;
+    };
+
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
@@ -68,6 +80,8 @@
                     $.data(this, 'product_box', product_box);
                 }
             });
+
+            return $(this);
         }
     };
 
@@ -111,6 +125,8 @@
             options = $.extend({}, settings, options);
             Utils.base_url = options.base_url;
         }
+
+        options.onLoad = options.onLoad.clone();
 
         return methods[method].call($(this), options);
     };
@@ -204,7 +220,9 @@ EcommerceFacade.prototype.showProductDetail = function()
     {
         self.ecommerce.product.get(product_id, function(product)
         {
-            self.product_view.render(product);
+            self.product_view.render(
+                product,
+                self.options.onLoad);
         });
     });
 

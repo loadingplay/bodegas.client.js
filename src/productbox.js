@@ -13,7 +13,7 @@ var ProductBox = function($div, options)
     this.app_public = options.app_public || 1;
     this.base_url = options.base_url || 'http://apibodegas.ondev.today/';
     this.tag = options.tag || '';
-    this.onLoad = options.onLoad || $.noop;
+    this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
     this.ignore_stock = options.ignore_stock ? 'true' : 'false';
 

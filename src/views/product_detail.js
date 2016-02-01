@@ -14,8 +14,10 @@ ProductDetailView.prototype.initTemplates = function()
     this.template = $.trim($('#product_detail').html());
 };
 
-ProductDetailView.prototype.render = function(product) 
+ProductDetailView.prototype.render = function(product, callback) 
 {
+
+    var callback = callback === undefined ? $.noop : callback;
     var $el = $('.container');
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
@@ -24,6 +26,8 @@ ProductDetailView.prototype.render = function(product)
 
     $el.append($prod);
     Utils.processPrice($prod);
+
+    callback.call($el, product);
 
     this.sendPageView(product);
 };
