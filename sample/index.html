@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div type="template" id="product_template" >
+        <script type="text/template" id="product_template" >
             <div class="product" >
                 <div>{{ name }}</div>
                 <img height="300" width="300" class="product-image" src="{{ images[0][0] }}" />
@@ -43,7 +43,7 @@
                 <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart add-to-cart-animation" >add to cart</button>
 
             </div>
-        </div>
+        </script>
         <!-- products -->
 
         <!-- shopping cart -->
@@ -74,20 +74,26 @@
         </span>
         </div>
 
-        <div type="template" id="shopping-cart-total" >
-            <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
+        <script type="text/x-template" id="shopping-cart-total" >
+            <span class="total" > Total: {{ total|money }}</span>
             <div class="units-total"></div>
+            <div class="checkout-form"></div>
+        </script>
+
+        <script type="text/x-template" id="shopping-cart-checkout-form" >
             <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
-                <input name="site_id" class="form-control required" type="hidden" value="{{site_id}}">
-                <input name="order_id" class="form-control required" type="hidden" value="{{cart_id}}">
-                <input name="session_id" class="form-control required" type="hidden" value="{{session_id}}">
-                <input name="success_url" class="form-control required" type="hidden" value="{{success_url}}">
-                <input name="failure_url" class="form-control required" type="hidden" value="{{failure_url}}">
-                <input name="webpay_url" class="form-control required" type="hidden" value="{{webpay_url}}">
-                <div class="form-group text-center checkout-button">
-                </div>
+
+                <input name="checkout" class="form-control required" type="text" value="{{checkout_url}}" />
+                <input name="site_id" class="form-control required" type="text" value="{{site_id}}" />
+                <input name="cart_id" class="form-control required" type="text" value="{{cart_id}}" />
+                <input name="session_id" class="form-control required" type="text" value="{{session_id}}" />
+                <input name="success_url" class="form-control required" type="text" value="{{success_url}}" />
+                <input name="failure_url" class="form-control required" type="text" value="{{failure_url}}" />
+                <input name="webpay_url" class="form-control required" type="text" value="{{webpay_url}}" />
+
+                <input type="submit" class="form-group text-center" value="Checkout" />
             </form>
-        </div>
+        </script>
         <!-- shopping cart -->
 
         <script type="text/x-template" id="shopping-cart-product" >
@@ -124,7 +130,8 @@
                     'ignore_stock' : true,
                     'app_public' : 2,
                     'animation' : 'simple',
-                    'base_url' : 'http://apibodegas.ondev.today/',
+                    'base_url' : 'http://localhost:8520/',
+                    'checkout_url' : 'http://localhost:8522/',
                     'products_per_page' : 9,
                     'analytics' : analytics
                 });

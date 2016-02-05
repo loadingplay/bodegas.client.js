@@ -540,6 +540,44 @@ EcommerceFacade.prototype.setShippingCost = function(data)
     this.ecommerce.cart.setShippingCost(data);
 };
 
+/* global jQuery */
+
+'use strict';
+
+(function($)
+{
+    var Orderable = function(settings)
+    {
+        this.model = settings.model;
+    };
+
+    Orderable.prototype.init = function(tthis) 
+    {
+        var counter = 0;
+
+        // init positions
+        $(tthis).each(function()
+        {
+            $(this).attr('o-position', counter);
+            counter += 1;
+        });
+    };
+
+    $.fn.orderable = function(config)
+    {
+        var defaults = {
+            'model' : []
+        };
+        var settings = $.extend({}, defaults, config);
+        var o = new Orderable(settings);
+
+        o.init(this);
+
+        return o;
+    };
+
+})(jQuery);
+
 /* globals jQuery */
 /* globals Utils */
 
@@ -1747,11 +1785,6 @@ ShoppingCartView.prototype.render = function()
 
 ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 {
-    // var guid = this.controller.getGUID();
-    // var checkout_url = this.controller.getCheckoutUrl();
-
-    //console.log("site id" + this.controller.getSiteId());
-
     try
     {
         var html = Utils.render(

@@ -199,11 +199,6 @@ ShoppingCartView.prototype.render = function()
 
 ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 {
-    // var guid = this.controller.getGUID();
-    // var checkout_url = this.controller.getCheckoutUrl();
-
-    //console.log("site id" + this.controller.getSiteId());
-
     try
     {
         var html = Utils.render(
