@@ -45,3 +45,26 @@ $(document).ecommerce('set_data', { 'foo' : 'bar' });
 // or string
 $(document).ecommerce('set_data', 'un string');
 ```
+
+## Parameters
+
+```json
+{
+    /********* COMMON **********/
+    'app_public'            : 0,
+    'base_url'              : 'http://localhost:8520/',
+    /********* PRODUCTBOX **********/
+    'tag' : '',
+    'maxProducts' : 2,
+    'templateOrigin' : '.product_template',
+    'onLoad' : $.noop,
+    /********* OTHER **********/
+    'checkout_url'          : 'http://localhost:8522',
+    'products_per_page'     : 12,
+    'animation'             : 'none',  // none|basic
+    'ignore_stock'          : false,   // if true, shows all products
+    'product_id'            : null,
+    'infinite_scroll'       : true,
+    'analytics'             : ''  // analytics code
+}
+```

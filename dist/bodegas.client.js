@@ -540,44 +540,6 @@ EcommerceFacade.prototype.setShippingCost = function(data)
     this.ecommerce.cart.setShippingCost(data);
 };
 
-/* global jQuery */
-
-'use strict';
-
-(function($)
-{
-    var Orderable = function(settings)
-    {
-        this.model = settings.model;
-    };
-
-    Orderable.prototype.init = function(tthis) 
-    {
-        var counter = 0;
-
-        // init positions
-        $(tthis).each(function()
-        {
-            $(this).attr('o-position', counter);
-            counter += 1;
-        });
-    };
-
-    $.fn.orderable = function(config)
-    {
-        var defaults = {
-            'model' : []
-        };
-        var settings = $.extend({}, defaults, config);
-        var o = new Orderable(settings);
-
-        o.init(this);
-
-        return o;
-    };
-
-})(jQuery);
-
 /* globals jQuery */
 /* globals Utils */
 
