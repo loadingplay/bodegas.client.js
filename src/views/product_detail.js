@@ -1,10 +1,11 @@
 /* globals Utils */
 'use strict';
 
-var ProductDetailView = function()
+var ProductDetailView = function(container)
 {
     this.template = '';
     this.is_ga_enabled = false;
+    this.container = container || '.container';
 
     this.initTemplates();
 };
@@ -12,18 +13,20 @@ var ProductDetailView = function()
 ProductDetailView.prototype.initTemplates = function() 
 {
     this.template = $.trim($('#product_detail').html());
+    this.renderLoading();
 };
 
 ProductDetailView.prototype.render = function(product, callback) 
 {
-
     var callback = callback === undefined ? $.noop : callback;
-    var $el = $('.container');
+    var $el = $(this.container);
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
 
+
     this.renderImages($images, product.id);
 
+    this.removeLoading();
     $el.append($prod);
     Utils.processPrice($prod);
 
@@ -98,5 +101,22 @@ ProductDetailView.prototype.sendPageView = function(product)
     catch(e)
     {
         // nothing here...
+    }
+};
+
+
+ProductDetailView.prototype.removeLoading = function() 
+{
+    var $container = $(this.container);
+    $('.spinner', $container).remove();
+};
+
+ProductDetailView.prototype.renderLoading = function() 
+{
+    this.removeLoading();
+    if (!this.allcontainerLoaded)
+    {
+        var $container = $(this.container);
+        $container.append($('#product_loading').html());
     }
 };

@@ -108,7 +108,8 @@
             'ignore_stock'          : false,   // if true, shows all products
             'product_id'            : null,
             'infinite_scroll'       : true,
-            'analytics'             : ''  // analytics code
+            'analytics'             : '',  // analytics code
+            'container'             : '.container'
         };
 
         if (typeof(options_or_method) === 'string')
@@ -142,7 +143,7 @@ var EcommerceFacade = function(options)
     this.options = options;
     this.ecommerce = new BodegasClient(this.options.checkout_url);
     this.view  = new ProductListView();
-    this.product_view = new ProductDetailView();
+    this.product_view = new ProductDetailView(this.options.container);
     this.animation = null;
 
     // initialize animation

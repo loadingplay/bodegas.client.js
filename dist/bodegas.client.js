@@ -395,7 +395,8 @@ ExtraInfo.prototype.synchronize = function()
             'ignore_stock'          : false,   // if true, shows all products
             'product_id'            : null,
             'infinite_scroll'       : true,
-            'analytics'             : ''  // analytics code
+            'analytics'             : '',  // analytics code
+            'container'             : '.container'
         };
 
         if (typeof(options_or_method) === 'string')
@@ -429,7 +430,7 @@ var EcommerceFacade = function(options)
     this.options = options;
     this.ecommerce = new BodegasClient(this.options.checkout_url);
     this.view  = new ProductListView();
-    this.product_view = new ProductDetailView();
+    this.product_view = new ProductDetailView(this.options.container);
     this.animation = null;
 
     // initialize animation
@@ -1201,10 +1202,11 @@ var Utils = {  //jshint ignore: line
 /* globals Utils */
 'use strict';
 
-var ProductDetailView = function()
+var ProductDetailView = function(container)
 {
     this.template = '';
     this.is_ga_enabled = false;
+    this.container = container || '.container';
 
     this.initTemplates();
 };
@@ -1212,18 +1214,20 @@ var ProductDetailView = function()
 ProductDetailView.prototype.initTemplates = function() 
 {
     this.template = $.trim($('#product_detail').html());
+    this.renderLoading();
 };
 
 ProductDetailView.prototype.render = function(product, callback) 
 {
-
     var callback = callback === undefined ? $.noop : callback;
-    var $el = $('.container');
+    var $el = $(this.container);
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
 
+
     this.renderImages($images, product.id);
 
+    this.removeLoading();
     $el.append($prod);
     Utils.processPrice($prod);
 
@@ -1298,6 +1302,23 @@ ProductDetailView.prototype.sendPageView = function(product)
     catch(e)
     {
         // nothing here...
+    }
+};
+
+
+ProductDetailView.prototype.removeLoading = function() 
+{
+    var $container = $(this.container);
+    $('.spinner', $container).remove();
+};
+
+ProductDetailView.prototype.renderLoading = function() 
+{
+    this.removeLoading();
+    if (!this.allcontainerLoaded)
+    {
+        var $container = $(this.container);
+        $container.append($('#product_loading').html());
     }
 };
 
