@@ -471,12 +471,20 @@ EcommerceFacade.prototype.showProductList = function(page)
 
         var method = self.ecommerce.product.list;
 
+        var tag=''
+
+        if (self.options.tag != ''){
+            tag=self.options.tag;
+        }else{
+            tag=Utils.getUrlParameter('tag');
+        }
+
         if (self.options.ignore_stock)
         {
             self.ecommerce.product.listIgnoringStock(
                 page, 
                 self.options.products_per_page, 
-                Utils.getUrlParameter('tag'), 
+                tag, 
                 Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
@@ -488,7 +496,7 @@ EcommerceFacade.prototype.showProductList = function(page)
             self.ecommerce.product.list(
                 page, 
                 self.options.products_per_page, 
-                Utils.getUrlParameter('tag'), 
+                tag, 
                 Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
@@ -627,7 +635,7 @@ var ProductBox = function($div, options)
     options = options || {};
 
 
-    this.max_products = options.maxProducts || 10;
+    this.max_products = options.maxProducts || 10;
     this.template_origin = options.templateOrigin || '';
     this.app_public = options.app_public || 1;
     this.base_url = options.base_url || 'http://apibodegas.ondev.today/';
