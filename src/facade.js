@@ -184,12 +184,20 @@ EcommerceFacade.prototype.showProductList = function(page)
 
         var method = self.ecommerce.product.list;
 
+        var tag=''
+
+        if (self.options.tag != ''){
+            tag=self.options.tag;
+        }else{
+            tag=Utils.getUrlParameter('tag');
+        }
+
         if (self.options.ignore_stock)
         {
             self.ecommerce.product.listIgnoringStock(
                 page, 
                 self.options.products_per_page, 
-                Utils.getUrlParameter('tag'), 
+                tag, 
                 Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
@@ -201,7 +209,7 @@ EcommerceFacade.prototype.showProductList = function(page)
             self.ecommerce.product.list(
                 page, 
                 self.options.products_per_page, 
-                Utils.getUrlParameter('tag'), 
+                tag, 
                 Utils.getUrlParameter('search_query'), 
                 function(products)
                 {
@@ -210,7 +218,6 @@ EcommerceFacade.prototype.showProductList = function(page)
         }
     });
 };
-
 
 EcommerceFacade.prototype.showProductDetail = function() 
 {
