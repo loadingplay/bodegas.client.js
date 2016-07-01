@@ -1766,7 +1766,7 @@ ShoppingCartView.prototype.render = function()
     this.renderCheckoutData(this.$cart_div);
 };
 
-ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
+ShoppingCartView.prototype.renderCheckoutData = function()
 {
     try
     {
@@ -1789,6 +1789,7 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
 {
     var productos = this.controller.getProducts();
+
     for (var i = 0; i < productos.length; i++)
     {
         var $builder = $(Utils.render(cart_item_template, productos[i]));
@@ -1806,7 +1807,9 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
             this.total_template, 
             { 
                 'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost
+                'shipping_cost': this.controller.shipping_cost,
+                'units_total' : this.controller.getUnitsTotal(),
+                'upp_total' : this.controller.getUPPTotal()
             }));
 
         Utils.processPrice($total);
@@ -1815,7 +1818,10 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
         var $built = $(Utils.render(
             this.total_cart_template, 
             { 
-                'total' : this.controller.getTotal()
+                'total' : this.controller.getTotal(),
+                'shipping_cost': this.controller.shipping_cost,
+                'units_total' : this.controller.getUnitsTotal(),
+                'upp_total' : this.controller.getUPPTotal()
             }));
 
         Utils.processPrice($built);
@@ -1835,6 +1841,8 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
         var $units_total = $(Utils.render(
             this.units_total_template, 
             { 
+                'total' : this.controller.getTotal(),
+                'shipping_cost': this.controller.shipping_cost,
                 'units_total' : this.controller.getUnitsTotal(),
                 'upp_total' : this.controller.getUPPTotal()
             }));
@@ -1846,7 +1854,10 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
         var $built = $(Utils.render(
             this.total_items_template, 
             { 
-                'total' : this.controller.getUnitsTotal()
+                'total' : this.controller.getTotal(),
+                'shipping_cost': this.controller.shipping_cost,
+                'units_total' : this.controller.getUnitsTotal(),
+                'upp_total' : this.controller.getUPPTotal()
             }));
 
         $total_items.html($built);
