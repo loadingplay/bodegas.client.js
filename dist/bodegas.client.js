@@ -1779,11 +1779,7 @@ ShoppingCartView.prototype.renderCheckoutData = function()
     {
         var html = Utils.render(
             this.checkout_template, 
-            {
-                'site_id' : this.controller.getSiteId(),
-                'checkout_url': this.controller.getCheckoutUrl(),
-                'cart_id': this.controller.getGUID()
-            });
+            this.getRenderDictionary());
 
         $('.checkout-form').html(html);
     }
@@ -1810,26 +1806,17 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
 {
     try
     {
+        var render_dict = this.getRenderDictionary();
         var $total = $(Utils.render(
             this.total_template, 
-            { 
-                'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost,
-                'units_total' : this.controller.getUnitsTotal(),
-                'upp_total' : this.controller.getUPPTotal()
-            }));
+            render_dict));
 
         Utils.processPrice($total);
         $cart_div.append($total);
 
         var $built = $(Utils.render(
             this.total_cart_template, 
-            { 
-                'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost,
-                'units_total' : this.controller.getUnitsTotal(),
-                'upp_total' : this.controller.getUPPTotal()
-            }));
+            render_dict));
 
         Utils.processPrice($built);
         $total_cart.html($built);
@@ -1847,12 +1834,7 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
     {
         var $units_total = $(Utils.render(
             this.units_total_template, 
-            { 
-                'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost,
-                'units_total' : this.controller.getUnitsTotal(),
-                'upp_total' : this.controller.getUPPTotal()
-            }));
+            this.getRenderDictionary()));
 
         Utils.processPrice($units_total);
         // $cart_div.append($units_total);
@@ -1860,12 +1842,7 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
 
         var $built = $(Utils.render(
             this.total_items_template, 
-            { 
-                'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost,
-                'units_total' : this.controller.getUnitsTotal(),
-                'upp_total' : this.controller.getUPPTotal()
-            }));
+            this.getRenderDictionary()));
 
         $total_items.html($built);
     }
@@ -1873,4 +1850,21 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
     {
         // nothing here ...
     }
+};
+
+/**
+ * return all variables tht should be rendered in a shopping cart
+ * @return Dict dictionary with all variables
+ */
+ShoppingCartView.prototype.getRenderDictionary = function() 
+{
+    return { 
+        'total' : this.controller.getTotal(),
+        'shipping_cost': this.controller.shipping_cost,
+        'units_total' : this.controller.getUnitsTotal(),
+        'upp_total' : this.controller.getUPPTotal(),
+        'checkout_url' : this.controller.getCheckoutUrl(),
+        'site_id' : this.controller.getSiteId(),
+        'cart_id' : this.controller.getGUID()
+    };
 };

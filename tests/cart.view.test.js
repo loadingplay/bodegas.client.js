@@ -124,6 +124,18 @@ QUnit.test('all buttons renders all', function(assert)
         'getUPPTotal' : function()
         {
             return 5;
+        },
+        'getCheckoutUrl' : function()
+        {
+            return 'test';
+        },
+        'getSiteId' : function()
+        {
+            return 13;
+        },
+        'getGUID' : function()
+        {
+            return 'foo';
         }
     });
 
@@ -168,6 +180,15 @@ QUnit.test('all buttons renders all', function(assert)
     view.renderUnitsTotal($element, $total_cart); // only uses the second one
     assert.equal($units_total.html(), '<div>110105</div>', 'test renderUnitsTotal');
     assert.equal($total_cart.html(), '<div>110105</div>', 'test renderUnitsTotal');
+
+    $element.html('');
+    $total_cart.html('');
+    // render units per product
+    view.total_template = '<div>{{ site_id }}</div>';
+    view.total_cart_template = '<div>{{ cart_id }}</div>';
+    view.renderTotal($element, $total_cart);
+    assert.equal($element.html(), '<div>13</div>', 'render units per product total');
+    assert.equal($total_cart.html(), '<div>foo</div>');
 
     $('.checkout').html('');
 });
