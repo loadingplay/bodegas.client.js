@@ -396,7 +396,8 @@ ExtraInfo.prototype.synchronize = function()
             'product_id'            : null,
             'infinite_scroll'       : true,
             'analytics'             : '',  // analytics code
-            'container'             : '.container'
+            'container'             : '.container',
+            'user'                  : ''
         };
 
         if (typeof(options_or_method) === 'string')
@@ -469,13 +470,16 @@ EcommerceFacade.prototype.showProductList = function(page)
             self.view.renderTags(tags);
         });
 
-        var method = self.ecommerce.product.list;
+        // var method = self.ecommerce.product.list;
 
-        var tag=''
+        var tag='';
 
-        if (self.options.tag != ''){
+        if (self.options.tag !== '')
+        {
             tag=self.options.tag;
-        }else{
+        }
+        else
+        {
             tag=Utils.getUrlParameter('tag');
         }
 
@@ -486,10 +490,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.products_per_page, 
                 tag, 
                 Utils.getUrlParameter('search_query'), 
+                self.options.user,
                 function(products)
                 {
                     self.view.renderProducts(products);
-                });
+                }
+            );
         }
         else
         {
@@ -498,10 +504,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.products_per_page, 
                 tag, 
                 Utils.getUrlParameter('search_query'), 
+                self.options.user,
                 function(products)
                 {
                     self.view.renderProducts(products);
-                });
+                }
+            );
         }
     });
 };
@@ -558,14 +566,14 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
 Product.prototype.get = function(product_id, callback) 
@@ -576,7 +584,7 @@ Product.prototype.get = function(product_id, callback)
     });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -613,7 +621,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "tags": tags, 
             "ignore_stock": ignore_stock,
             "search_query": decodeURIComponent(term),
-            "search": true
+            "search": true,
+            "user" : user
         },
         function(data)
         {
@@ -624,6 +633,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             callback(product_list);
         });
 };
+
 /*global $*/
 /*global ProductBoxView*/
 
