@@ -184,7 +184,6 @@ EcommerceFacade.prototype.showProductList = function(page)
         });
 
         // var method = self.ecommerce.product.list;
-
         var tag='';
 
         if (self.options.tag !== '')
