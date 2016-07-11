@@ -234,7 +234,10 @@ EcommerceFacade.prototype.showProductDetail = function()
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.product.get(product_id, function(product)
+        self.ecommerce.product.get(
+            product_id, 
+            self.options.user,
+            function(product)
         {
             self.product_view.render(
                 product,

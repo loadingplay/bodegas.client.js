@@ -521,7 +521,10 @@ EcommerceFacade.prototype.showProductDetail = function()
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.product.get(product_id, function(product)
+        self.ecommerce.product.get(
+            product_id, 
+            self.options.user,
+            function(product)
         {
             self.product_view.render(
                 product,
@@ -576,12 +579,15 @@ Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or
     this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.get = function(product_id, callback) 
+Product.prototype.get = function(product_id, user, callback) 
 {
-    jQuery.get(Utils.getURL('product', ['get', product_id]), function(product)
-    {
-        callback(product);
-    });
+    jQuery.get(
+        Utils.getURL('product', ['get', product_id]), 
+        { 'user' : user },
+        function(product)
+        {
+            callback(product);
+        });
 };
 
 Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, callback) 
