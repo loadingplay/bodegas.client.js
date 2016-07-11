@@ -51,6 +51,9 @@ QUnit.test('render with function', function(assert)
 
     rendered_html = Utils.render('{{ (1 == 1 || 2 == 2) ? "foo" : "" }}', {});
     assert.equal(rendered_html, 'foo');
+
+    rendered_html = Utils.render('{{ (data.foo == 1 || 2 == 2) ? "foo" : "" }}', { 'foo' : 1});
+    assert.equal(rendered_html, 'foo');
 });
 
 
