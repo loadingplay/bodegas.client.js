@@ -48,6 +48,9 @@ QUnit.test('render with function', function(assert)
 {
     var rendered_html = Utils.render('{{ foo|friendly }}', {'foo' : 'foo bar baz'});
     assert.equal(rendered_html, 'foo_bar_baz');
+
+    rendered_html = Utils.render('{{ (1 == 1 || 2 == 2) ? "foo" : "" }}', {});
+    assert.equal(rendered_html, 'foo');
 });
 
 

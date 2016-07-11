@@ -65,8 +65,9 @@ var Utils = {  //jshint ignore: line
         var splitted = [name];
         var fn = function(t){return t;};
         var d = '';
+        var index = name.indexOf('|');
 
-        if (name.indexOf('|') !== -1)
+        if (index !== -1 && name[index + 1] !== '|')  // detect | and ||
         {
             splitted = name.split('|');
             name = splitted[0];
@@ -79,7 +80,14 @@ var Utils = {  //jshint ignore: line
         }
         catch(e)
         {
-            // nothing here...
+            try
+            {
+                d = eval($.trim(name));
+            }
+            catch(e)
+            {
+                // nothing here
+            }
         }
 
         d = d === undefined ? '' : d;
