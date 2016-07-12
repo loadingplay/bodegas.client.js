@@ -1,4 +1,5 @@
 /* globals Utils */
+/* globals $*/
 'use strict';
 
 var ProductDetailView = function(container)
@@ -18,11 +19,10 @@ ProductDetailView.prototype.initTemplates = function()
 
 ProductDetailView.prototype.render = function(product, callback) 
 {
-    var callback = callback === undefined ? $.noop : callback;
+    callback = callback === undefined ? $.noop : callback;
     var $el = $(this.container);
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
-
 
     this.renderImages($images, product.id);
 

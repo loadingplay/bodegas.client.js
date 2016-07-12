@@ -18,8 +18,12 @@ Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or
     this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.get = function(product_id, user, callback) 
+Product.prototype.get = function(product_id, user_or_callback, callback) 
 {
+    var user = typeof(user_or_callback) === 'function' ? '' : user_or_callback;
+    callback = typeof(user_or_callback) === 'function' ? user_or_callback : callback;
+    callback = callback === undefined ? jQuery.noop : callback;
+
     jQuery.get(
         Utils.getURL('product', ['get', product_id]), 
         { 'user' : user },

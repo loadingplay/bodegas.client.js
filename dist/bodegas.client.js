@@ -471,7 +471,6 @@ EcommerceFacade.prototype.showProductList = function(page)
         });
 
         // var method = self.ecommerce.product.list;
-
         var tag='';
 
         if (self.options.tag !== '')
@@ -579,8 +578,12 @@ Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or
     this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.get = function(product_id, user, callback) 
+Product.prototype.get = function(product_id, user_or_callback, callback) 
 {
+    var user = typeof(user_or_callback) === 'function' ? '' : user_or_callback;
+    callback = typeof(user_or_callback) === 'function' ? user_or_callback : callback;
+    callback = callback === undefined ? jQuery.noop : callback;
+
     jQuery.get(
         Utils.getURL('product', ['get', product_id]), 
         { 'user' : user },
@@ -1231,6 +1234,7 @@ var Utils = {  //jshint ignore: line
 
 
 /* globals Utils */
+/* globals $*/
 'use strict';
 
 var ProductDetailView = function(container)
@@ -1250,11 +1254,10 @@ ProductDetailView.prototype.initTemplates = function()
 
 ProductDetailView.prototype.render = function(product, callback) 
 {
-    var callback = callback === undefined ? $.noop : callback;
+    callback = callback === undefined ? $.noop : callback;
     var $el = $(this.container);
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
-
 
     this.renderImages($images, product.id);
 
