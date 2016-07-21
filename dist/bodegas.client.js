@@ -396,7 +396,8 @@ ExtraInfo.prototype.synchronize = function()
             'product_id'            : null,
             'infinite_scroll'       : true,
             'analytics'             : '',  // analytics code
-            'container'             : '.container'
+            'container'             : '.container',
+            'user'                  : ''
         };
 
         if (typeof(options_or_method) === 'string')
@@ -469,13 +470,15 @@ EcommerceFacade.prototype.showProductList = function(page)
             self.view.renderTags(tags);
         });
 
-        var method = self.ecommerce.product.list;
+        // var method = self.ecommerce.product.list;
+        var tag='';
 
-        var tag=''
-
-        if (self.options.tag != ''){
+        if (self.options.tag !== '')
+        {
             tag=self.options.tag;
-        }else{
+        }
+        else
+        {
             tag=Utils.getUrlParameter('tag');
         }
 
@@ -486,10 +489,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.products_per_page, 
                 tag, 
                 Utils.getUrlParameter('search_query'), 
+                self.options.user,
                 function(products)
                 {
                     self.view.renderProducts(products);
-                });
+                }
+            );
         }
         else
         {
@@ -498,10 +503,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.products_per_page, 
                 tag, 
                 Utils.getUrlParameter('search_query'), 
+                self.options.user,
                 function(products)
                 {
                     self.view.renderProducts(products);
-                });
+                }
+            );
         }
     });
 };
@@ -513,7 +520,10 @@ EcommerceFacade.prototype.showProductDetail = function()
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.product.get(product_id, function(product)
+        self.ecommerce.product.get(
+            product_id, 
+            self.options.user,
+            function(product)
         {
             self.product_view.render(
                 product,
@@ -558,25 +568,32 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.get = function(product_id, callback) 
+Product.prototype.get = function(product_id, user_or_callback, callback) 
 {
-    jQuery.get(Utils.getURL('product', ['get', product_id]), function(product)
-    {
-        callback(product);
-    });
+    var user = typeof(user_or_callback) === 'function' ? '' : user_or_callback;
+    callback = typeof(user_or_callback) === 'function' ? user_or_callback : callback;
+    callback = callback === undefined ? jQuery.noop : callback;
+
+    jQuery.get(
+        Utils.getURL('product', ['get', product_id]), 
+        { 'user' : user },
+        function(product)
+        {
+            callback(product);
+        });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -613,7 +630,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "tags": tags, 
             "ignore_stock": ignore_stock,
             "search_query": decodeURIComponent(term),
-            "search": true
+            "search": true,
+            "user" : user
         },
         function(data)
         {
@@ -624,6 +642,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             callback(product_list);
         });
 };
+
 /*global $*/
 /*global ProductBoxView*/
 
@@ -1077,8 +1096,9 @@ var Utils = {  //jshint ignore: line
         var splitted = [name];
         var fn = function(t){return t;};
         var d = '';
+        var index = name.indexOf('|');
 
-        if (name.indexOf('|') !== -1)
+        if (index !== -1 && name[index + 1] !== '|')  // detect | and ||
         {
             splitted = name.split('|');
             name = splitted[0];
@@ -1091,7 +1111,14 @@ var Utils = {  //jshint ignore: line
         }
         catch(e)
         {
-            // nothing here...
+            try
+            {
+                d = eval($.trim(name));
+            }
+            catch(e)
+            {
+                // nothing here
+            }
         }
 
         d = d === undefined ? '' : d;
@@ -1207,6 +1234,7 @@ var Utils = {  //jshint ignore: line
 
 
 /* globals Utils */
+/* globals $*/
 'use strict';
 
 var ProductDetailView = function(container)
@@ -1226,11 +1254,10 @@ ProductDetailView.prototype.initTemplates = function()
 
 ProductDetailView.prototype.render = function(product, callback) 
 {
-    var callback = callback === undefined ? $.noop : callback;
+    callback = callback === undefined ? $.noop : callback;
     var $el = $(this.container);
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
-
 
     this.renderImages($images, product.id);
 
@@ -1773,17 +1800,13 @@ ShoppingCartView.prototype.render = function()
     this.renderCheckoutData(this.$cart_div);
 };
 
-ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
+ShoppingCartView.prototype.renderCheckoutData = function()
 {
     try
     {
         var html = Utils.render(
             this.checkout_template, 
-            {
-                'site_id' : this.controller.getSiteId(),
-                'checkout_url': this.controller.getCheckoutUrl(),
-                'cart_id': this.controller.getGUID()
-            });
+            this.getRenderDictionary());
 
         $('.checkout-form').html(html);
     }
@@ -1796,6 +1819,7 @@ ShoppingCartView.prototype.renderCheckoutData = function($cart_div)
 ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
 {
     var productos = this.controller.getProducts();
+
     for (var i = 0; i < productos.length; i++)
     {
         var $builder = $(Utils.render(cart_item_template, productos[i]));
@@ -1809,21 +1833,17 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
 {
     try
     {
+        var render_dict = this.getRenderDictionary();
         var $total = $(Utils.render(
             this.total_template, 
-            { 
-                'total' : this.controller.getTotal(),
-                'shipping_cost': this.controller.shipping_cost
-            }));
+            render_dict));
 
         Utils.processPrice($total);
         $cart_div.append($total);
 
         var $built = $(Utils.render(
             this.total_cart_template, 
-            { 
-                'total' : this.controller.getTotal()
-            }));
+            render_dict));
 
         Utils.processPrice($built);
         $total_cart.html($built);
@@ -1841,10 +1861,7 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
     {
         var $units_total = $(Utils.render(
             this.units_total_template, 
-            { 
-                'units_total' : this.controller.getUnitsTotal(),
-                'upp_total' : this.controller.getUPPTotal()
-            }));
+            this.getRenderDictionary()));
 
         Utils.processPrice($units_total);
         // $cart_div.append($units_total);
@@ -1852,9 +1869,7 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
 
         var $built = $(Utils.render(
             this.total_items_template, 
-            { 
-                'total' : this.controller.getUnitsTotal()
-            }));
+            this.getRenderDictionary()));
 
         $total_items.html($built);
     }
@@ -1862,4 +1877,21 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
     {
         // nothing here ...
     }
+};
+
+/**
+ * return all variables tht should be rendered in a shopping cart
+ * @return Dict dictionary with all variables
+ */
+ShoppingCartView.prototype.getRenderDictionary = function() 
+{
+    return { 
+        'total' : this.controller.getTotal(),
+        'shipping_cost': this.controller.shipping_cost,
+        'units_total' : this.controller.getUnitsTotal(),
+        'upp_total' : this.controller.getUPPTotal(),
+        'checkout_url' : this.controller.getCheckoutUrl(),
+        'site_id' : this.controller.getSiteId(),
+        'cart_id' : this.controller.getGUID()
+    };
 };

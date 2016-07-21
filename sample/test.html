@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://es.tikachips.com/common/js/jquery.cookie.js"></script>
+
+</head>
+<body>
+
+<div class="products" ></div>
+
+<script type="text/template" id="product_template" >
+    <div>
+        <img src="{{ images[0][1] }}">
+        {{ name }} : {{ main_price|money }}
+    </div>
+</script>
+<script type="text/javascript" src="../dist/bodegas.client.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(document).ecommerce({
+            'app_public' : 2,
+            'base_url' : 'https://apibodegas.loadingplay.com/'
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -8,25 +8,32 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
 };
 
-Product.prototype.get = function(product_id, callback) 
+Product.prototype.get = function(product_id, user_or_callback, callback) 
 {
-    jQuery.get(Utils.getURL('product', ['get', product_id]), function(product)
-    {
-        callback(product);
-    });
+    var user = typeof(user_or_callback) === 'function' ? '' : user_or_callback;
+    callback = typeof(user_or_callback) === 'function' ? user_or_callback : callback;
+    callback = callback === undefined ? jQuery.noop : callback;
+
+    jQuery.get(
+        Utils.getURL('product', ['get', product_id]), 
+        { 'user' : user },
+        function(product)
+        {
+            callback(product);
+        });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -63,7 +70,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "tags": tags, 
             "ignore_stock": ignore_stock,
             "search_query": decodeURIComponent(term),
-            "search": true
+            "search": true,
+            "user" : user
         },
         function(data)
         {

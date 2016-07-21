@@ -1,5 +1,6 @@
 /*global QUnit*/
 /*global Product*/
+/*global $*/
 
 'use strict';
 var product = new Product();

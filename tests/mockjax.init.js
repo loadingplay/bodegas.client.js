@@ -270,7 +270,24 @@ $.mockjax({
     urlParams: ["product_id"],
     response: function(settings)
     {
-        this.responseText = {"bulk_price": 1, "upp" : 2, "sku": "2212121", "bullet_three": null, "description": "<ul><li>Alimento para gato Adulto, Delicias de carne y pescado Mayores 7 a\u00f1os<\/li><\/ul>", "bullet_one": null, "bullet_two": null, "brand": "CAT CHOW", "enabled": false, "name": "CAT CHOW Adultos  8 Kg", "site_id": 2, "main_price": 13860, "manufacturer": "Nestle", "id": settings.urlParams.product_id, "promotion_price": 1, "cost_price": 13860};
+        this.responseText = {
+            "bulk_price": 1, 
+            "upp" : 2, 
+            "sku": "2212121", 
+            "bullet_three": null, 
+            "description": "<ul><li>Alimento para gato Adulto, Delicias de carne y pescado Mayores 7 a\u00f1os<\/li><\/ul>", 
+            "bullet_one": null, 
+            "bullet_two": null, 
+            "brand": "CAT CHOW", 
+            "enabled": false, 
+            "name": "CAT CHOW Adultos  8 Kg", 
+            "site_id": 2, 
+            "main_price": 13860, 
+            "manufacturer": "Nestle", 
+            "id": settings.urlParams.product_id, 
+            "promotion_price": 1, 
+            "cost_price": 13860
+        };
     },
 });
 
