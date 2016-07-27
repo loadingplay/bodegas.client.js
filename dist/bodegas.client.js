@@ -803,6 +803,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].bullet_3 = this.model[i].bullet_3;
             this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
+            this.loadCart(callback);
 
             return;
         }
