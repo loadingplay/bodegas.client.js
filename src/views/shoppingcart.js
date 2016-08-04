@@ -70,7 +70,7 @@ ShoppingCartView.prototype.init = function()
     $(document).on('click', this.options.removeFromCart, function(evt)
     {
         evt.preventDefault();
-        self.removeProduct($(this));
+        self.removeProduct($(this)); //debe enviar id de producto
         self.render();
     });
 
