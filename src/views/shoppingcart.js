@@ -13,7 +13,8 @@ var ShoppingCartView = function(controller)
         buyProductButton : '.buy-product',
         removeFromCart : '.remove-from-cart',
         addOne : '.add-one',
-        removeOne : '.remove-one'
+        removeOne : '.remove-one',
+        quantityUnits : '.quantity_units'
     };
 
     this.$cart_div = $('.shopping-cart');
@@ -35,15 +36,19 @@ var ShoppingCartView = function(controller)
 ShoppingCartView.prototype.init = function() 
 {
     var self = this;
+    var q=1;
 
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
         evt.preventDefault();
-
+        console.log(q);
         if (!$(this).hasClass('product-sold-out'))
         {
-            self.addToCartClick($(this));
-            self.render();
+            for (var i = 0; i < parseInt(q); i++) {
+                self.addToCartClick($(this));
+                self.render();
+            }
+            q=1;
         }
     });
 
@@ -65,6 +70,14 @@ ShoppingCartView.prototype.init = function()
         evt.preventDefault();
         self.removeOne($(this));
         self.render();
+    });
+
+    $(document).on('change', this.options.quantityUnits, function(evt)
+    {
+        evt.preventDefault();
+        q =  $(this)["context"]["value"];
+        // self.removeOne($(this));
+        // self.render();
     });
 
     $(document).on('click', this.options.removeFromCart, function(evt)
