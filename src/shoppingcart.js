@@ -53,11 +53,13 @@ ShoppingCart.prototype.getSiteId = function()
 
 ShoppingCart.prototype.saveModel = function(callback) 
 {
+    var self=this;
     $.post( 
         Utils.getURL('cart', ['save', this.guid]), 
         { 'json_data' : JSON.stringify(this.model) }, function(e)
         {
             (callback === undefined ? $.noop:callback)(e);
+            // self.loadCart();
         });
 };
 
@@ -72,12 +74,21 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, callback) 
+ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback) 
 {
     bullet1 = bullet1 === undefined ? '' : bullet1;
     bullet2 = bullet2 === undefined ? '' : bullet2;
     bullet3 = bullet3 === undefined ? '' : bullet3;
+    img = img === undefined ? '' : img;
 
+    var images = [];
+    var im = [];
+    for (var i = 0; i < 3; i++) 
+    {
+        images.push(img);
+    }
+
+    im.push(images)
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
@@ -92,7 +103,8 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             'total' : price,
             'bullet_1': bullet1,
             'bullet_2': bullet2,
-            'bullet_3': bullet3
+            'bullet_3': bullet3,
+            'images' : im
         });
     }
 
@@ -108,7 +120,6 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].bullet_3 = this.model[i].bullet_3;
             this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
-            this.loadCart(callback);
 
             return;
         }

@@ -41,13 +41,13 @@ ShoppingCartView.prototype.init = function()
     $(document).on('click', this.options.addToCartbutton, function(evt)
     {
         evt.preventDefault();
-        console.log(q);
         if (!$(this).hasClass('product-sold-out'))
         {
             for (var i = 0; i < parseInt(q); i++) {
                 self.addToCartClick($(this));
-                self.render();
             }
+            // self.controller.loadCart();
+            self.render();
             q=1;
         }
     });
@@ -116,7 +116,6 @@ ShoppingCartView.prototype.renderLoading = function()
 ShoppingCartView.prototype.addOneClick = function($button) 
 {
     var id = $button.attr('product-id');
-
     this.controller.addProduct(id);
 };
 
@@ -129,8 +128,9 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     var bullet1 = $button.attr('product-bullet1');
     var bullet2 = $button.attr('product-bullet2');
     var bullet3 = $button.attr('product-bullet3');
+    var img = $button.attr('product-img');
 
-    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3);
+    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3, img);
 };
 
 ShoppingCartView.prototype.buyProductClick = function($button) 
@@ -145,7 +145,8 @@ ShoppingCartView.prototype.buyProductClick = function($button)
         upp : $button.attr('product-upp'),
         bullet1 : $button.attr('product-bullet1'),
         bullet2 : $button.attr('product-bullet2'),
-        bullet3 : $button.attr('product-bullet3')
+        bullet3 : $button.attr('product-bullet3'),
+        img : $button.attr('product-img')
     };
 
     // get checkout data
@@ -166,7 +167,8 @@ ShoppingCartView.prototype.buyProductClick = function($button)
             product.upp, 
             product.bullet1, 
             product.bullet2, 
-            product.bullet3, 
+            product.bullet3,
+            product.images, 
             function()
             {
                 // proceed to checkout
