@@ -397,7 +397,8 @@ ExtraInfo.prototype.synchronize = function()
             'infinite_scroll'       : true,
             'analytics'             : '',  // analytics code
             'container'             : '.container',
-            'user'                  : ''
+            'user'                  : '',
+            'operator'              : 'or' //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
         };
 
         if (typeof(options_or_method) === 'string')
@@ -490,6 +491,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 tag, 
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
+                self.options.operator,
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -504,6 +506,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 tag, 
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
+                self.options.operator,
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -568,14 +571,14 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, user, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, user, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback);
 };
 
 Product.prototype.get = function(product_id, user_or_callback, callback) 
@@ -593,7 +596,7 @@ Product.prototype.get = function(product_id, user_or_callback, callback)
         });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -631,7 +634,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "ignore_stock": ignore_stock,
             "search_query": decodeURIComponent(term),
             "search": true,
-            "user" : user
+            "user" : user,
+            "operator" : operator
         },
         function(data)
         {
