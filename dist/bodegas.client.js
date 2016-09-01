@@ -369,6 +369,13 @@ ExtraInfo.prototype.synchronize = function()
             });
 
             return $(this);
+        },
+        destroy : function(options)
+        {
+            if (facade !== undefined)
+            {
+                facade = undefined;
+            }
         }
     };
 

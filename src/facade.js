@@ -82,6 +82,13 @@
             });
 
             return $(this);
+        },
+        destroy : function(options)
+        {
+            if (facade !== undefined)
+            {
+                facade = undefined;
+            }
         }
     };
 
