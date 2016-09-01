@@ -117,7 +117,8 @@
             'infinite_scroll'       : true,
             'analytics'             : '',  // analytics code
             'container'             : '.container',
-            'user'                  : ''
+            'user'                  : '',
+            'operator'              : 'or' //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
         };
 
         if (typeof(options_or_method) === 'string')
@@ -210,6 +211,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 tag, 
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
+                self.options.operator,
                 function(products)
                 {
                     self.view.renderProducts(products);
@@ -224,6 +226,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 tag, 
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
+                self.options.operator,
                 function(products)
                 {
                     self.view.renderProducts(products);
