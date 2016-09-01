@@ -49,3 +49,9 @@ BodegasClient.prototype.enableGA = function()
 {
     this.cart.enableGA();
 };
+
+
+BodegasClient.prototype.destroy = function() 
+{
+    this.product.destroy();
+};

@@ -217,6 +217,12 @@ BodegasClient.prototype.enableGA = function()
     this.cart.enableGA();
 };
 
+
+BodegasClient.prototype.destroy = function() 
+{
+    this.product.destroy();
+};
+
 /* global $ */
 /* global Utils */
 
@@ -291,6 +297,7 @@ ExtraInfo.prototype.synchronize = function()
 /* global ProductDetailView */
 /* global SimpleAnimation*/
 /* global ProductBox*/
+/* global window*/
 
 'use strict';
 
@@ -372,10 +379,9 @@ ExtraInfo.prototype.synchronize = function()
         },
         destroy : function(options)
         {
-            if (facade !== undefined)
-            {
-                facade = undefined;
-            }
+            facade.destroy();
+            facade = undefined;
+            page = 1;
         }
     };
 
@@ -568,6 +574,13 @@ EcommerceFacade.prototype.setShippingCost = function(data)
     this.ecommerce.cart.setShippingCost(data);
 };
 
+
+EcommerceFacade.prototype.destroy = function() 
+{
+    this.ecommerce.destroy();
+    this.view.destroy();
+};
+
 /* globals jQuery */
 /* globals Utils */
 
@@ -632,6 +645,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         term = search_query;
     }
 
+    alert("page : " + tags);
+
     jQuery.post(Utils.getURLWithoutParam('product/search'), 
         {
             "site_id": this.site_id, 
@@ -652,6 +667,12 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             }
             callback(product_list);
         });
+};
+
+
+Product.prototype.destroy = function() 
+{
+    // nothing here....
 };
 
 /*global $*/
@@ -1380,7 +1401,10 @@ ProductDetailView.prototype.renderLoading = function()
 };
 
 /* global Utils */
-/* global $*/
+/* global $ */
+/* global window */
+/* global document */
+/* global console */
 
 'use strict';
 
@@ -1394,6 +1418,24 @@ var ProductListView = function()
     this.on_scroll_end = $.noop;
     this.site_search = $(".site_search");
 
+    // PRIVATE VARS 
+    var self = this;
+    this._onScroll = function()
+    {
+        if (self.loading_products) return;  // if this flag is enabled then don`t load
+
+        var $products = $('.products');
+        var $loading = $('.spinner', $products);
+
+        // check if loading is in viewport
+        if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
+        {
+            self.loading_products = true;
+            self.on_scroll_end();
+        }
+    };
+
+    // INNIT
     this.renderLoading();
     this.initTemplates();
     this.renderSiteSearch(this.site_search_template);
@@ -1410,23 +1452,7 @@ ProductListView.prototype.initTemplates = function()
 
 ProductListView.prototype.init = function() 
 {
-    var self = this;
-
-    $(document).on('scroll', function()
-    {
-        if (self.loading_products) return;  // if this flag is enabled then don`t load
-
-        var $products = $('.products');
-        var $loading = $('.spinner', $products);
-
-        // check if loading is in viewport
-        if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
-        {
-            self.loading_products = true;
-            self.on_scroll_end();
-        }
-    });
-
+    $(document).on('scroll', this._onScroll);
 };
 
 ProductListView.prototype.onScrollEnd = function(callback) 
@@ -1579,6 +1605,19 @@ ProductListView.prototype.renderSiteSearch = function(template)
         //     });
         // }
         // $("#site_search input[name=search_query]").tagEditor({ initialTags: tag.split(",") });
+    }
+};
+
+
+ProductListView.prototype.destroy = function() 
+{
+    try 
+    {
+        $(document).unbind('scroll', this._onScroll);
+    }
+    catch(ex)
+    {
+        console.log("mehtod unbind not found in this jquery version : " + ex);
     }
 };
 

@@ -1,5 +1,8 @@
 /* global Utils */
-/* global $*/
+/* global $ */
+/* global window */
+/* global document */
+/* global console */
 
 'use strict';
 
@@ -13,6 +16,24 @@ var ProductListView = function()
     this.on_scroll_end = $.noop;
     this.site_search = $(".site_search");
 
+    // PRIVATE VARS 
+    var self = this;
+    this._onScroll = function()
+    {
+        if (self.loading_products) return;  // if this flag is enabled then don`t load
+
+        var $products = $('.products');
+        var $loading = $('.spinner', $products);
+
+        // check if loading is in viewport
+        if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
+        {
+            self.loading_products = true;
+            self.on_scroll_end();
+        }
+    };
+
+    // INNIT
     this.renderLoading();
     this.initTemplates();
     this.renderSiteSearch(this.site_search_template);
@@ -29,23 +50,7 @@ ProductListView.prototype.initTemplates = function()
 
 ProductListView.prototype.init = function() 
 {
-    var self = this;
-
-    $(document).on('scroll', function()
-    {
-        if (self.loading_products) return;  // if this flag is enabled then don`t load
-
-        var $products = $('.products');
-        var $loading = $('.spinner', $products);
-
-        // check if loading is in viewport
-        if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
-        {
-            self.loading_products = true;
-            self.on_scroll_end();
-        }
-    });
-
+    $(document).on('scroll', this._onScroll);
 };
 
 ProductListView.prototype.onScrollEnd = function(callback) 
@@ -198,5 +203,18 @@ ProductListView.prototype.renderSiteSearch = function(template)
         //     });
         // }
         // $("#site_search input[name=search_query]").tagEditor({ initialTags: tag.split(",") });
+    }
+};
+
+
+ProductListView.prototype.destroy = function() 
+{
+    try 
+    {
+        $(document).unbind('scroll', this._onScroll);
+    }
+    catch(ex)
+    {
+        console.log("mehtod unbind not found in this jquery version : " + ex);
     }
 };

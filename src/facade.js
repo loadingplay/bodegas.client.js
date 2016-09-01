@@ -4,6 +4,7 @@
 /* global ProductDetailView */
 /* global SimpleAnimation*/
 /* global ProductBox*/
+/* global window*/
 
 'use strict';
 
@@ -85,10 +86,9 @@
         },
         destroy : function(options)
         {
-            if (facade !== undefined)
-            {
-                facade = undefined;
-            }
+            facade.destroy();
+            facade = undefined;
+            page = 1;
         }
     };
 
@@ -279,4 +279,11 @@ EcommerceFacade.prototype.setData = function(data)
 EcommerceFacade.prototype.setShippingCost = function(data) 
 {
     this.ecommerce.cart.setShippingCost(data);
+};
+
+
+EcommerceFacade.prototype.destroy = function() 
+{
+    this.ecommerce.destroy();
+    this.view.destroy();
 };

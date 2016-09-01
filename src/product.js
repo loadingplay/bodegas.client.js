@@ -62,6 +62,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         term = search_query;
     }
 
+    alert("page : " + tags);
+
     jQuery.post(Utils.getURLWithoutParam('product/search'), 
         {
             "site_id": this.site_id, 
@@ -82,4 +84,10 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             }
             callback(product_list);
         });
+};
+
+
+Product.prototype.destroy = function() 
+{
+    // nothing here....
 };
