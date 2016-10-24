@@ -1478,32 +1478,46 @@ ProductListView.prototype.renderProducts = function(products)
 {
     var $products_view = $('.products');
 
-    if (products.length > 0)
-    {
-        for (var i = 0; i < products.length; i++) 
+    try {
+        if (products.length > 0)
         {
-            var product = products[i];
-
-            var $rendered = $(Utils.render(this.product_template, product));
-            Utils.processPrice($rendered);
-
-            this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
-
-            if (product.balance_units === 0)
+            for (var i = 0; i < products.length; i++) 
             {
-                this.showSoldOut($rendered);
+                var product = products[i];
+
+                var $rendered = $(Utils.render(this.product_template, product));
+                Utils.processPrice($rendered);
+
+                this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
+
+                if (product.balance_units === 0)
+                {
+                    this.showSoldOut($rendered);
+                }
+
+                $products_view.append($rendered);
             }
 
-            $products_view.append($rendered);
+            this.renderLoading();
         }
+        else
+        {
+            this.all_products_loaded = true;
+            this.removeLoading();
+        }
+    }
+    catch(err) {
+        if (products === null){
+            this.all_products_loaded = true;
+            this.removeLoading();
+            $products_view.append("<span>No tenemos productos en esta sección por el momento</span>");
+        }
+        console.log(err);
+    }
 
-        this.renderLoading();
-    }
-    else
-    {
-        this.all_products_loaded = true;
-        this.removeLoading();
-    }
+    
+
+
 };
 
 
