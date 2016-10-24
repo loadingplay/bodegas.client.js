@@ -1510,7 +1510,7 @@ ProductListView.prototype.renderProducts = function(products)
         if (products === null){
             this.all_products_loaded = true;
             this.removeLoading();
-            $products_view.append("<span>No tenemos productos en esta sección por el momento</span>");
+            $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
         }
         console.log(err);
     }
