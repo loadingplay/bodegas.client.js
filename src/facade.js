@@ -214,7 +214,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products);
+                    self.view.renderProducts(products, page);
                 }
             );
         }
@@ -229,7 +229,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products);
+                    self.view.renderProducts(products, page);
                 }
             );
         }

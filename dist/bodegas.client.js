@@ -507,7 +507,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products);
+                    self.view.renderProducts(products, page);
                 }
             );
         }
@@ -522,7 +522,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products);
+                    self.view.renderProducts(products, page);
                 }
             );
         }
@@ -1474,7 +1474,7 @@ ProductListView.prototype.renderTags = function(tags)
 };
 
 
-ProductListView.prototype.renderProducts = function(products) 
+ProductListView.prototype.renderProducts = function(products, page) 
 {
     var $products_view = $('.products');
 
@@ -1502,6 +1502,9 @@ ProductListView.prototype.renderProducts = function(products)
         }
         else
         {
+            if (page === 1){
+                $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
+            }
             this.all_products_loaded = true;
             this.removeLoading();
         }
