@@ -176,6 +176,11 @@ var EcommerceFacade = function(options)
             self.page++;
             self.showProductList(self.page);
         });
+    }else{
+        this.view.onClickEnd(function(){
+            self.page++;
+            self.showProductList(self.page);
+        });
     }
 };
 

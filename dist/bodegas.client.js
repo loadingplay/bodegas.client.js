@@ -469,6 +469,11 @@ var EcommerceFacade = function(options)
             self.page++;
             self.showProductList(self.page);
         });
+    }else{
+        this.view.onClickEnd(function(){
+            self.page++;
+            self.showProductList(self.page);
+        });
     }
 };
 
@@ -1414,6 +1419,7 @@ var ProductListView = function()
     this.product_template = '';
     this.site_search_template = '';
     this.on_scroll_end = $.noop;
+    this.on_click_end = $.noop;
     this.site_search = $(".site_search");
 
     // PRIVATE VARS 
@@ -1431,6 +1437,22 @@ var ProductListView = function()
             self.loading_products = true;
             self.on_scroll_end();
         }
+    };
+
+    this._onClick = function()
+    {
+        
+        // if (self.loading_products) return;  // if this flag is enabled then don`t load
+
+        var $products = $('.products');
+        var $loading = $('.spinner', $products);
+
+        // check if loading is in viewport
+        // if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
+        // {
+            self.loading_products = true;
+            self.on_click_end();
+        // }
     };
 
     // INNIT
@@ -1451,11 +1473,18 @@ ProductListView.prototype.initTemplates = function()
 ProductListView.prototype.init = function() 
 {
     $(document).on('scroll', this._onScroll);
+
+    $(document).on('click', '.more-products', this._onClick)
 };
 
 ProductListView.prototype.onScrollEnd = function(callback) 
 {
     this.on_scroll_end = callback;
+};
+
+ProductListView.prototype.onClickEnd = function(callback) 
+{
+    this.on_click_end = callback;
 };
 
 ProductListView.prototype.renderTags = function(tags) 
@@ -1507,12 +1536,14 @@ ProductListView.prototype.renderProducts = function(products, page)
             }
             this.all_products_loaded = true;
             this.removeLoading();
+
         }
     }
     catch(err) {
         if (products === null){
             this.all_products_loaded = true;
             this.removeLoading();
+
             $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
         }
         console.log(err);
@@ -1535,6 +1566,7 @@ ProductListView.prototype.removeLoading = function()
 {
     var $products = $('.products');
     $('.spinner', $products).remove();
+    $(".more-products").css("display", "none");
 };
 
 ProductListView.prototype.renderLoading = function() 
@@ -1544,8 +1576,8 @@ ProductListView.prototype.renderLoading = function()
     {
         var $products = $('.products');
         $products.append($('#product_loading').html());
+        $(".more-products").css("display", "block");
     }
-
     this.loading_products = false;
 };
 
