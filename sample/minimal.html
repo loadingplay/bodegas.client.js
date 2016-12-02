@@ -9,13 +9,19 @@
 <body>
 
 
+<!-- products default holder -->
 <div class="products" ></div>
+
+
+<!-- product template -->
 <script type="text/template" id="product_template" >
     <div>
         <img src="{{ images[0][1] }}" />
         {{ name }} : {{ main_price|money }}
     </div>
 </script>
+
+<!-- javascript -->
 <script type="text/javascript" src="../dist/bodegas.client.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
