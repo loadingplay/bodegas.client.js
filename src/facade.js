@@ -57,6 +57,7 @@
         },
         set_shipping_cost : function(data)
         {
+            console.log(data);
             facade.setShippingCost(data);
             return facade;
         },
