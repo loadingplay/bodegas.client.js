@@ -429,7 +429,7 @@ ExtraInfo.prototype.synchronize = function()
             Utils.base_url = options.base_url;
         }
 
-        options.onLoad = options.onLoad.clone();
+        options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
         return methods[method].call($(this), options);
     };

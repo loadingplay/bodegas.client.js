@@ -57,7 +57,7 @@
         },
         set_shipping_cost : function(data)
         {
-            console.log(data);
+            console.log("aaaa", data);
             facade.setShippingCost(data);
             return facade;
         },
@@ -137,7 +137,7 @@
             Utils.base_url = options.base_url;
         }
 
-        options.onLoad = options.onLoad.clone();
+        options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
         return methods[method].call($(this), options);
     };

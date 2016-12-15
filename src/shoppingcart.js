@@ -260,7 +260,6 @@ ShoppingCart.prototype.loadCart = function(callback)
 
 ShoppingCart.prototype.setShippingCost = function(shipping_cost) 
 {
-    alert(shipping_cost);
     this.shipping_cost = shipping_cost;
     this.view.render();
 };
