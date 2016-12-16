@@ -17,10 +17,12 @@ var ProductListView = function()
     this.on_click_end = $.noop;
     this.site_search = $(".site_search");
 
+
     // PRIVATE VARS 
     var self = this;
     this._onScroll = function()
     {
+
         if (self.loading_products) return;  // if this flag is enabled then don`t load
 
         var $products = $('.products');
@@ -36,9 +38,7 @@ var ProductListView = function()
 
     this._onClick = function()
     {
-        
         // if (self.loading_products) return;  // if this flag is enabled then don`t load
-
         var $products = $('.products');
         var $loading = $('.spinner', $products);
 
@@ -256,6 +256,7 @@ ProductListView.prototype.destroy = function()
     try 
     {
         $(document).unbind('scroll', this._onScroll);
+        $(document).unbind('click',  this._onClick);
     }
     catch(ex)
     {

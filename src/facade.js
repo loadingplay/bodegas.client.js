@@ -57,7 +57,6 @@
         },
         set_shipping_cost : function(data)
         {
-            console.log("aaaa", data);
             facade.setShippingCost(data);
             return facade;
         },
@@ -169,7 +168,6 @@ var EcommerceFacade = function(options)
         this.ecommerce.enableGA();
         this.product_view.enableGA();
     }
-
     // infinite scroll
     if (options.infinite_scroll)
     {
@@ -196,7 +194,6 @@ EcommerceFacade.prototype.showProductList = function(page)
         {
             self.view.renderTags(tags);
         });
-
         // var method = self.ecommerce.product.list;
         var tag='';
 
