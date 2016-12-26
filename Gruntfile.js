@@ -54,7 +54,7 @@ module.exports = function(grunt)  //jshint ignore: line
         uglify: {
             my_target: {
                 files: {
-                    'dist/bodegas.client.min.js': ['src/**/*.js']
+                    'dist/bodegas.client.js': ['src/**/*.js']
                 }
             }
         },
