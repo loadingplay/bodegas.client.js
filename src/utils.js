@@ -196,8 +196,11 @@ var Utils = {  //jshint ignore: line
         text = text.split('.').join('');
 
         text = text.split('/').join('');
-        // text = text.split('"').join('');
-        // text = text.split('\'').join('');
+        text = text.split('"').join('');
+        text = text.split('\'').join('');
+
+        text = text.split('@').join('');
+        text = text.split('®').join('');
 
         return text;
     }

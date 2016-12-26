@@ -107,6 +107,9 @@
 
         // " and '  
         assert.equal(Utils.URLBeautify('"\''), '');
+
+        // @ ®
+        assert.equal(Utils.URLBeautify('@®'), '');
     });
 
 
