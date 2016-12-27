@@ -1,6 +1,5 @@
 /*global $*/
 
-"use strict";
 var shopping_carts = {};
 
 $.mockjax({

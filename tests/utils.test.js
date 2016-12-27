@@ -6,7 +6,7 @@
     'use strict';
 
     QUnit.module('Utils', {
-        setup: function()
+        beforeEach: function()
         {
             Utils.base_url = 'http://apibodegas.ondev.today/';
         }

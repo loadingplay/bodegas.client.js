@@ -3,7 +3,6 @@
 /*global ShoppingCart*/
 /*global $*/
 
-'use strict';
 var product;
 var shopping_cart;
 
@@ -11,12 +10,12 @@ var shopping_cart;
 QUnit.module(
     'Shopping cart', 
     {
-        setup: function()
+        beforeEach: function()
         {
             product = new Product(2);
             shopping_cart = new ShoppingCart(2);
         },
-        teardown : function()
+        afterEach : function()
         {
             $.removeCookie('shopping-cart');
         }
@@ -32,7 +31,6 @@ QUnit.test('cart', function(assert)
 
         var product = products[0];
         var product2= products[1];
-
 
         shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');

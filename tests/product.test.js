@@ -2,13 +2,12 @@
 /*global Product*/
 /*global $*/
 
-'use strict';
-var product = new Product();
+var product;
 
 QUnit.module(
     'Product', 
     {
-        setup: function()
+        beforeEach: function()
         {
             product = new Product(2);
         }

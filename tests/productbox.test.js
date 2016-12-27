@@ -2,13 +2,10 @@
 /*global QUnit*/
 /*global ProductBox*/
 
-'use strict';
-
-
 QUnit.module(
     'ProductBox', 
     {
-        setup: function()
+        beforeEach: function()
         {
             // $('.product-box').html('');
         }
@@ -29,7 +26,7 @@ QUnit.test('init', function(assert)
 
 
     // test values changed
-    var product_box = new ProductBox('foo', {
+    product_box = new ProductBox('foo', {
         'maxProducts' : 'foo',
         'templateOrigin' : 'foo',
         'app_public' : 'foo',

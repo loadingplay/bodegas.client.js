@@ -3,13 +3,12 @@
 /*global Product*/
 /*global ProductListView*/
 
-'use strict';
-var product = new Product();
+var product;
 
 QUnit.module(
     'ProductView', 
     {
-        setup: function()
+        beforeEach: function()
         {
             product = new Product(2);
         }

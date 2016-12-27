@@ -4,8 +4,6 @@
 /*global Tag*/
 /*global ShoppingCart*/
 
-'use strict';
-
 
 QUnit.module('Bodegas Client', {});
 

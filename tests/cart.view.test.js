@@ -4,14 +4,13 @@
 /*global ShoppingCartView*/
 /*global $*/
 
-'use strict';
 var product;
 var shopping_cart;
 
 QUnit.module(
     'Shopping cart View', 
     {
-        setup: function()
+        beforeEach: function()
         {
             product = new Product();
             shopping_cart = new ShoppingCart();

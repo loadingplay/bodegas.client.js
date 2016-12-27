@@ -4,7 +4,7 @@ module.exports = function(grunt)  //jshint ignore: line
 {
     /*** istanbul ***/
     grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-qunit-istanbul');
+    // grunt.loadNpmTasks('grunt-qunit-istanbul');
     /*** istanbul ***/
 
     require('load-grunt-tasks')(grunt);  //jshint ignore: line

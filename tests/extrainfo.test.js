@@ -2,12 +2,10 @@
 /* global ShoppingCart */
 /* global ExtraInfo */
 
-'use strict';
-
 var shopping_cart;
 
 QUnit.module('ExtraInfo', {
-    setup : function()
+    beforeEach : function()
     {
         shopping_cart = new ShoppingCart(2);
     }
