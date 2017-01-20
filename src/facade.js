@@ -26,6 +26,7 @@
     var pluginName = 'ecommerce';
     var page = 1;
     var facade;
+    var $element;
     var methods = {
         main : function(options)
         {
@@ -62,10 +63,14 @@
         },
         init_facade : function(options)
         {
-            if (facade === undefined)
+            var f = $element.data(pluginName);
+            if (f === undefined)
             {
                 facade = new EcommerceFacade(options);
+                $element.data(pluginName, facade);
             }
+
+            return facade;
         },
         product_box : function(options)
         {
@@ -96,6 +101,8 @@
     // preventing against multiple instantiations
     $.fn[pluginName] = function ( options_or_method, options ) 
     {
+
+        $element = $(this);
         var method = 'main';
         var settings = {
             /********* COMMON **********/
@@ -217,7 +224,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products, page);
+                    self.view.renderProducts(products, page, self.options.onLoad);
                 }
             );
         }
@@ -232,7 +239,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products, page);
+                    self.view.renderProducts(products, page, self.options.onLoad);
                 }
             );
         }

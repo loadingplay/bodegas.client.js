@@ -98,8 +98,9 @@ ProductListView.prototype.renderTags = function(tags)
 };
 
 
-ProductListView.prototype.renderProducts = function(products, page) 
+ProductListView.prototype.renderProducts = function(products, page, callback) 
 {
+    callback = typeof callback === "function" ? callback: $.noop;
     var $products_view = $('.products');
 
     try {
@@ -121,7 +122,6 @@ ProductListView.prototype.renderProducts = function(products, page)
 
                 $products_view.append($rendered);
             }
-
             this.renderLoading();
         }
         else
@@ -131,7 +131,6 @@ ProductListView.prototype.renderProducts = function(products, page)
             }
             this.all_products_loaded = true;
             this.removeLoading();
-
         }
     }
     catch(err) {
@@ -144,9 +143,7 @@ ProductListView.prototype.renderProducts = function(products, page)
         console.log(err);
     }
 
-    
-
-
+    callback.call(this, products);
 };
 
 
