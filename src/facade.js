@@ -91,8 +91,12 @@
         },
         destroy : function(options)
         {
-            facade.destroy();
-            facade = undefined;
+            methods.init_facade(options);
+            if (facade === undefined)
+            {
+                facade.destroy();
+                facade = undefined;
+            }
             page = 1;
         }
     };
