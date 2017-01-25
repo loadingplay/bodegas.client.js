@@ -6,7 +6,7 @@ QUnit.test('onload', function(assert)
     $("body").append("<div class='test'></div>");
     $(".test").ecommerce({
         'base_url': 'http://apibodegas.ondev.today',
-        'onLoad': function()
+        'onLoad': function(products)
         {
             assert.equal(1, 1, 'onLoad is executed');
             done();

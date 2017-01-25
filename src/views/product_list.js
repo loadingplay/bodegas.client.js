@@ -126,14 +126,16 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
         }
         else
         {
-            if (page === 1){
+            if (page === 1)
+            {
                 $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
             }
             this.all_products_loaded = true;
             this.removeLoading();
         }
-    }
-    catch(err) {
+    } 
+    catch(err) 
+    {
         if (products === null){
             this.all_products_loaded = true;
             this.removeLoading();
@@ -143,6 +145,7 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
         console.log(err);
     }
 
+    this.page = page;
     callback.call(this, products);
 };
 

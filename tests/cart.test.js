@@ -160,5 +160,5 @@ QUnit.test('callback on save cart', function(assert)
     {
         assert.notEqual(e, undefined, 'callback is executed');
         callback_executed();
-    })
-})
+    });
+});

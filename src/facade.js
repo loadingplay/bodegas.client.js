@@ -188,7 +188,8 @@ var EcommerceFacade = function(options)
             self.showProductList(self.page);
         });
     }else{
-        this.view.onClickEnd(function(){
+        this.view.onClickEnd(function()
+        {
             self.page++;
             self.showProductList(self.page);
         });
