@@ -6,10 +6,10 @@
 /* global ProductBox*/
 /* global window*/
 
-'use strict';
-
 (function ( $, window, document, undefined ) 
 {
+    'use strict';
+
     // test
     Function.prototype.clone = function() {
         var that = this;
@@ -28,7 +28,7 @@
     var facade;
     var $element;
     var methods = {
-        main : function(options)
+        main: function(options)
         {
             methods.init_facade(options);
             facade.showProductList(page);
@@ -36,43 +36,43 @@
 
             return facade;
         },
-        product_detail : function(options)
+        product_detail: function(options)
         {
             methods.init_facade(options);
             facade.showProductDetail();
 
             return facade;
         },
-        load_more : function()
+        load_more: function()
         {
             facade.showProductList(page);
             page++;
 
             return facade;
         },
-        set_data : function(data)
+        set_data: function(data)
         {
             facade.setData(data);
 
             return facade;
         },
-        set_shipping_cost : function(data)
+        set_shipping_cost: function(data)
         {
             facade.setShippingCost(data);
             return facade;
         },
-        init_facade : function(options)
+        init_facade: function(options)
         {
             var f = $element.data(pluginName);
-            if (f === undefined)
+            if (f === undefined || f === '')
             {
                 facade = new EcommerceFacade(options);
                 $element.data(pluginName, facade);
             }
 
-            return facade;
+            return f;
         },
-        product_box : function(options)
+        product_box: function(options)
         {
             $(this).each(function()
             {
@@ -89,11 +89,12 @@
 
             return $(this);
         },
-        destroy : function(options)
+        destroy: function(options)
         {
-            methods.init_facade(options);
-            if (facade === undefined)
+            var facacde = methods.init_facade(options);
+            if (facade !== undefined)
             {
+                $element.data(pluginName, '');
                 facade.destroy();
                 facade = undefined;
             }
