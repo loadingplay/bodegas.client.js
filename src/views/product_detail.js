@@ -24,8 +24,6 @@ ProductDetailView.prototype.render = function(product, callback)
     var $prod = $(Utils.render(this.template, product));
     var $images = $('.image', $prod);
 
-    console.log($el);
-
     this.renderImages($images, product.id);
 
     this.removeLoading();

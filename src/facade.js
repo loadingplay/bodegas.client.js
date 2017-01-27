@@ -25,53 +25,50 @@
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
-    var facade;
-    var $element;
+
     var methods = {
         main: function(options)
         {
-            methods.init_facade(options);
-            facade.showProductList(page);
+            var f = methods.init_facade.call(this, options);
+            f.showProductList(page);
             page++;
 
-            return facade;
+            return f;
         },
         product_detail: function(options)
         {
-            var f = methods.init_facade(options);
+            var f = methods.init_facade.call(this, options);
             f.showProductDetail();
-
             return f;
         },
         load_more: function()
         {
-            facade.showProductList(page);
+            var f = methods.init_facade.call(this);
+            f.showProductList(page);
             page++;
 
-            return facade;
+            return f;
         },
         set_data: function(data)
         {
-            facade.setData(data);
+            var f = methods.init_facade.call(this);
+            f.setData(data);
 
-            return facade;
+            return f;
         },
         set_shipping_cost: function(data)
         {
-            facade.setShippingCost(data);
-            return facade;
+            var f = methods.init_facade.call(this);
+            f.setShippingCost(data);
+            return f;
         },
         init_facade: function(options)
         {
-            var f = $element.data(pluginName);
-
-            console.log($element, f);
+            var f = this.data(pluginName);
             if (f === undefined || f === '')
             {
                 f = new EcommerceFacade(options);
-                $element.data(pluginName, f);
-
-                facade = f;
+                this.data(pluginName, f);
             }
 
             return f;
@@ -95,12 +92,12 @@
         },
         destroy: function(options)
         {
-            var facacde = methods.init_facade(options);
-            if (facade !== undefined)
+            var f = methods.init_facade.call(this, options);
+            if (f !== undefined)
             {
                 $element.data(pluginName, '');
-                facade.destroy();
-                facade = undefined;
+                f.destroy();
+                f = undefined;
             }
             page = 1;
         }
@@ -108,10 +105,8 @@
 
     // A really lightweight plugin wrapper around the constructor, 
     // preventing against multiple instantiations
-    $.fn[pluginName] = function ( options_or_method, options ) 
+    $.fn[pluginName] = function( options_or_method, options ) 
     {
-
-        $element = $(this);
         var method = 'main';
         var settings = {
             /********* COMMON **********/
