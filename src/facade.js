@@ -38,10 +38,10 @@
         },
         product_detail: function(options)
         {
-            methods.init_facade(options);
-            facade.showProductDetail();
+            var f = methods.init_facade(options);
+            f.showProductDetail();
 
-            return facade;
+            return f;
         },
         load_more: function()
         {
@@ -64,10 +64,14 @@
         init_facade: function(options)
         {
             var f = $element.data(pluginName);
+
+            console.log($element, f);
             if (f === undefined || f === '')
             {
-                facade = new EcommerceFacade(options);
-                $element.data(pluginName, facade);
+                f = new EcommerceFacade(options);
+                $element.data(pluginName, f);
+
+                facade = f;
             }
 
             return f;
