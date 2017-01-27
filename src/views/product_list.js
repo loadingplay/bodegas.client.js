@@ -98,8 +98,9 @@ ProductListView.prototype.renderTags = function(tags)
 };
 
 
-ProductListView.prototype.renderProducts = function(products, page) 
+ProductListView.prototype.renderProducts = function(products, page, callback) 
 {
+    callback = typeof callback === "function" ? callback: $.noop;
     var $products_view = $('.products');
 
     try {
@@ -121,20 +122,20 @@ ProductListView.prototype.renderProducts = function(products, page)
 
                 $products_view.append($rendered);
             }
-
             this.renderLoading();
         }
         else
         {
-            if (page === 1){
+            if (page === 1)
+            {
                 $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
             }
             this.all_products_loaded = true;
             this.removeLoading();
-
         }
-    }
-    catch(err) {
+    } 
+    catch(err) 
+    {
         if (products === null){
             this.all_products_loaded = true;
             this.removeLoading();
@@ -144,9 +145,8 @@ ProductListView.prototype.renderProducts = function(products, page)
         console.log(err);
     }
 
-    
-
-
+    this.page = page;
+    callback.call(this, products);
 };
 
 

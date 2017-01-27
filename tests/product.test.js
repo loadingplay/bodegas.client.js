@@ -58,16 +58,18 @@ QUnit.test('product detail on load', function(assert)
 {
     var product_loaded = assert.async();
 
-    $(document).ecommerce('product_detail', {
-        'app_public' : 100,
-        'base_url' : 'http://apibodegas.ondev.today/',
-        'product_id' : 1127,
-        'onLoad' : function(product)
+    $(document).ecommerce(
+        'product_detail',
         {
-            assert.ok(true);
-            assert.ok(product.bullet_3 === 'foo');
+            'app_public' : 100,
+            'base_url' : 'http://apibodegas.ondev.today/',
+            'product_id' : 1127,
+            'onLoad' : function(product)
+            {
+                assert.ok(true);
+                assert.ok(product.bullet_3 === 'foo');
 
-            product_loaded();
-        }
-    });
+                product_loaded();
+            }
+        });
 });

@@ -6,10 +6,10 @@
 /* global ProductBox*/
 /* global window*/
 
-'use strict';
-
 (function ( $, window, document, undefined ) 
 {
+    'use strict';
+
     // test
     Function.prototype.clone = function() {
         var that = this;
@@ -25,49 +25,55 @@
     // Create the defaults once
     var pluginName = 'ecommerce';
     var page = 1;
-    var facade;
+
     var methods = {
-        main : function(options)
+        main: function(options)
         {
-            methods.init_facade(options);
-            facade.showProductList(page);
+            var f = methods.init_facade.call(this, options);
+            f.showProductList(page);
             page++;
 
-            return facade;
+            return f;
         },
-        product_detail : function(options)
+        product_detail: function(options)
         {
-            methods.init_facade(options);
-            facade.showProductDetail();
-
-            return facade;
+            var f = methods.init_facade.call(this, options);
+            f.showProductDetail();
+            return f;
         },
-        load_more : function()
+        load_more: function()
         {
-            facade.showProductList(page);
+            var f = methods.init_facade.call(this);
+            f.showProductList(page);
             page++;
 
-            return facade;
+            return f;
         },
-        set_data : function(data)
+        set_data: function(data)
         {
-            facade.setData(data);
+            var f = methods.init_facade.call(this);
+            f.setData(data);
 
-            return facade;
+            return f;
         },
-        set_shipping_cost : function(data)
+        set_shipping_cost: function(data)
         {
-            facade.setShippingCost(data);
-            return facade;
+            var f = methods.init_facade.call(this);
+            f.setShippingCost(data);
+            return f;
         },
-        init_facade : function(options)
+        init_facade: function(options)
         {
-            if (facade === undefined)
+            var f = this.data(pluginName);
+            if (f === undefined || f === '')
             {
-                facade = new EcommerceFacade(options);
+                f = new EcommerceFacade(options);
+                this.data(pluginName, f);
             }
+
+            return f;
         },
-        product_box : function(options)
+        product_box: function(options)
         {
             $(this).each(function()
             {
@@ -84,17 +90,22 @@
 
             return $(this);
         },
-        destroy : function(options)
+        destroy: function(options)
         {
-            facade.destroy();
-            facade = undefined;
+            var f = methods.init_facade.call(this, options);
+            if (f !== undefined)
+            {
+                $(this).data(pluginName, '');
+                f.destroy();
+                f = undefined;
+            }
             page = 1;
         }
     };
 
     // A really lightweight plugin wrapper around the constructor, 
     // preventing against multiple instantiations
-    $.fn[pluginName] = function ( options_or_method, options ) 
+    $.fn[pluginName] = function( options_or_method, options ) 
     {
         var method = 'main';
         var settings = {
@@ -176,7 +187,8 @@ var EcommerceFacade = function(options)
             self.showProductList(self.page);
         });
     }else{
-        this.view.onClickEnd(function(){
+        this.view.onClickEnd(function()
+        {
             self.page++;
             self.showProductList(self.page);
         });
@@ -217,7 +229,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products, page);
+                    self.view.renderProducts(products, page, self.options.onLoad);
                 }
             );
         }
@@ -232,7 +244,7 @@ EcommerceFacade.prototype.showProductList = function(page)
                 self.options.operator,
                 function(products)
                 {
-                    self.view.renderProducts(products, page);
+                    self.view.renderProducts(products, page, self.options.onLoad);
                 }
             );
         }

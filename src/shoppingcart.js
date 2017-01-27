@@ -240,7 +240,8 @@ ShoppingCart.prototype.loadCart = function(callback)
     $.ajax({
         url: url,
         cache: false,
-        success: function(cart_products){
+        success: function(cart_products)
+        {
             if (cart_products.expired)
             {
                 $.removeCookie('shopping-cart');
