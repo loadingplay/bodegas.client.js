@@ -98,6 +98,6 @@
 
         grunt.registerTask('tests', ['connect', 'qunit']);
         grunt.registerTask('build', ['concat', 'uglify']);
-        grunt.registerTask('default', ['concat', 'uglify', 'express', 'watch']);
+        grunt.registerTask('default', ['concat', 'express', 'watch']);
     };
 })();

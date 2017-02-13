@@ -39,3 +39,13 @@ QUnit.test('Read', function(assert)
     assert.ok(shopping_cart.extra_info.set_data('foo', 1), 'can add integer');
     assert.equal(shopping_cart.extra_info.get_data('foo'), 1, 'can read integer');
 });
+
+
+QUnit.test('check functions from facade', function(assert) 
+{
+    var f = $(document).ecommerce('set_data', {'foo' : 1});
+    assert.equal(f.ecommerce.cart.extra_info.get_data('foo'), 1, 'get data working');
+
+    f = $(document).ecommerce('set_shipping_cost', 10);
+    assert.equal(f.ecommerce.cart.shipping_cost, 10, 'shipping_cost working');
+});

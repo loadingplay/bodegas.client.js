@@ -66,6 +66,7 @@ QUnit.test('product detail on load', function(assert)
             'product_id' : 1127,
             'onLoad' : function(product)
             {
+                console.log(product)
                 assert.ok(true);
                 assert.ok(product.bullet_3 === 'foo');
 
