@@ -148,10 +148,10 @@
         if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
             options = $.extend({}, settings, options);
+            options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
+
             Utils.base_url = options.base_url;
         }
-
-        options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
         return methods[method].call($(this), options);
     };
