@@ -129,7 +129,11 @@
             'analytics'             : '',  // analytics code
             'container'             : '.container',
             'user'                  : '',
-            'operator'              : 'or' //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+            'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+
+
+            /******* TEMPLATES *******/
+            'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
         };
 
         if (typeof(options_or_method) === 'string')
@@ -163,6 +167,7 @@ var EcommerceFacade = function(options)
     this.options = options;
     this.ecommerce = new BodegasClient(this.options.checkout_url);
     this.view  = new ProductListView();
+    this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
     this.animation = null;
 

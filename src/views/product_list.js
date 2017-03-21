@@ -15,7 +15,8 @@ var ProductListView = function()
     this.site_search_template = '';
     this.on_scroll_end = $.noop;
     this.on_click_end = $.noop;
-    this.site_search = $(".site_search");
+    this.site_search = $('.site_search');
+    this.no_products_template = '';
 
 
     // PRIVATE VARS 
@@ -69,7 +70,7 @@ ProductListView.prototype.init = function()
 {
     $(document).on('scroll', this._onScroll);
 
-    $(document).on('click', '.more-products', this._onClick)
+    $(document).on('click', '.more-products', this._onClick);
 };
 
 ProductListView.prototype.onScrollEnd = function(callback) 
@@ -100,7 +101,7 @@ ProductListView.prototype.renderTags = function(tags)
 
 ProductListView.prototype.renderProducts = function(products, page, callback) 
 {
-    callback = typeof callback === "function" ? callback: $.noop;
+    callback = typeof callback === 'function' ? callback: $.noop;
     var $products_view = $('.products');
 
     try {
@@ -128,7 +129,7 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
         {
             if (page === 1)
             {
-                $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
+                $products_view.html(this.no_products_template);
             }
             this.all_products_loaded = true;
             this.removeLoading();
@@ -140,7 +141,7 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
             this.all_products_loaded = true;
             this.removeLoading();
 
-            $products_view.html("<span>No tenemos productos en esta sección por el momento</span>");
+            $products_view.html(this.no_products_template);
         }
         console.log(err);
     }
@@ -161,7 +162,7 @@ ProductListView.prototype.removeLoading = function()
 {
     var $products = $('.products');
     $('.spinner', $products).remove();
-    $(".more-products").css("display", "none");
+    $('.more-products').css('display', 'none');
 };
 
 ProductListView.prototype.renderLoading = function() 
@@ -171,7 +172,7 @@ ProductListView.prototype.renderLoading = function()
     {
         var $products = $('.products');
         $products.append($('#product_loading').html());
-        $(".more-products").css("display", "block");
+        $('.more-products').css('display', 'block');
     }
     this.loading_products = false;
 };
@@ -199,7 +200,7 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
             });
             $aux.fadeOut(function(){
                 if($imagehref.length>0){
-                    $imagehref.attr("href", src);
+                    $imagehref.attr('href', src);
                 }
                 $aux.attr('src', src);
             });
@@ -226,8 +227,8 @@ ProductListView.prototype.renderSiteSearch = function(template)
         this.site_search.append(rendered);
 
         if(tag === undefined || tag === '') {
-            if($("input[name=tag]", this.site_search).length){
-                $(".tag-search", this.site_search).css("display","none");
+            if($('input[name=tag]', this.site_search).length){
+                $('.tag-search', this.site_search).css('display','none');
             }
         }
 
