@@ -122,7 +122,7 @@
             /********* OTHER **********/
             'checkout_url'          : 'http://localhost:8522',
             'products_per_page'     : 12,
-            'animation'             : 'none',  // none|basic
+            'animation'             : 'none',  // none|basic|ghost
             'ignore_stock'          : false,   // if true, shows all products
             'product_id'            : null,
             'infinite_scroll'       : true,
@@ -172,10 +172,16 @@ var EcommerceFacade = function(options)
     this.animation = null;
 
     // initialize animation
-    if (options.animation !== 'none') 
+    if (options.animation === 'basic') 
     {
         // init simmple animations (the only one for now)
         this.animation = new SimpleAnimation();
+    }
+
+    // initialize ghost animation
+    if (options.animation === 'ghost')
+    {
+        this.animation = new GhostAnimation();
     }
 
     // initialize analytics

@@ -22,8 +22,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 var SimpleAnimation = function()
 {
     this.animation_supported = this.isAnimationAvailable();
-
-
     this.init();
 };
 
@@ -152,6 +150,112 @@ SimpleAnimation.prototype.init = function()
                 'background' : $tthis.css('background'),
                 onComplete : initSecondAnimation
             });
+
+        }
+        catch(ex)
+        {
+            // nothing here...
+        }
+
+    }
+
+    $(document).on('click', '.add-to-cart-animation', addToCartAnimationClick);
+
+};
+
+
+// GHOST Animation
+var GhostAnimation = function()
+{
+    this.animation_supported = this.isAnimationAvailable();
+    this.init();
+};
+
+
+/**
+ * detect if animation interfaz is available for this browser,
+ * i copied from internet, so, in god we trust!!
+ * @return {Boolean} true if css3 animations are supported
+ */
+GhostAnimation.prototype.isAnimationAvailable = function() 
+{
+    var animation = false,
+    animationstring = 'animation',
+    keyframeprefix = '',
+    domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+    pfx  = '',
+    elm = document.createElement('div');
+
+    if( elm.style.animationName !== undefined ) { animation = true; }    
+
+    if( animation === false ) {
+      for( var i = 0; i < domPrefixes.length; i++ ) {
+        if( elm.style[ domPrefixes[i] + 'AnimationName' ] !== undefined ) {
+          pfx = domPrefixes[ i ];
+          animationstring = pfx + 'Animation';
+          keyframeprefix = '-' + pfx.toLowerCase() + '-';
+          break;
+        }
+      }
+    }
+
+    return animation;
+};
+
+
+GhostAnimation.prototype.init = function() 
+{
+
+    var self = this;
+    var cart_animation_working = false;
+    var original_color = $('.shopping-cart-animation').css('color');
+
+    function addToCartAnimationClick ()
+    {
+        try
+        {
+            var $tthis = $(this);
+            var out_of_stock = ($tthis.html().indexOf('Agotado') !== -1);
+
+            if ($tthis.data('working') || out_of_stock || !self.animation_supported)
+            {
+                return;
+            }
+
+            $tthis.data('working', true);
+
+            var $clone = $tthis.clone();
+            var old_display = $tthis.css('display');
+
+            $tthis.css('display', 'none');
+            $clone.css('position', 'relative');
+            $clone.insertBefore($tthis);
+
+            // animation 1
+            TweenMax.to($clone, '0.3', 
+            {
+                'ease': Power1.easeOut,
+                'top' : '-30px',
+                'opacity' : 0.0,
+                onComplete : function()
+                {
+                    $clone.css('display', 'none');
+                    $tthis.css('display', old_display);
+                    $tthis.css('opacity', 0);
+
+                    TweenMax.to($tthis, '0.1', 
+                    {
+                        'opacity' : 1,
+                        onComplete : function()
+                        {
+                            $clone.remove();
+                            $tthis.data('working', false);
+                        }
+                    })
+                }
+            });
+
+            console.log($tthis.html());
 
         }
         catch(ex)
