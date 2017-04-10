@@ -931,25 +931,26 @@ ShoppingCart.prototype.recalcTotals = function()
 
 ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback) 
 {
+    id = parseInt(id);
     bullet1 = bullet1 === undefined ? '' : bullet1;
     bullet2 = bullet2 === undefined ? '' : bullet2;
     bullet3 = bullet3 === undefined ? '' : bullet3;
-    img = img === undefined ? '' : img;
+    img = img === undefined ? this.getProductImage(id) : img;
 
     var images = [];
     var im = [];
-    for (var i = 0; i < 3; i++) 
+    for (var j = 0; j < 3; j++) 
     {
         images.push(img);
     }
+    im.push(images);
 
-    im.push(images)
+    // doenst add quantity here, so dont cut the execution
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
-
         this.model.push({ 
-            'id' : parseInt(id), 
+            'id' : id, 
             'price' : price, 
             'name' : name, 
             'quantity' : 0,
@@ -965,14 +966,15 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
 
     for (var i = 0; i < this.model.length; i++) 
     {
-        if (this.model[i].id === parseInt(id))
+        if (this.model[i].id === id)
         {
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-            this.model[i].bullet_1 = this.model[i].bullet_1;
-            this.model[i].bullet_2 = this.model[i].bullet_2;
-            this.model[i].bullet_3 = this.model[i].bullet_3;
+            // this.model[i].bullet_1 = this.model[i].bullet_1;
+            // this.model[i].bullet_2 = this.model[i].bullet_2;
+            // this.model[i].bullet_3 = this.model[i].bullet_3;
+
             this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
 
@@ -982,6 +984,21 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
 
 };
 
+/**
+ * get product image from id
+ * @param  {int} id  product id
+ * @return {string}    url with product image
+ */
+ShoppingCart.prototype.getProductImage = function(id) 
+{
+    // implement this method outside
+    return '';
+};
+
+/**
+ * remove element from shopping cart
+ * @param  {int} id  product id
+ */
 ShoppingCart.prototype.removeProduct = function(id) 
 {
     for (var i = 0; i < this.model.length; i++) 
@@ -996,6 +1013,10 @@ ShoppingCart.prototype.removeProduct = function(id)
     }
 };
 
+/**
+ * remove one product from the cart
+ * @param  {int} id  product id
+ */
 ShoppingCart.prototype.removeOne = function(id)
 {
     for (var i = 0; i < this.model.length; i++) 
@@ -1018,6 +1039,10 @@ ShoppingCart.prototype.removeOne = function(id)
 
 };
 
+/**
+ * return a list of productos
+ * @return {list}  a list which contains products
+ */
 ShoppingCart.prototype.getProducts = function() 
 {
     return this.model;
@@ -1081,6 +1106,10 @@ ShoppingCart.prototype.getUPPTotal = function()
     return units_total;
 };
 
+/**
+ * load cart from a cooki
+ * @param  {object} callback  callback executed when the cart is loaded
+ */
 ShoppingCart.prototype.loadCart = function(callback) 
 {
     var self = this;

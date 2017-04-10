@@ -34,6 +34,7 @@ QUnit.test('cart', function(assert)
 
         shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
+        assert.equal(shopping_cart.getProducts()[0].images[0][1], '', 'message');
 
         shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1 after adding same product twice');
