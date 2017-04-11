@@ -7,17 +7,23 @@
     <script type="text/javascript" src="http://es.tikachips.com/common/js/jquery.cookie.js"></script>
 </head>
 <body>
-
+<!-- barra buscadora y botones para filtrar los productos -->
+<div>
+    <input type="text" id="search" oninput="searchText()" placeholder="Barra buscadora...">
+    <div id="all" class="category" onclick="filterButton('all',null)">Todos los productos</div>
+    <div id="alimento_perro" class="category" onclick="filterButton('alimento','perro')">Alimento para perro</div>
+    <div id="alimento_gato" class="category" onclick="filterButton('alimento','gato')">Alimento para gatos</div>
+    <div id="arena" class="category" onclick="filterButton('arena',null)">Arena para gato</div>
+</div>
 
 <!-- products default holder -->
 <div class="products" ></div>
 
-
 <!-- product template -->
-<script type="text/template" id="product_template" >
-    <div>
-        <img src="{{ images[0][1] }}" />
-        {{ name }} : {{ main_price|money }}
+<script type="text/template" id="product_template">
+    <div id="{{ id }}" class="product">
+        <img src="{{ images[0][0] }}" />
+        {{ name }} : {{ main_price|money }}|{{ bullet_2 }}|{{ bullet_1 }}
     </div>
 </script>
 
@@ -30,7 +36,104 @@
             'base_url' : 'https://apibodegas.loadingplay.com/'
         });
     });
-</script>
 
+
+    //Busca dependiendo de que botón fue presionado. Se ayuda de los arrays catTerms y dogTerms para diferenciar entre gatos y perros.
+    function filterButton(first,second){
+        var products = document.querySelectorAll(".product");
+        var catTerms = ['cat','gato','felix','gati','fancy'];
+        var dogTerms = ['dog','perro','doko','duro','excellent','fancy'];
+
+        $(".category").css("background-color", "white");
+
+        switch(first){
+            case "all":
+            $("#all").css("background-color", "orange");
+            document.getElementById("all").backgroundColor = "orange";
+
+            for (var i = products.length - 1; i >= 0; i--) {
+                $("#"+products[i].id).show("slow");
+            }              
+            break;
+            case "alimento":
+            if (second=="perro") {
+                $("#alimento_perro").css("background-color", "orange");
+                for (var i = products.length - 1; i >= 0; i--) {
+                    var content = products[i].innerHTML.toLowerCase();
+                    for (var j = dogTerms.length - 1; j >= 0; j--) {
+                        if(content.indexOf(dogTerms[j]) != -1){
+                            $("#"+products[i].id).show("slow");
+                        }else{
+                            $("#"+products[i].id).hide("slow");
+                        }
+                    }
+                }
+            }else{
+                $("#alimento_gato").css("background-color", "orange");
+                for (var i = products.length - 1; i >= 0; i--) {
+                    var content = products[i].innerHTML.toLowerCase();
+                    for (var j = catTerms.length - 1; j >= 0; j--) {
+                        if(content.indexOf(catTerms[j]) != -1 && content.indexOf("arena") < 0){
+                            $("#"+products[i].id).show("slow");
+                        }else{
+                            $("#"+products[i].id).hide("slow");
+                        }
+                    }
+                }
+            }
+            break;
+
+            case "arena":
+            $("#arena").css("background-color", "orange");
+            for (var i = products.length - 1; i >= 0; i--) {
+                var content = products[i].innerHTML.toLowerCase();
+                if (content.indexOf(first) != -1) {
+                    $("#"+products[i].id).show("slow");
+                }else{
+                    $("#"+products[i].id).hide("slow");
+                }
+            }
+            break;
+        }
+    }
+
+    //Busqueda de terminos en los divs dependiendo de que se escriba en el input text
+    function searchText(){
+        var products = document.querySelectorAll(".product");
+        var searchQuery = document.getElementById("search").value.toLowerCase();
+
+        for (var i = products.length - 1; i >= 0; i--) {
+            var content = products[i].innerHTML.toLowerCase();
+            if (content.indexOf(searchQuery) != -1) {
+                $("#"+products[i].id).show("slow");
+            }else{
+                $("#"+products[i].id).hide("slow");
+            }
+        }
+
+
+    }
+</script>
+<style type="text/css">
+    img {
+        width: 100px;
+        display: block;
+    }
+    .product {
+        border: 1px solid black;
+        margin: 10px;
+        display: inline-grid;
+    }
+
+    .category{
+        display: inline-block;
+        padding: 5px;
+        margin: 5px;
+        border: 1px solid black;
+        background-color: white;
+    }
+
+
+</style>
 </body>
 </html>
