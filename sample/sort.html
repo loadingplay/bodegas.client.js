@@ -11,7 +11,10 @@
 <div>
     <input type="text" id="search" oninput="searchText()" placeholder="Barra buscadora...">
 
+    <!-- href que recarga la página actual y pasa como parámetro de URL sortType=price -->
     <div><a href="?sortType=price">ordenar por precio descendente</a></div>
+
+    <!-- href que recarga la página actual y pasa como parámetro de URL sortType=name -->
     <div><a href="?sortType=name">ordenar por nombre ascendiente</a></div>
     <!-- <div id="all" class="category" onclick="filterButton('all',null)">Todos los productos</div>
     <div id="alimento_perro" class="category" onclick="filterButton('alimento','perro')">Alimento para perro</div>
@@ -33,16 +36,17 @@
 <!-- javascript -->
 <script type="text/javascript" src="../dist/bodegas.client.js"></script>
 <script type="text/javascript">
+    //Esta función recibe un paŕametro que es el nombre de un valor que viene en la URL como sortType
     $.urlParam = function(name)
     {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         try
         {
-            return results[1] || 0;
+            return results[1] || 0; //Si lo encuentra, devuelve el valor 
         }
         catch(err)
         {
-            return;
+            return; //Si no lo encuentra, devuelve undefined
         }
     }
     $(document).ready(function(){
@@ -50,7 +54,7 @@
             'app_public' : 2,
             'base_url' : 'https://apibodegas.loadingplay.com/',
             'products_per_page' : 100,
-            'sortBy' : $.urlParam('sortType')
+            'sortBy' : $.urlParam('sortType') //Aqui se pasa el tipo de sortType usando la funcion urlParam
         });
     });
 
