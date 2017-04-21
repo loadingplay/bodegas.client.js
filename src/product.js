@@ -8,14 +8,14 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback, sortBy);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback, sortBy);
 };
 
 Product.prototype.get = function(product_id, user_or_callback, callback) 
@@ -33,7 +33,7 @@ Product.prototype.get = function(product_id, user_or_callback, callback)
         });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback, sortBy) 
 {
     var tags = 'false';
     var product_list = [];
@@ -80,6 +80,49 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             {
                 product_list = data.products;
             }
+
+            //sortBy llega como parámetro de Product.prototype.list
+            //console.log(sortBy); //Muestra que tipo de orden seguirán los productos.
+                        
+            //Ordena los productos por el atributo main_price en forma descendiente.
+            if(sortBy==="price") //Se puede reemplazar con un switch(sortBy)
+            {
+                //Simple método de burbuja para ordenar los elementos de product_list
+                var aux;
+                for (var i = 0; i < product_list.length-1; i++) 
+                {
+                    for (var j = 0; j < product_list.length-1; j++) 
+                    {
+                        if(product_list[j].main_price < product_list[j+1].main_price)
+                        {
+                            aux = product_list[j];
+
+                            product_list[j] = product_list[j+1];
+
+                            product_list[j+1] = aux;
+                        }
+                    }
+                }
+            }
+            //Ordena los productos por su nombre
+            if(sortBy==="name"){
+                var aux;
+                for (var i = 0; i < product_list.length-1; i++) 
+                {
+                    for (var j = 0; j < product_list.length-1; j++) 
+                    {
+                        if(product_list[j].name > product_list[j+1].name)
+                        {
+                            aux = product_list[j];
+
+                            product_list[j] = product_list[j+1];
+
+                            product_list[j+1] = aux;
+                        }
+                    }
+                }
+            }
+
             callback(product_list);
         });
 };

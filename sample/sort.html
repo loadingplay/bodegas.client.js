@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head>  
     <meta charset="utf-8">
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -11,7 +11,8 @@
 <div>
     <input type="text" id="search" oninput="searchText()" placeholder="Barra buscadora...">
 
-    <div><a href="#!" class="sort-by-price">ordenar por producto</a></div>
+    <div><a href="?sortType=price">ordenar por precio descendente</a></div>
+    <div><a href="?sortType=name">ordenar por nombre ascendiente</a></div>
     <!-- <div id="all" class="category" onclick="filterButton('all',null)">Todos los productos</div>
     <div id="alimento_perro" class="category" onclick="filterButton('alimento','perro')">Alimento para perro</div>
     <div id="alimento_gato" class="category" onclick="filterButton('alimento','gato')">Alimento para gatos</div>
@@ -32,19 +33,32 @@
 <!-- javascript -->
 <script type="text/javascript" src="../dist/bodegas.client.js"></script>
 <script type="text/javascript">
+    $.urlParam = function(name)
+    {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        try
+        {
+            return results[1] || 0;
+        }
+        catch(err)
+        {
+            return;
+        }
+    }
     $(document).ready(function(){
         $(document).ecommerce({
             'app_public' : 2,
-            'base_url' : 'https://apibodegas.loadingplay.com/'
-        });
-
-
-        $(document).on('click', '.sort-by-price', function()
-        {
-            // aqui vamos a ejeecutar el codigo para ordenar
-            $(document).ecommerce('sort-by-price', 'desc');
+            'base_url' : 'https://apibodegas.loadingplay.com/',
+            'products_per_page' : 100,
+            'sortBy' : $.urlParam('sortType')
         });
     });
+
 </script>
+<style type="text/css">
+    img{
+        width: 100px;
+    }
+</style>
 </body>
 </html>
