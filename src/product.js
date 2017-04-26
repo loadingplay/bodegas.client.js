@@ -8,14 +8,14 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback, sortBy);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback, sortBy);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation);
 };
 
 Product.prototype.get = function(product_id, user_or_callback, callback) 
@@ -33,7 +33,7 @@ Product.prototype.get = function(product_id, user_or_callback, callback)
         });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback, sortBy) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
 {
     var tags = 'false';
     var product_list = [];
@@ -72,7 +72,9 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "search_query": decodeURIComponent(term),
             "search": true,
             "user" : user,
-            "operator" : operator
+            "operator" : operator,
+            "sortBy" : sortBy,
+            "sortOrientation" : sortOrientation
         },
         function(data)
         {
@@ -85,7 +87,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             //console.log(sortBy); //Muestra que tipo de orden seguirán los productos.
                         
             //Ordena los productos por el atributo main_price en forma descendiente.
-            if(sortBy==="price") //Se puede reemplazar con un switch(sortBy)
+            if(sortBy==="main_price") //Se puede reemplazar con un switch(sortBy)
             {
                 //Simple método de burbuja para ordenar los elementos de product_list
                 var aux;

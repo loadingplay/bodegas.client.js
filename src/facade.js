@@ -144,7 +144,7 @@
 
             //Sort by 'value', aun en prueba 
             'sortBy' : 'none', //price, description, name, brand, etc.
-            // 'sortOrientation' : 'desc', //atributo que aun no se implementa, muesta el orden descendiente o ascendiente
+            'sortOrientation' : 'none', //atributo que aun no se implementa, muesta el orden descendiente o ascendiente
 
             /******* TEMPLATES *******/
             'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
@@ -255,7 +255,8 @@ EcommerceFacade.prototype.showProductList = function(page)
                 {
                     self.view.renderProducts(products, page, self.options.onLoad);
                 },
-                self.options.sortBy //Este parámetro entrega el tipo de orden de los productos
+                self.options.sortBy, //Este parámetro entrega el tipo de orden de los productos
+                self.option.sortOrientation
             );
         }
         else
@@ -271,7 +272,8 @@ EcommerceFacade.prototype.showProductList = function(page)
                 {
                     self.view.renderProducts(products, page, self.options.onLoad);
                 },
-                self.options.sortBy //Este parámetro entrega el tipo de orden de los productos
+                self.options.sortBy, //Este parámetro entrega el tipo de orden de los productos
+                self.options.sortOrientation
             );
         }
     });

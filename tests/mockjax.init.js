@@ -331,3 +331,19 @@ $.mockjax({
     type: "get",
     responseText: {"tags": [{"visible": 1, "site_id": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_id": 2, "id": 2, "name": "perro"}]}
 });
+
+// $.mockjax({
+//     url: "http://*/product/search",
+//     urlParams: ["sortBy","sortOrientation"],
+//     response: function (settings)
+//     {      
+//         if (settings.urlParams.sortOrientation==="asc") 
+//         {
+//             this.responseText = {"products" : [{"bulk_price":1,"sku":"18804","description":"Snack para perros, Integral Junior Producto semi-húmedo para premiar o complementar la alimentación de su perro.Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.Producto semi-húmedo para premiar o complementar la alimentación de su perro.Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.","site_id":2,"brand":"DOG CHOW","enabled":false,"name":"DOG CHOW ABRAZZOS 300 Gr.","images":[["https://7static.loadingplay.com/static/images/1_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png","https://7static.loadingplay.com/static/images/200_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png","https://84static.loadingplay.com/static/images/500_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png"]],"main_price":1323,"cost_price":1323,"id":404,"promotion_price":1,"manufacturer":"Nestle"}{"bulk_price":1,"sku":"18803","description":"Snack para perros, Integral Mini Es una línea de riquísimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.","site_id":2,"brand":"DOG CHOW","enabled":false,"name":"DOG CHOW ABRAZZOS 500 Gr.","images":[["https://7static.loadingplay.com/static/images/1_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png","https://7static.loadingplay.com/static/images/200_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png","https://84static.loadingplay.com/static/images/500_4799bd4dd9fdc1599355e6743ed9580c_PESCADO2.png.png"]],"main_price":1953,"cost_price":1953,"id":403,"promotion_price":1,"manufacturer":"Nestle"}]};
+//         }
+        
+//     }
+
+// });
+
+
