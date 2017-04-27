@@ -90,41 +90,49 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             if(sortBy==="main_price") //Se puede reemplazar con un switch(sortBy)
             {
                 //Simple método de burbuja para ordenar los elementos de product_list
-                var aux;
-                for (var i = 0; i < product_list.length-1; i++) 
+                var aux;                
+                switch(sortOrientation)
                 {
-                    for (var j = 0; j < product_list.length-1; j++) 
+                    case "desc":
+                    
+                    for (var i = 0; i < product_list.length-1; i++) 
                     {
-                        if(product_list[j].main_price < product_list[j+1].main_price)
+                        for (var j = 0; j < product_list.length-1; j++) 
                         {
-                            aux = product_list[j];
+                            if(product_list[j].main_price < product_list[j+1].main_price)
+                            {
+                                aux = product_list[j];
 
-                            product_list[j] = product_list[j+1];
+                                product_list[j] = product_list[j+1];
 
-                            product_list[j+1] = aux;
+                                product_list[j+1] = aux;
+                            }
                         }
                     }
-                }
-            }
-            //Ordena los productos por su nombre
-            if(sortBy==="name"){
-                var aux;
-                for (var i = 0; i < product_list.length-1; i++) 
-                {
-                    for (var j = 0; j < product_list.length-1; j++) 
+                    break;
+
+                    case "asc":
+                    for (var i = 0; i < product_list.length-1; i++) 
                     {
-                        if(product_list[j].name > product_list[j+1].name)
+                        for (var j = 0; j < product_list.length-1; j++) 
                         {
-                            aux = product_list[j];
+                            if(product_list[j].main_price > product_list[j+1].main_price)
+                            {
+                                aux = product_list[j];
 
-                            product_list[j] = product_list[j+1];
+                                product_list[j] = product_list[j+1];
 
-                            product_list[j+1] = aux;
+                                product_list[j+1] = aux;
+                            }
                         }
                     }
-                }
-            }
+                    break;
 
+                    case "none":
+                        //do nothing
+                    break;
+                }                
+            }
             callback(product_list);
         });
 };

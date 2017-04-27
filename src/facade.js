@@ -90,15 +90,6 @@
 
             return $(this);
         },
-        //Este método es redundante o innecesario
-        // sort_products: function(options)
-        // {
-        //     var f = methods.init_facade.call(this, options);
-        //     f.sortProductList(page);
-        //     page++;
-
-        //     return f;
-        // },
         destroy: function(options)
         {
             var f = methods.init_facade.call(this, options);

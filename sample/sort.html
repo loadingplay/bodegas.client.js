@@ -12,7 +12,7 @@
     <input type="text" id="search" oninput="searchText()" placeholder="Barra buscadora...">
 
     <!-- href que recarga la página actual y pasa como parámetro de URL sortType=price -->
-    <div><a href="?sortType=price">ordenar por precio descendente</a></div>
+    <div><a href="?sortType=main_price&sortOrientation=desc">ordenar por precio descendente</a></div>
 
     <!-- href que recarga la página actual y pasa como parámetro de URL sortType=name -->
     <div><a href="?sortType=name">ordenar por nombre ascendiente</a></div>
@@ -54,7 +54,8 @@
             'app_public' : 2,
             'base_url' : 'https://apibodegas.loadingplay.com/',
             'products_per_page' : 100,
-            'sortBy' : $.urlParam('sortType') //Aqui se pasa el tipo de sortType usando la funcion urlParam
+            'sortBy' : $.urlParam('sortType'), //Aqui se pasa el tipo de sortType usando la funcion urlParam
+            'sortOrientation' : $.urlParam('sortOrientation')
         });
     });
 

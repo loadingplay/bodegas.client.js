@@ -1,34 +1,27 @@
-QUnit.test('product sort', function(assert) 
+QUnit.test('product sort get url parameter test',function (assert)
 {
-    var $env = $('<div></div>');
-    var done = assert.async();
+    var dummyURL = "http://*/showProduct.html";
 
-    $($env).ecommerce({'sortBy': 'main_price',
-        onLoad: function(products)
-        {
-            assert.equal(0, 0, 'Nada');
+    assert.equal($.urlParam('sortBy',dummyURL),undefined,"recognizes url withouth params"); //In the call of ecommerce, all undefined params get overwritten by the default values of the setting var
 
-            for (var i = 0; i < products.length-1; i++) 
-            {
-                assert.ok( ( products[i].main_price >= products[i+1].main_price ), 
-                    'product sorted correctly');
-            }
+    dummyURL += "?sortBy=main_price&sortOrientation=asc"; //use window.history.pushState('','','?sortBy=main_price&sortOrientation=asc'); to do this on production
 
-            done();
-        }
-    });
+    assert.equal($.urlParam('sortBy', dummyURL),'main_price',"succesfully gets url parameter");
 });
 
-QUnit.test('product sort by url parameter main_price ascendant', function(assert)
+QUnit.test('product sort by url parameter main_price asc', function(assert)
 {
     var $env = $('<div></div>');
     var done = assert.async();
 
-    window.history.pushState('', '', '?sortBy=main_price&sortOrientation=asc');
+    var dummyURL = "http://*/showProduct.html?sortBy=main_price&sortOrientation=asc";
 
-    $($env).ecommerce({'sortBy' : $.urlParam('sortBy'), 'sortOrientation' : $.urlParam('sortOrientation'),
+    $($env).ecommerce({'sortBy' : $.urlParam('sortBy', dummyURL), 'sortOrientation' : $.urlParam('sortOrientation', dummyURL),
         onLoad: function (products)
         {
+            for (var i = products.length - 1; i >= 0; i--) {
+                console.log(products[i].main_price);
+            }
 
             assert.ok((products!=null),"loaded products");
             var result = true;
@@ -43,29 +36,49 @@ QUnit.test('product sort by url parameter main_price ascendant', function(assert
             }
 
             assert.ok(result, "products all sorted by main_price ascendant");
+            done();
         }
     });
 });
 
 
-    //Recuperar valor de la url y validarlo con un assert
 
-    // $($env).ecommerce({"sortBy" : sortBy, 
-    //     onLoad: function (products){
-    //         assert.equal(0, 0, 'Nada');
 
-    //         for (var i = 0; i < products.length; i++) {
-                
-    //         }
-    //     }
-    // });
+QUnit.test('product sort by url parameter main_price desc', function(assert)
+{
+    var $env2 = $('<div></div>');
+    var done = assert.async();
 
-    //Agregar window.history.pushSTATE();
-    //Agregar window.location.href += ?sortBy='algo' para agregar este valor a la URL
+    var dummyURL = "http://*/showProduct.html?sortBy=main_price&sortOrientation=desc";
 
-$.urlParam = function(name)
+    $($env2).ecommerce({'sortBy' : $.urlParam('sortBy', dummyURL), 'sortOrientation' : $.urlParam('sortOrientation', dummyURL),
+        onLoad: function (products)
+        {
+            assert.ok((products!=null),"loaded products");
+            var result = true;
+
+            for (var i = products.length - 1; i >= 0; i--) {
+                console.log(products[i].main_price);
+            }
+
+            for (var i = 0; i < products.length-1; i++) 
+            {
+                if (products[i].main_price < products[i+1].main_price) 
+                {
+                    result = false;
+                    break;
+                }
+            }
+
+            assert.ok(result, "products all sorted by main_price descendant");
+            done();
+        }
+    });
+});
+
+$.urlParam = function(name, locationURL) //added dummyURL for testing purposes
     {
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(locationURL); //substitute locationURL for window.location.href in production
         try
         {
             return results[1] || 0; //Si lo encuentra, devuelve el valor 
@@ -75,6 +88,7 @@ $.urlParam = function(name)
             return; //Si no lo encuentra, devuelve undefined
         }
     }
+
 
 // QUnit.test('product sort', function(assert) 
 // {
