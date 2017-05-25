@@ -8,14 +8,14 @@ var Product = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
+Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, column, direction, callback) 
 {
-    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation);
+    this._list(page, items_per_page, false, callback_or_tags, search_query, user, operator, column, direction, callback);
 };
 
-Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
+Product.prototype.listIgnoringStock = function(page, items_per_page, callback_or_tags, search_query, user, operator, column, direction, callback) 
 {
-    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation);
+    this._list(page, items_per_page, true, callback_or_tags, search_query, user, operator, column, direction, callback);
 };
 
 Product.prototype.get = function(product_id, user_or_callback, callback) 
@@ -33,7 +33,7 @@ Product.prototype.get = function(product_id, user_or_callback, callback)
         });
 };
 
-Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, callback, sortBy, sortOrientation) 
+Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, column, direction, callback) 
 {
     var tags = 'false';
     var product_list = [];
@@ -62,6 +62,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         term = search_query;
     }
 
+    //@todo: Add validation for correct spelling of column sort word.
+
     jQuery.post(Utils.getURLWithoutParam('product/search'), 
         {
             "site_id": this.site_id, 
@@ -73,8 +75,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             "search": true,
             "user" : user,
             "operator" : operator,
-            "sortBy" : sortBy,
-            "sortOrientation" : sortOrientation
+            "column" : column,
+            "direction" : direction
         },
         function(data)
         {
@@ -83,56 +85,6 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
                 product_list = data.products;
             }
 
-            //sortBy llega como parámetro de Product.prototype.list
-            //console.log(sortBy); //Muestra que tipo de orden seguirán los productos.
-                        
-            //Ordena los productos por el atributo main_price en forma descendiente.
-            if(sortBy==="main_price") //Se puede reemplazar con un switch(sortBy)
-            {
-                //Simple método de burbuja para ordenar los elementos de product_list
-                var aux;                
-                switch(sortOrientation)
-                {
-                    case "desc":
-                    
-                    for (var i = 0; i < product_list.length-1; i++) 
-                    {
-                        for (var j = 0; j < product_list.length-1; j++) 
-                        {
-                            if(product_list[j].main_price < product_list[j+1].main_price)
-                            {
-                                aux = product_list[j];
-
-                                product_list[j] = product_list[j+1];
-
-                                product_list[j+1] = aux;
-                            }
-                        }
-                    }
-                    break;
-
-                    case "asc":
-                    for (var i = 0; i < product_list.length-1; i++) 
-                    {
-                        for (var j = 0; j < product_list.length-1; j++) 
-                        {
-                            if(product_list[j].main_price > product_list[j+1].main_price)
-                            {
-                                aux = product_list[j];
-
-                                product_list[j] = product_list[j+1];
-
-                                product_list[j+1] = aux;
-                            }
-                        }
-                    }
-                    break;
-
-                    case "none":
-                        //do nothing
-                    break;
-                }                
-            }
             callback(product_list);
         });
 };

@@ -132,10 +132,8 @@
             'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
 
 
-
-            //Sort by 'value', aun en prueba 
-            'sortBy' : 'none', //price, description, name, brand, etc.
-            'sortOrientation' : 'none', //atributo que aun no se implementa, muesta el orden descendiente o ascendiente
+            'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
+            'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
 
             /******* TEMPLATES *******/
             'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
@@ -242,12 +240,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
                 self.options.operator,
+                self.options.column,
+                self.options.direction,
                 function(products)
                 {
                     self.view.renderProducts(products, page, self.options.onLoad);
-                },
-                self.options.sortBy, //Este parámetro entrega el tipo de orden de los productos
-                self.option.sortOrientation
+                }
             );
         }
         else
@@ -259,12 +257,12 @@ EcommerceFacade.prototype.showProductList = function(page)
                 Utils.getUrlParameter('search_query'), 
                 self.options.user,
                 self.options.operator,
+                self.options.column,
+                self.options.direction,
                 function(products)
                 {
                     self.view.renderProducts(products, page, self.options.onLoad);
-                },
-                self.options.sortBy, //Este parámetro entrega el tipo de orden de los productos
-                self.options.sortOrientation
+                }
             );
         }
     });
