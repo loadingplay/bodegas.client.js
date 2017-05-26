@@ -7,16 +7,8 @@
     <script type="text/javascript" src="http://es.tikachips.com/common/js/jquery.cookie.js"></script>
 </head>
 <body>
-<!-- barra buscadora y botones para filtrar los productos -->
-<div>
-    <input type="text" id="search" oninput="searchText()" placeholder="Barra buscadora...">
-    <div id="all" class="category" onclick="filterButton('all',null)">Todos los productos</div>
-    <div id="alimento_perro" class="category" onclick="filterButton('alimento','perro')">Alimento para perro</div>
-    <div id="alimento_gato" class="category" onclick="filterButton('alimento','gato')">Alimento para gatos</div>
-    <div id="arena" class="category" onclick="filterButton('arena',null)">Arena para gato</div>
-</div>
-
 <!-- products default holder -->
+<a class="filtro-desc" href="#!">ordenar de mayor a menor</a>
 <div class="products" ></div>
 
 <!-- product template -->
@@ -31,88 +23,24 @@
 <script type="text/javascript" src="../dist/bodegas.client.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        $(document).ecommerce({
+
+        var config = {
             'app_public' : 2,
-            'base_url' : 'https://apibodegas.loadingplay.com/'
+            'base_url' : 'https://apibodegas.loadingplay.com/',
+            'products_per_page' : 15,
+            'column' : 'main_price',
+            'direction' : 'asc'
+        };
+
+        $(".filtro-desc").on('click', function(){
+            $(document).ecommerce("destroy");
+
+            config.direction = "desc";
+            $(document).ecommerce(config);
         });
+
+        $(document).ecommerce(config);
     });
-
-
-    //Busca dependiendo de que botón fue presionado. Se ayuda de los arrays catTerms y dogTerms para diferenciar entre gatos y perros.
-    function filterButton(first,second){
-        var products = document.querySelectorAll(".product");
-        var catTerms = ['cat','gato','felix','gati','fancy'];
-        var dogTerms = ['dog','perro','doko','duro','excellent','fancy'];
-
-        $(".category").css("background-color", "white");
-
-        switch(first){
-            case "all":
-            $("#all").css("background-color", "orange");
-            document.getElementById("all").backgroundColor = "orange";
-
-            for (var i = products.length - 1; i >= 0; i--) {
-                $("#"+products[i].id).show("slow");
-            }              
-            break;
-            case "alimento":
-            if (second=="perro") {
-                $("#alimento_perro").css("background-color", "orange");
-                for (var i = products.length - 1; i >= 0; i--) {
-                    var content = products[i].innerHTML.toLowerCase();
-                    for (var j = dogTerms.length - 1; j >= 0; j--) {
-                        if(content.indexOf(dogTerms[j]) != -1){
-                            $("#"+products[i].id).show("slow");
-                        }else{
-                            $("#"+products[i].id).hide("slow");
-                        }
-                    }
-                }
-            }else{
-                $("#alimento_gato").css("background-color", "orange");
-                for (var i = products.length - 1; i >= 0; i--) {
-                    var content = products[i].innerHTML.toLowerCase();
-                    for (var j = catTerms.length - 1; j >= 0; j--) {
-                        if(content.indexOf(catTerms[j]) != -1 && content.indexOf("arena") < 0){
-                            $("#"+products[i].id).show("slow");
-                        }else{
-                            $("#"+products[i].id).hide("slow");
-                        }
-                    }
-                }
-            }
-            break;
-
-            case "arena":
-            $("#arena").css("background-color", "orange");
-            for (var i = products.length - 1; i >= 0; i--) {
-                var content = products[i].innerHTML.toLowerCase();
-                if (content.indexOf(first) != -1) {
-                    $("#"+products[i].id).show("slow");
-                }else{
-                    $("#"+products[i].id).hide("slow");
-                }
-            }
-            break;
-        }
-    }
-
-    //Busqueda de terminos en los divs dependiendo de que se escriba en el input text
-    function searchText(){
-        var products = document.querySelectorAll(".product");
-        var searchQuery = document.getElementById("search").value.toLowerCase();
-
-        for (var i = products.length - 1; i >= 0; i--) {
-            var content = products[i].innerHTML.toLowerCase();
-            if (content.indexOf(searchQuery) != -1) {
-                $("#"+products[i].id).show("slow");
-            }else{
-                $("#"+products[i].id).hide("slow");
-            }
-        }
-
-
-    }
 </script>
 <style type="text/css">
     img {
@@ -132,8 +60,6 @@
         border: 1px solid black;
         background-color: white;
     }
-
-
 </style>
 </body>
 </html>

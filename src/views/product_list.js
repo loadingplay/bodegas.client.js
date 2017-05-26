@@ -256,11 +256,12 @@ ProductListView.prototype.destroy = function()
 {
     try 
     {
+        $(".products").html("");
         $(document).unbind('scroll', this._onScroll);
         $(document).unbind('click',  this._onClick);
     }
     catch(ex)
     {
-        console.log("mehtod unbind not found in this jquery version : " + ex);
+        console.log("method unbind not found in this jquery version : " + ex);
     }
 };
