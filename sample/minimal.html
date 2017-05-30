@@ -34,9 +34,10 @@
 
         $(".filtro-desc").on('click', function(){
             $(document).ecommerce("destroy");
+            $('.products').html("");
 
             config.direction = "desc";
-            $(document).ecommerce(config);
+            console.log($(document).ecommerce(config));
         });
 
         $(document).ecommerce(config);
