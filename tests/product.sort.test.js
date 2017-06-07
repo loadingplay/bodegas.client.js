@@ -14,12 +14,14 @@ QUnit.test('product sort by url parameter main_price asc', function(assert)
     var $env = $('<div></div>');
     var done = assert.async();
 
-    var dummyURL = "http://*/showProduct.html?sortBy=main_price&sortOrientation=asc";
-
-    $($env).ecommerce({'sortBy' : $.urlParam('sortBy', dummyURL), 'sortOrientation' : $.urlParam('sortOrientation', dummyURL),
-        onLoad: function (products)
+    $($env).ecommerce({
+        'column': 'main_price', 
+        'direction': 'asc',
+        'infinite_scroll': false,
+        'onLoad': function(products)
         {
-            for (var i = products.length - 1; i >= 0; i--) {
+            for (var i = products.length - 1; i >= 0; i--)
+            {
                 console.log(products[i].main_price);
             }
 
@@ -49,10 +51,11 @@ QUnit.test('product sort by url parameter main_price desc', function(assert)
     var $env2 = $('<div></div>');
     var done = assert.async();
 
-    var dummyURL = "http://*/showProduct.html?sortBy=main_price&sortOrientation=desc";
-
-    $($env2).ecommerce({'sortBy' : $.urlParam('sortBy', dummyURL), 'sortOrientation' : $.urlParam('sortOrientation', dummyURL),
-        onLoad: function (products)
+    $($env2).ecommerce({
+        'column': 'main_price', 
+        'direction': 'desc',
+        'infinite_scroll': false,
+        'onLoad': function (products)
         {
             assert.ok((products!=null),"loaded products");
             var result = true;
