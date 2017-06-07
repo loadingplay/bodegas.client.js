@@ -80,42 +80,14 @@ QUnit.test('product sort by url parameter main_price desc', function(assert)
 });
 
 $.urlParam = function(name, locationURL) //added dummyURL for testing purposes
+{
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(locationURL); //substitute locationURL for window.location.href in production
+    try
     {
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(locationURL); //substitute locationURL for window.location.href in production
-        try
-        {
-            return results[1] || 0; //Si lo encuentra, devuelve el valor 
-        }
-        catch(err)
-        {
-            return; //Si no lo encuentra, devuelve undefined
-        }
+        return results[1] || 0; //Si lo encuentra, devuelve el valor 
     }
-
-
-// QUnit.test('product sort', function(assert) 
-// {
-//     var $env = $('<div></div>');
-//     var done = assert.async();
-
-//     $($env).ecommerce({
-//         onLoad: function(products)
-//         {
-//             assert.equal(0, 0, 'nada');
-
-//             $($env).ecommerce({'sortBy': 'main_price'}, function(products)
-//             {
-//                 var aux = products[0].main_price;
-//                 for (var i = 1; i < products.length; i++) 
-//                 {
-//                     assert.ok((aux > products[i].main_price), 'all products are sorted');
-
-//                     aux = products[i].main_price;
-//                 }
-
-//                 done();
-//             });
-//         }
-//     });
-
-// });
+    catch(err)
+    {
+        return; //Si no lo encuentra, devuelve undefined
+    }
+}

@@ -68,7 +68,6 @@ QUnit.test('product detail on load', function(assert)
             {
                 assert.ok(true);
                 assert.ok(product.bullet_3 === 'foo');
-
                 product_loaded();
             }
         });
