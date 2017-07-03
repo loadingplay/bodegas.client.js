@@ -14,6 +14,12 @@ var ProductDetailView = function(container)
 ProductDetailView.prototype.initTemplates = function() 
 {
     this.template = $.trim($('#product_detail').html());
+
+    if (this.template === '')
+    {
+        this.template = '<div>no product template</div>';
+    }
+
     this.renderLoading();
 };
 

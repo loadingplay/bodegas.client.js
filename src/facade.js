@@ -32,8 +32,12 @@
             var f = methods.init_facade.call(this, options);
             f.showProductList(page);
             page++;
-
             return f;
+        },
+        /** just override main method */
+        product_list: function(options)
+        {
+            return methods.main.call(this, options);
         },
         product_detail: function(options)
         {
@@ -62,17 +66,6 @@
             f.setShippingCost(data);
             return f;
         },
-        init_facade: function(options)
-        {
-            var f = this.data(pluginName);
-            if (f === undefined || f === '')
-            {
-                f = new EcommerceFacade(options);
-                this.data(pluginName, f);
-            }
-
-            return f;
-        },
         product_box: function(options)
         {
             $(this).each(function()
@@ -89,6 +82,17 @@
             });
 
             return $(this);
+        },
+        init_facade: function(options)
+        {
+            var f = this.data(pluginName);
+            if (f === undefined || f === '')
+            {
+                f = new EcommerceFacade(options);
+                this.data(pluginName, f);
+            }
+
+            return f;
         },
         destroy: function(options)
         {
@@ -108,36 +112,6 @@
     $.fn[pluginName] = function( options_or_method, options ) 
     {
         var method = 'main';
-        var settings = {
-            /********* COMMON **********/
-            'app_public'            : 0,
-            'base_url'              : 'http://localhost:8520/',
-
-            /********* PRODUCTBOX **********/
-            'tag' : '',
-            'maxProducts' : 2,
-            'templateOrigin' : '.product_template',
-            'onLoad' : $.noop,
-
-            /********* OTHER **********/
-            'checkout_url'          : 'http://localhost:8522',
-            'products_per_page'     : 12,
-            'animation'             : 'none',  // none|basic|ghost
-            'ignore_stock'          : false,   // if true, shows all products
-            'product_id'            : null,
-            'infinite_scroll'       : true,
-            'analytics'             : '',  // analytics code
-            'container'             : '.container',
-            'user'                  : '',
-            'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
-
-
-            'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
-            'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
-
-            /******* TEMPLATES *******/
-            'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
-        };
 
         if (typeof(options_or_method) === 'string')
         {
@@ -150,13 +124,55 @@
 
         if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
-            options = $.extend({}, settings, options);
+            options = $.extend({}, $.fn[pluginName].defaults, options);
             options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
             Utils.base_url = options.base_url;
         }
 
-        return methods[method].call($(this), options);
+        if (this[0] === document)
+        {
+            // @deprecated: old code
+            return methods[method].call(this, options);
+        }
+        else
+        {
+            // new version
+            return $(this).each(function()
+            {
+                options.container = $(this);
+                methods[method].call($(this), options);
+            });
+        }
+    };
+
+    $.fn[pluginName].defaults = {
+        /********* COMMON **********/
+        'app_public'            : 0,
+        'base_url'              : 'https://apibodegas.loadingplay.com/',
+
+        /********* PRODUCTBOX **********/
+        'tag' : '',
+        'maxProducts' : 2,
+        'templateOrigin' : '.product_template',
+        'onLoad' : $.noop,
+
+        /********* OTHER **********/
+        'checkout_url'          : 'https://pay.loadingplay.com',
+        'products_per_page'     : 12,
+        'animation'             : 'none',  // none|basic|ghost
+        'ignore_stock'          : false,   // if true, shows all products
+        'product_id'            : null,
+        'infinite_scroll'       : true,
+        'analytics'             : '',  // analytics code
+        'container'             : '.container',  // @deprecated: use $([target]).ecommerce instead
+        'user'                  : '',
+        'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+        'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
+        'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
+
+        /******* TEMPLATES *******/
+        'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -169,7 +185,7 @@ var EcommerceFacade = function(options)
     this.page = 1;
     this.options = options;
     this.ecommerce = new BodegasClient(this.options.checkout_url);
-    this.view  = new ProductListView();
+    this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
     this.animation = null;
@@ -219,52 +235,40 @@ EcommerceFacade.prototype.showProductList = function(page)
         {
             self.view.renderTags(tags);
         });
-        // var method = self.ecommerce.product.list;
-        var tag='';
 
+        var tag = '';
         if (self.options.tag !== '')
         {
-            tag=self.options.tag;
+            tag = self.options.tag;
         }
         else
         {
-            tag=Utils.getUrlParameter('tag');
+            tag = Utils.getUrlParameter('tag');
         }
 
-        if (self.options.ignore_stock)
-        {
-            self.ecommerce.product.listIgnoringStock(
-                page, 
-                self.options.products_per_page, 
-                tag, 
-                Utils.getUrlParameter('search_query'), 
-                self.options.user,
-                self.options.operator,
-                self.options.column,
-                self.options.direction,
-                function(products)
-                {
-                    self.view.renderProducts(products, page, self.options.onLoad);
-                }
-            );
-        }
-        else
-        {
-            self.ecommerce.product.list(
-                page, 
-                self.options.products_per_page, 
-                tag, 
-                Utils.getUrlParameter('search_query'), 
-                self.options.user,
-                self.options.operator,
-                self.options.column,
-                self.options.direction,
-                function(products)
-                {
-                    self.view.renderProducts(products, page, self.options.onLoad);
-                }
-            );
-        }
+        self.ecommerce.product._list(
+            page, 
+            self.options.products_per_page, 
+            self.options.ignore_stock,
+            tag, 
+            Utils.getUrlParameter('search_query'), 
+            self.options.user,
+            self.options.operator,
+            self.options.column,
+            self.options.direction,
+            function(products)
+            {
+                self.view.renderProducts(
+                    products, 
+                    page, 
+                    function(products)
+                    {
+                        self.options.onLoad.call(this, products);
+                        self.triggerProductsLoaded(products);
+                    }
+                );
+            }
+        );
     });
 };
 
@@ -279,11 +283,17 @@ EcommerceFacade.prototype.showProductDetail = function()
             product_id, 
             self.options.user,
             function(product)
-        {
-            self.product_view.render(
-                product,
-                self.options.onLoad);
-        });
+            {
+                self.product_view.render(
+                    product,
+                    function(products)
+                    {
+                        self.options.onLoad.call(this, products);
+                        self.triggerProductsLoaded(products);
+                    }
+                );
+            }
+        );
     });
 
 };
@@ -318,4 +328,13 @@ EcommerceFacade.prototype.destroy = function()
 {
     this.ecommerce.destroy();
     this.view.destroy();
+};
+
+/**
+ * trigger event when products are loaded
+ * @param  {string} event event to trigger
+ */
+EcommerceFacade.prototype.triggerProductsLoaded = function(products) 
+{
+    $(this.options.container).trigger('products.loaded', [products]);
 };

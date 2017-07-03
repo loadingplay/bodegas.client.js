@@ -255,7 +255,7 @@ GhostAnimation.prototype.init = function()
                 }
             });
 
-            console.log($tthis.html());
+            // console.log($tthis.html());
 
         }
         catch(ex)

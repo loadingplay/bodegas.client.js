@@ -50,9 +50,8 @@
         }
     }
     $(document).ready(function(){
-        $(document).ecommerce({
+        $('.products').ecommerce({
             'app_public' : 2,
-            'base_url' : 'https://apibodegas.loadingplay.com/',
             'products_per_page' : 100,
             'sortBy' : $.urlParam('sortType'), //Aqui se pasa el tipo de sortType usando la funcion urlParam
             'sortOrientation' : $.urlParam('sortOrientation')

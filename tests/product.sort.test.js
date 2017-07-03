@@ -20,11 +20,6 @@ QUnit.test('product sort by url parameter main_price asc', function(assert)
         'infinite_scroll': false,
         'onLoad': function(products)
         {
-            for (var i = products.length - 1; i >= 0; i--)
-            {
-                console.log(products[i].main_price);
-            }
-
             assert.ok((products!=null),"loaded products");
             var result = true;
 
@@ -59,10 +54,6 @@ QUnit.test('product sort by url parameter main_price desc', function(assert)
         {
             assert.ok((products!=null),"loaded products");
             var result = true;
-
-            for (var i = products.length - 1; i >= 0; i--) {
-                console.log(products[i].main_price);
-            }
 
             for (var i = 0; i < products.length-1; i++) 
             {

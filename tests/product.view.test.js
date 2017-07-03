@@ -21,6 +21,7 @@ QUnit.test('render', function(assert)
     var loaded = assert.async();
 
     product_list_view.product_template = '<div><img class="product-image" />{{ name }} <span class="money" >{{ main_price }}</span></div>';
+    product_list_view.no_products_template = 'no products';
 
     product.list(1, 10, function(products)
     {
@@ -38,4 +39,11 @@ QUnit.test('render', function(assert)
 
         loaded();
     });
+
+
+    // try rendering with a null product list
+    var $products = $('.products');
+    product_list_view.renderProducts(null);
+    assert.equal($products.html(), 'no products', 'load products with null');
+    $products.html('');
 });

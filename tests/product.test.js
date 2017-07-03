@@ -41,7 +41,6 @@ QUnit.test('get (product detail)', function(assert)
     product.list(1, 10, function(products)
     {
         var p = products[0];
-
         product.get(p.id, function(product_data)
         {
             assert.equal(typeof product_data, 'object', 'product_data is object');

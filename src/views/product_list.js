@@ -6,7 +6,7 @@
 
 'use strict';
 
-var ProductListView = function()
+var ProductListView = function($target)
 {
     this.all_products_loaded = false;
     this.loading_products = false;
@@ -17,7 +17,7 @@ var ProductListView = function()
     this.on_click_end = $.noop;
     this.site_search = $('.site_search');
     this.no_products_template = '';
-
+    this.$target = $target === undefined ? $('.products') : $($target);
 
     // PRIVATE VARS 
     var self = this;
@@ -26,7 +26,7 @@ var ProductListView = function()
 
         if (self.loading_products) return;  // if this flag is enabled then don`t load
 
-        var $products = $('.products');
+        var $products = self.$target;
         var $loading = $('.spinner', $products);
 
         // check if loading is in viewport
@@ -39,16 +39,12 @@ var ProductListView = function()
 
     this._onClick = function()
     {
-        // if (self.loading_products) return;  // if this flag is enabled then don`t load
-        var $products = $('.products');
+        var $products = self.$target;
         var $loading = $('.spinner', $products);
 
         // check if loading is in viewport
-        // if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
-        // {
-            self.loading_products = true;
-            self.on_click_end();
-        // }
+        self.loading_products = true;
+        self.on_click_end();
     };
 
     // INNIT
@@ -62,6 +58,12 @@ ProductListView.prototype.initTemplates = function()
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
     this.site_search_template = $.trim($('#site_search_template').html());
+
+    if (this.product_template === '')
+    {
+        this.product_template = '<div>no product template</div>';
+    }
+
     this.init();
 };
 
@@ -69,7 +71,6 @@ ProductListView.prototype.initTemplates = function()
 ProductListView.prototype.init = function() 
 {
     $(document).on('scroll', this._onScroll);
-
     $(document).on('click', '.more-products', this._onClick);
 };
 
@@ -98,56 +99,88 @@ ProductListView.prototype.renderTags = function(tags)
     }
 };
 
+/**
+ * render error instead of product list
+ * @param  {[type]}   $products_view [description]
+ * @param  {[type]}   products       [description]
+ * @param  {[type]}   page           [description]
+ * @param  {Function} callback       [description]
+ * @return {[type]}                  [description]
+ */
+ProductListView.prototype.renderEmpty = function(products, page, callback) 
+{
+    if (page === 1)
+    {
+        this.$target.html(this.no_products_template);
+    }
+    this.all_products_loaded = true;
+    this.removeLoading();
+
+    // finish rendering
+    this.finishRendering(page, products, callback);
+};
+
+/**
+ * finishes the product rendering
+ * @param  {[type]}   page     [description]
+ * @param  {[type]}   products [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+ProductListView.prototype.finishRendering = function(page, products, callback) 
+{
+    this.page = page;
+    callback.call(this, products);
+};
+
+/**
+ * render a single product and return the html
+ * @param  {[type]} product [description]
+ * @return {[type]}         [description]
+ */
+ProductListView.prototype.renderProduct = function(product) 
+{
+    var $rendered = $(Utils.render(this.product_template, product));
+    this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
+
+    if (product.balance_units === 0)
+    {
+        this.showSoldOut($rendered);
+    }
+
+    return $rendered;
+};
 
 ProductListView.prototype.renderProducts = function(products, page, callback) 
 {
+    var rendered;
+    var html_builder = []
+
+    // some validations
+    products = products === null?[]:products;
+    page = isNaN(parseInt(page)) ? 1:page;
     callback = typeof callback === 'function' ? callback: $.noop;
-    var $products_view = $('.products');
 
-    try {
-        if (products.length > 0)
-        {
-            for (var i = 0; i < products.length; i++) 
-            {
-                var product = products[i];
-
-                var $rendered = $(Utils.render(this.product_template, product));
-                Utils.processPrice($rendered);
-
-                this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
-
-                if (product.balance_units === 0)
-                {
-                    this.showSoldOut($rendered);
-                }
-
-                $products_view.append($rendered);
-            }
-            this.renderLoading();
-        }
-        else
-        {
-            if (page === 1)
-            {
-                $products_view.html(this.no_products_template);
-            }
-            this.all_products_loaded = true;
-            this.removeLoading();
-        }
-    } 
-    catch(err) 
+    // when product list is empty then show error
+    if (products.length <= 0)
     {
-        if (products === null){
-            this.all_products_loaded = true;
-            this.removeLoading();
-
-            $products_view.html(this.no_products_template);
-        }
-        console.log(err);
+        this.renderEmpty(products, page, callback);
+        return
     }
 
-    this.page = page;
-    callback.call(this, products);
+    // render product list
+    for (var i = 0; i < products.length; i++) 
+    {
+        html_builder.push(
+            this.renderProduct(products[i])
+        );
+    }
+    this.$target.append(html_builder);
+    Utils.processPrice(this.$target);
+
+    // finish renering process
+    this.renderLoading();
+    this.finishRendering(page, products, callback);
 };
 
 
@@ -160,8 +193,7 @@ ProductListView.prototype.showSoldOut = function($rendered)
 
 ProductListView.prototype.removeLoading = function() 
 {
-    var $products = $('.products');
-    $('.spinner', $products).remove();
+    $('.spinner', this.$target).remove();
     $('.more-products').css('display', 'none');
 };
 
@@ -170,8 +202,7 @@ ProductListView.prototype.renderLoading = function()
     this.removeLoading();
     if (!this.all_products_loaded)
     {
-        var $products = $('.products');
-        $products.append($('#product_loading').html());
+        this.$target.append($('#product_loading').html());
         $('.more-products').css('display', 'block');
     }
     this.loading_products = false;
@@ -181,7 +212,6 @@ ProductListView.prototype.renderLoading = function()
 ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref) 
 {
     var url = Utils.getURL('product', ['images', product_id]);
-
     $.get(url, function(data)
     {
         if (typeof(data) === 'string')
@@ -256,7 +286,7 @@ ProductListView.prototype.destroy = function()
 {
     try 
     {
-        $(".products").html("");
+        this.$target.html("");
         $(document).unbind('scroll', this._onScroll);
         $(document).unbind('click',  this._onClick);
     }

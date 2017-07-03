@@ -26,21 +26,20 @@
 
         var config = {
             'app_public' : 2,
-            'base_url' : 'https://apibodegas.loadingplay.com/',
             'products_per_page' : 15,
             'column' : 'main_price',
             'direction' : 'asc'
         };
 
         $(".filtro-desc").on('click', function(){
-            $(document).ecommerce("destroy");
+            $('.products').ecommerce("destroy");
             $('.products').html("");
 
-            config.direction = "desc";
-            console.log($(document).ecommerce(config));
+            config.direction = 'desc';
+            console.log($('.products').ecommerce(config));
         });
 
-        $(document).ecommerce(config);
+        $('.products').ecommerce(config);
     });
 </script>
 <style type="text/css">

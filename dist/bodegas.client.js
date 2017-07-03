@@ -255,7 +255,7 @@ GhostAnimation.prototype.init = function()
                 }
             });
 
-            console.log($tthis.html());
+            // console.log($tthis.html());
 
         }
         catch(ex)
@@ -429,8 +429,12 @@ ExtraInfo.prototype.synchronize = function()
             var f = methods.init_facade.call(this, options);
             f.showProductList(page);
             page++;
-
             return f;
+        },
+        /** just override main method */
+        product_list: function(options)
+        {
+            return methods.main.call(this, options);
         },
         product_detail: function(options)
         {
@@ -459,17 +463,6 @@ ExtraInfo.prototype.synchronize = function()
             f.setShippingCost(data);
             return f;
         },
-        init_facade: function(options)
-        {
-            var f = this.data(pluginName);
-            if (f === undefined || f === '')
-            {
-                f = new EcommerceFacade(options);
-                this.data(pluginName, f);
-            }
-
-            return f;
-        },
         product_box: function(options)
         {
             $(this).each(function()
@@ -486,6 +479,17 @@ ExtraInfo.prototype.synchronize = function()
             });
 
             return $(this);
+        },
+        init_facade: function(options)
+        {
+            var f = this.data(pluginName);
+            if (f === undefined || f === '')
+            {
+                f = new EcommerceFacade(options);
+                this.data(pluginName, f);
+            }
+
+            return f;
         },
         destroy: function(options)
         {
@@ -505,36 +509,6 @@ ExtraInfo.prototype.synchronize = function()
     $.fn[pluginName] = function( options_or_method, options ) 
     {
         var method = 'main';
-        var settings = {
-            /********* COMMON **********/
-            'app_public'            : 0,
-            'base_url'              : 'http://localhost:8520/',
-
-            /********* PRODUCTBOX **********/
-            'tag' : '',
-            'maxProducts' : 2,
-            'templateOrigin' : '.product_template',
-            'onLoad' : $.noop,
-
-            /********* OTHER **********/
-            'checkout_url'          : 'http://localhost:8522',
-            'products_per_page'     : 12,
-            'animation'             : 'none',  // none|basic|ghost
-            'ignore_stock'          : false,   // if true, shows all products
-            'product_id'            : null,
-            'infinite_scroll'       : true,
-            'analytics'             : '',  // analytics code
-            'container'             : '.container',
-            'user'                  : '',
-            'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
-
-
-            'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
-            'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
-
-            /******* TEMPLATES *******/
-            'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
-        };
 
         if (typeof(options_or_method) === 'string')
         {
@@ -547,13 +521,55 @@ ExtraInfo.prototype.synchronize = function()
 
         if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
-            options = $.extend({}, settings, options);
+            options = $.extend({}, $.fn[pluginName].defaults, options);
             options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
             Utils.base_url = options.base_url;
         }
 
-        return methods[method].call($(this), options);
+        if (this[0] === document)
+        {
+            // @deprecated: old code
+            return methods[method].call(this, options);
+        }
+        else
+        {
+            // new version
+            return $(this).each(function()
+            {
+                options.container = $(this);
+                methods[method].call($(this), options);
+            });
+        }
+    };
+
+    $.fn[pluginName].defaults = {
+        /********* COMMON **********/
+        'app_public'            : 0,
+        'base_url'              : 'https://apibodegas.loadingplay.com/',
+
+        /********* PRODUCTBOX **********/
+        'tag' : '',
+        'maxProducts' : 2,
+        'templateOrigin' : '.product_template',
+        'onLoad' : $.noop,
+
+        /********* OTHER **********/
+        'checkout_url'          : 'https://pay.loadingplay.com',
+        'products_per_page'     : 12,
+        'animation'             : 'none',  // none|basic|ghost
+        'ignore_stock'          : false,   // if true, shows all products
+        'product_id'            : null,
+        'infinite_scroll'       : true,
+        'analytics'             : '',  // analytics code
+        'container'             : '.container',  // @deprecated: use $([target]).ecommerce instead
+        'user'                  : '',
+        'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+        'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
+        'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
+
+        /******* TEMPLATES *******/
+        'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -566,7 +582,7 @@ var EcommerceFacade = function(options)
     this.page = 1;
     this.options = options;
     this.ecommerce = new BodegasClient(this.options.checkout_url);
-    this.view  = new ProductListView();
+    this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
     this.animation = null;
@@ -616,52 +632,40 @@ EcommerceFacade.prototype.showProductList = function(page)
         {
             self.view.renderTags(tags);
         });
-        // var method = self.ecommerce.product.list;
-        var tag='';
 
+        var tag = '';
         if (self.options.tag !== '')
         {
-            tag=self.options.tag;
+            tag = self.options.tag;
         }
         else
         {
-            tag=Utils.getUrlParameter('tag');
+            tag = Utils.getUrlParameter('tag');
         }
 
-        if (self.options.ignore_stock)
-        {
-            self.ecommerce.product.listIgnoringStock(
-                page, 
-                self.options.products_per_page, 
-                tag, 
-                Utils.getUrlParameter('search_query'), 
-                self.options.user,
-                self.options.operator,
-                self.options.column,
-                self.options.direction,
-                function(products)
-                {
-                    self.view.renderProducts(products, page, self.options.onLoad);
-                }
-            );
-        }
-        else
-        {
-            self.ecommerce.product.list(
-                page, 
-                self.options.products_per_page, 
-                tag, 
-                Utils.getUrlParameter('search_query'), 
-                self.options.user,
-                self.options.operator,
-                self.options.column,
-                self.options.direction,
-                function(products)
-                {
-                    self.view.renderProducts(products, page, self.options.onLoad);
-                }
-            );
-        }
+        self.ecommerce.product._list(
+            page, 
+            self.options.products_per_page, 
+            self.options.ignore_stock,
+            tag, 
+            Utils.getUrlParameter('search_query'), 
+            self.options.user,
+            self.options.operator,
+            self.options.column,
+            self.options.direction,
+            function(products)
+            {
+                self.view.renderProducts(
+                    products, 
+                    page, 
+                    function(products)
+                    {
+                        self.options.onLoad.call(this, products);
+                        self.triggerProductsLoaded(products);
+                    }
+                );
+            }
+        );
     });
 };
 
@@ -676,11 +680,17 @@ EcommerceFacade.prototype.showProductDetail = function()
             product_id, 
             self.options.user,
             function(product)
-        {
-            self.product_view.render(
-                product,
-                self.options.onLoad);
-        });
+            {
+                self.product_view.render(
+                    product,
+                    function(products)
+                    {
+                        self.options.onLoad.call(this, products);
+                        self.triggerProductsLoaded(products);
+                    }
+                );
+            }
+        );
     });
 
 };
@@ -715,6 +725,15 @@ EcommerceFacade.prototype.destroy = function()
 {
     this.ecommerce.destroy();
     this.view.destroy();
+};
+
+/**
+ * trigger event when products are loaded
+ * @param  {string} event event to trigger
+ */
+EcommerceFacade.prototype.triggerProductsLoaded = function(products) 
+{
+    $(this.options.container).trigger('products.loaded', [products]);
 };
 
 /* globals jQuery */
@@ -1467,6 +1486,12 @@ var ProductDetailView = function(container)
 ProductDetailView.prototype.initTemplates = function() 
 {
     this.template = $.trim($('#product_detail').html());
+
+    if (this.template === '')
+    {
+        this.template = '<div>no product template</div>';
+    }
+
     this.renderLoading();
 };
 
@@ -1582,7 +1607,7 @@ ProductDetailView.prototype.renderLoading = function()
 
 'use strict';
 
-var ProductListView = function()
+var ProductListView = function($target)
 {
     this.all_products_loaded = false;
     this.loading_products = false;
@@ -1593,7 +1618,7 @@ var ProductListView = function()
     this.on_click_end = $.noop;
     this.site_search = $('.site_search');
     this.no_products_template = '';
-
+    this.$target = $target === undefined ? $('.products') : $($target);
 
     // PRIVATE VARS 
     var self = this;
@@ -1602,7 +1627,7 @@ var ProductListView = function()
 
         if (self.loading_products) return;  // if this flag is enabled then don`t load
 
-        var $products = $('.products');
+        var $products = self.$target;
         var $loading = $('.spinner', $products);
 
         // check if loading is in viewport
@@ -1615,16 +1640,12 @@ var ProductListView = function()
 
     this._onClick = function()
     {
-        // if (self.loading_products) return;  // if this flag is enabled then don`t load
-        var $products = $('.products');
+        var $products = self.$target;
         var $loading = $('.spinner', $products);
 
         // check if loading is in viewport
-        // if($(window).scrollTop() >= $(document).height() - $(window).height() - 400)
-        // {
-            self.loading_products = true;
-            self.on_click_end();
-        // }
+        self.loading_products = true;
+        self.on_click_end();
     };
 
     // INNIT
@@ -1638,6 +1659,12 @@ ProductListView.prototype.initTemplates = function()
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
     this.site_search_template = $.trim($('#site_search_template').html());
+
+    if (this.product_template === '')
+    {
+        this.product_template = '<div>no product template</div>';
+    }
+
     this.init();
 };
 
@@ -1645,7 +1672,6 @@ ProductListView.prototype.initTemplates = function()
 ProductListView.prototype.init = function() 
 {
     $(document).on('scroll', this._onScroll);
-
     $(document).on('click', '.more-products', this._onClick);
 };
 
@@ -1674,56 +1700,88 @@ ProductListView.prototype.renderTags = function(tags)
     }
 };
 
+/**
+ * render error instead of product list
+ * @param  {[type]}   $products_view [description]
+ * @param  {[type]}   products       [description]
+ * @param  {[type]}   page           [description]
+ * @param  {Function} callback       [description]
+ * @return {[type]}                  [description]
+ */
+ProductListView.prototype.renderEmpty = function(products, page, callback) 
+{
+    if (page === 1)
+    {
+        this.$target.html(this.no_products_template);
+    }
+    this.all_products_loaded = true;
+    this.removeLoading();
+
+    // finish rendering
+    this.finishRendering(page, products, callback);
+};
+
+/**
+ * finishes the product rendering
+ * @param  {[type]}   page     [description]
+ * @param  {[type]}   products [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+ProductListView.prototype.finishRendering = function(page, products, callback) 
+{
+    this.page = page;
+    callback.call(this, products);
+};
+
+/**
+ * render a single product and return the html
+ * @param  {[type]} product [description]
+ * @return {[type]}         [description]
+ */
+ProductListView.prototype.renderProduct = function(product) 
+{
+    var $rendered = $(Utils.render(this.product_template, product));
+    this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
+
+    if (product.balance_units === 0)
+    {
+        this.showSoldOut($rendered);
+    }
+
+    return $rendered;
+};
 
 ProductListView.prototype.renderProducts = function(products, page, callback) 
 {
+    var rendered;
+    var html_builder = []
+
+    // some validations
+    products = products === null?[]:products;
+    page = isNaN(parseInt(page)) ? 1:page;
     callback = typeof callback === 'function' ? callback: $.noop;
-    var $products_view = $('.products');
 
-    try {
-        if (products.length > 0)
-        {
-            for (var i = 0; i < products.length; i++) 
-            {
-                var product = products[i];
-
-                var $rendered = $(Utils.render(this.product_template, product));
-                Utils.processPrice($rendered);
-
-                this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
-
-                if (product.balance_units === 0)
-                {
-                    this.showSoldOut($rendered);
-                }
-
-                $products_view.append($rendered);
-            }
-            this.renderLoading();
-        }
-        else
-        {
-            if (page === 1)
-            {
-                $products_view.html(this.no_products_template);
-            }
-            this.all_products_loaded = true;
-            this.removeLoading();
-        }
-    } 
-    catch(err) 
+    // when product list is empty then show error
+    if (products.length <= 0)
     {
-        if (products === null){
-            this.all_products_loaded = true;
-            this.removeLoading();
-
-            $products_view.html(this.no_products_template);
-        }
-        console.log(err);
+        this.renderEmpty(products, page, callback);
+        return
     }
 
-    this.page = page;
-    callback.call(this, products);
+    // render product list
+    for (var i = 0; i < products.length; i++) 
+    {
+        html_builder.push(
+            this.renderProduct(products[i])
+        );
+    }
+    this.$target.append(html_builder);
+    Utils.processPrice(this.$target);
+
+    // finish renering process
+    this.renderLoading();
+    this.finishRendering(page, products, callback);
 };
 
 
@@ -1736,8 +1794,7 @@ ProductListView.prototype.showSoldOut = function($rendered)
 
 ProductListView.prototype.removeLoading = function() 
 {
-    var $products = $('.products');
-    $('.spinner', $products).remove();
+    $('.spinner', this.$target).remove();
     $('.more-products').css('display', 'none');
 };
 
@@ -1746,8 +1803,7 @@ ProductListView.prototype.renderLoading = function()
     this.removeLoading();
     if (!this.all_products_loaded)
     {
-        var $products = $('.products');
-        $products.append($('#product_loading').html());
+        this.$target.append($('#product_loading').html());
         $('.more-products').css('display', 'block');
     }
     this.loading_products = false;
@@ -1757,7 +1813,6 @@ ProductListView.prototype.renderLoading = function()
 ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref) 
 {
     var url = Utils.getURL('product', ['images', product_id]);
-
     $.get(url, function(data)
     {
         if (typeof(data) === 'string')
@@ -1832,7 +1887,7 @@ ProductListView.prototype.destroy = function()
 {
     try 
     {
-        $(".products").html("");
+        this.$target.html("");
         $(document).unbind('scroll', this._onScroll);
         $(document).unbind('click',  this._onClick);
     }
