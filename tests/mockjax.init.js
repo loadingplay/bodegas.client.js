@@ -402,3 +402,62 @@ $.mockjax({
     type: "get",
     responseText: {"tags": [{"visible": 1, "site_id": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_id": 2, "id": 2, "name": "perro"}]}
 });
+
+
+$.mockjax({
+    url: new RegExp(base_url + "/variant/list"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
+    }
+});
+
+
+$.mockjax({
+    url: new RegExp(base_url + "/variant/value/list"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {
+            "status": "success", 
+            "values": [{
+                "values": [{
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 1, 
+                    "value": "1", 
+                    "variant_name": "talla"
+                }, {
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 2, 
+                    "value": "2", 
+                    "variant_name": "talla"
+                }, {
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 3, 
+                    "value": "3", 
+                    "variant_name": "talla"
+                }], 
+                "variant_name": "talla"
+            }, {
+                "values": [{
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 4, 
+                    "value": "rojo", 
+                    "variant_name": "color"
+                }, {
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 5, 
+                    "value": "verde", 
+                    "variant_name": "color"
+                }, {
+                    "site_name": "me_NBK-SACO-NEGRA-C168", 
+                    "id": 6, 
+                    "value": "azul", 
+                    "variant_name": "color"
+                }], 
+                "variant_name": "color"
+            }]
+        };
+    }
+});

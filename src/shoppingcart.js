@@ -116,9 +116,6 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-            // this.model[i].bullet_1 = this.model[i].bullet_1;
-            // this.model[i].bullet_2 = this.model[i].bullet_2;
-            // this.model[i].bullet_3 = this.model[i].bullet_3;
 
             this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
@@ -193,6 +190,11 @@ ShoppingCart.prototype.getProducts = function()
     return this.model;
 };
 
+/**
+ * check if product exists
+ * @param  {int} id product id
+ * @return {boolean}    true if product exists, false otherwise
+ */
 ShoppingCart.prototype.productExist = function(id) 
 {
     var pid = parseInt(id);

@@ -83,6 +83,12 @@
 
             return $(this);
         },
+        load_variants: function(options)
+        {
+            var f = methods.init_facade.call(this, options);
+            f.loadVariants();
+            return f;
+        },
         init_facade: function(options)
         {
             var f = this.data(pluginName);
@@ -152,10 +158,10 @@
         'base_url'              : 'https://apibodegas.loadingplay.com/',
 
         /********* PRODUCTBOX **********/
-        'tag' : '',
-        'maxProducts' : 2,
-        'templateOrigin' : '.product_template',
-        'onLoad' : $.noop,
+        'tag'                   : '',
+        'maxProducts'           : 2,
+        'templateOrigin'        : '.product_template',
+        'onLoad'                : $.noop,
 
         /********* OTHER **********/
         'checkout_url'          : 'https://pay.loadingplay.com',
@@ -167,12 +173,16 @@
         'analytics'             : '',  // analytics code
         'container'             : '.container',  // @deprecated: use $([target]).ecommerce instead
         'user'                  : '',
-        'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+        'operator'              : 'or', // solo se puede pasar mas de 1 tag con operator and, or solo funciona con 1 tag
         'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
         'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
 
         /******* TEMPLATES *******/
-        'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
+        'no_products_template'  : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>',
+
+        /******* VARIANTS ********/
+        'product_sku'           : '',  // use this instead of product_id
+        'site_name'             : ''  // use this instead of app_public
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -188,6 +198,7 @@ var EcommerceFacade = function(options)
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
+    this.variants_view = new VariantsView(this.options.container);
     this.animation = null;
 
     // initialize animation
@@ -299,6 +310,37 @@ EcommerceFacade.prototype.showProductDetail = function()
 };
 
 
+/**
+ * load variants from api and render them in jquery target
+ */
+EcommerceFacade.prototype.loadVariants = function() 
+{
+    var product_sku = this.options.product_sku || Utils.getUrlParameter('sku');
+    var self = this;
+
+    this.ecommerce.authenticate(this.options.app_public, function()
+    {
+        self.ecommerce.variants.get(
+            product_sku,
+            function(variants)
+            {
+                var vs = [];
+
+                for (var i = 0; i < variants.length; i++) 
+                {
+                    vs.push(variants[i].name)
+                }
+
+                self.ecommerce.variants.getValues(product_sku, vs.join(","), function(variants)
+                {
+                    self.variants_view.renderValues(variants);
+                    self.options.onLoad.call(this, variants);
+                    self.triggerVariantsLoaded(variants);
+                })
+            });
+    });
+};
+
 EcommerceFacade.prototype.setData = function(data) 
 {
     if (typeof data === 'object')
@@ -337,4 +379,13 @@ EcommerceFacade.prototype.destroy = function()
 EcommerceFacade.prototype.triggerProductsLoaded = function(products) 
 {
     $(this.options.container).trigger('products.loaded', [products]);
+};
+
+/**
+ * thi event get triggered when all variants are loaded
+ * @param  {list} variants variants list 
+ */
+EcommerceFacade.prototype.triggerVariantsLoaded = function(variants) 
+{
+    $(this.options.container).trigger('variants.loaded', [variants]);
 };

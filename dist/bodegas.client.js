@@ -288,6 +288,8 @@ var BodegasClient = function(checkout_url)
     this.tag = new Tag();
     this.product = new Product();
     this.cart = new ShoppingCart();
+
+    this.variants = new Variants();
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback) 
@@ -480,6 +482,12 @@ ExtraInfo.prototype.synchronize = function()
 
             return $(this);
         },
+        load_variants: function(options)
+        {
+            var f = methods.init_facade.call(this, options);
+            f.loadVariants();
+            return f;
+        },
         init_facade: function(options)
         {
             var f = this.data(pluginName);
@@ -549,10 +557,10 @@ ExtraInfo.prototype.synchronize = function()
         'base_url'              : 'https://apibodegas.loadingplay.com/',
 
         /********* PRODUCTBOX **********/
-        'tag' : '',
-        'maxProducts' : 2,
-        'templateOrigin' : '.product_template',
-        'onLoad' : $.noop,
+        'tag'                   : '',
+        'maxProducts'           : 2,
+        'templateOrigin'        : '.product_template',
+        'onLoad'                : $.noop,
 
         /********* OTHER **********/
         'checkout_url'          : 'https://pay.loadingplay.com',
@@ -564,12 +572,16 @@ ExtraInfo.prototype.synchronize = function()
         'analytics'             : '',  // analytics code
         'container'             : '.container',  // @deprecated: use $([target]).ecommerce instead
         'user'                  : '',
-        'operator'              : 'or', //solo se puede pasar mas de 1 tag con operator and , or solo funciona con 1 tag
+        'operator'              : 'or', // solo se puede pasar mas de 1 tag con operator and, or solo funciona con 1 tag
         'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
         'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
 
         /******* TEMPLATES *******/
-        'no_products_template' : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>'
+        'no_products_template'  : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>',
+
+        /******* VARIANTS ********/
+        'product_sku'           : '',  // use this instead of product_id
+        'site_name'             : ''  // use this instead of app_public
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -585,6 +597,7 @@ var EcommerceFacade = function(options)
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
+    this.variants_view = new VariantsView(this.options.container);
     this.animation = null;
 
     // initialize animation
@@ -696,6 +709,37 @@ EcommerceFacade.prototype.showProductDetail = function()
 };
 
 
+/**
+ * load variants from api and render them in jquery target
+ */
+EcommerceFacade.prototype.loadVariants = function() 
+{
+    var product_sku = this.options.product_sku || Utils.getUrlParameter('sku');
+    var self = this;
+
+    this.ecommerce.authenticate(this.options.app_public, function()
+    {
+        self.ecommerce.variants.get(
+            product_sku,
+            function(variants)
+            {
+                var vs = [];
+
+                for (var i = 0; i < variants.length; i++) 
+                {
+                    vs.push(variants[i].name)
+                }
+
+                self.ecommerce.variants.getValues(product_sku, vs.join(","), function(variants)
+                {
+                    self.variants_view.renderValues(variants);
+                    self.options.onLoad.call(this, variants);
+                    self.triggerVariantsLoaded(variants);
+                })
+            });
+    });
+};
+
 EcommerceFacade.prototype.setData = function(data) 
 {
     if (typeof data === 'object')
@@ -734,6 +778,15 @@ EcommerceFacade.prototype.destroy = function()
 EcommerceFacade.prototype.triggerProductsLoaded = function(products) 
 {
     $(this.options.container).trigger('products.loaded', [products]);
+};
+
+/**
+ * thi event get triggered when all variants are loaded
+ * @param  {list} variants variants list 
+ */
+EcommerceFacade.prototype.triggerVariantsLoaded = function(variants) 
+{
+    $(this.options.container).trigger('variants.loaded', [variants]);
 };
 
 /* globals jQuery */
@@ -1001,9 +1054,6 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-            // this.model[i].bullet_1 = this.model[i].bullet_1;
-            // this.model[i].bullet_2 = this.model[i].bullet_2;
-            // this.model[i].bullet_3 = this.model[i].bullet_3;
 
             this.saveModel(callback);
             this.gaAddProduct(this.model[i], i);
@@ -1078,6 +1128,11 @@ ShoppingCart.prototype.getProducts = function()
     return this.model;
 };
 
+/**
+ * check if product exists
+ * @param  {int} id product id
+ * @return {boolean}    true if product exists, false otherwise
+ */
 ShoppingCart.prototype.productExist = function(id) 
 {
     var pid = parseInt(id);
@@ -1469,6 +1524,58 @@ var Utils = {  //jshint ignore: line
     }
 };
 
+
+/* globals jQuery */
+/* globals Utils */
+
+'use strict';
+
+var Variants = function(options)
+{
+    var options = options || {};
+    this.site_name = options.site_name || '';
+};
+
+/**
+ * load variants from API
+ * @param  {stirng}   product_sku the product identifier
+ * @param  {Function} cb         callback
+ */
+Variants.prototype.get = function(product_sku, cb) 
+{
+    jQuery.get(
+        Utils.getURL('v1', ['variant', 'list']), 
+        {
+            'site_name': this.site_name + '_' + product_sku
+        },
+        function(v)
+        {
+            cb(v.variants);
+        }
+    );
+};
+
+
+/**
+ * load values from API
+ * @param  {string}   product_sku  the product sku
+ * @param  {stirng}   variant_name the variant name or comma separated names
+ * @param  {Function} cb           callback method
+ */
+Variants.prototype.getValues = function(product_sku, variant_name, cb) 
+{
+    jQuery.get(
+        Utils.getURL('v1', ['variant', 'value', 'list']),
+        {
+            'site_name': this.site_name + '_' + product_sku,
+            'variant': variant_name
+        },
+        function(v)
+        {
+            cb(v.values);
+        }
+    );
+};
 
 /* globals Utils */
 /* globals $*/
@@ -2247,4 +2354,31 @@ ShoppingCartView.prototype.getRenderDictionary = function()
         'site_id' : this.controller.getSiteId(),
         'cart_id' : this.controller.getGUID()
     };
+};
+
+/* globals jQuery */
+/* globals Utils */
+
+'use strict';
+
+var VariantsView = function($target)
+{
+    this.$target = $target;
+    this.value_template = '<div class="variant-value" >{{ value }}</div>'
+    this.variant_template = '<div class="variant" >\
+            <div class="variant-head" >{{ variant_name }}</div>\
+            <div class="variant-values"></div>\
+        </div>';
+};
+
+VariantsView.prototype.renderValues = function(values) 
+{
+    var variant_builder = [];
+    for (var i = 0; i < values.length; i++) 
+    {
+        variant_builder.push(Utils.render(this.variant_template, values[i]));
+    }
+
+    this.$target.html(variant_builder.join(''));
+    console.log(this.$target.html());
 };
