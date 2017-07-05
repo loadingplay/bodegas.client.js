@@ -133,6 +133,20 @@ ShoppingCartView.prototype.addToCartClick = function($button)
     this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3, img);
 };
 
+
+/**
+ * collect and return checkout data
+ * @return {object} checkout data bundle
+ */
+ShoppingCartView.prototype.getCheckoutData = function() 
+{
+    return {
+        checkout_url : this.controller.getCheckoutUrl(),
+        site_id : this.controller.getSiteId(),
+        cart_id : this.controller.getGUID()
+    };
+};
+
 ShoppingCartView.prototype.buyProductClick = function($button) 
 {
     var self = this;
@@ -150,11 +164,7 @@ ShoppingCartView.prototype.buyProductClick = function($button)
     };
 
     // get checkout data
-    var checkout = {
-        checkout_url : this.controller.getCheckoutUrl(),
-        site_id : this.controller.getSiteId(),
-        cart_id : this.controller.getGUID()
-    };
+    var checkout = self.getCheckoutData();
 
     // delete all other products
     this.controller.clearCart(function(){
