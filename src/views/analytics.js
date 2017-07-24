@@ -47,22 +47,22 @@
         callback = callback === undefined ? $.noop : callback;
         method = method === undefined ? 'main' : method;
 
-        if (method === 'main')
-        {
-            var ondev_url = 'https://www.google-analytics.com/analytics_debug.js';
-            var prod_url = 'https://www.google-analytics.com/analytics.js';
+        // if (method === 'main')
+        // {
+        //     var ondev_url = 'https://www.google-analytics.com/analytics_debug.js';
+        //     var prod_url = 'https://www.google-analytics.com/analytics.js';
 
-            var analytics_url = is_prod ? prod_url:ondev_url;
+        //     var analytics_url = is_prod ? prod_url:ondev_url;
 
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script',analytics_url,'ga');
+        //     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        //     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        //     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        //     })(window,document,'script',analytics_url,'ga');
 
-            ga('create', 'UA-60108520-1', 'auto');
-            ga('send', 'pageview');
-            ga('require', 'ec');
-        }
+        //     ga('create', data.url_code, 'auto');
+        //     ga('send', 'pageview');
+        //     ga('require', 'ec');
+        // }
 
         if (method === 'product-add')
         {

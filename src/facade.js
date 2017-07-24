@@ -220,6 +220,7 @@ var EcommerceFacade = function(options)
         this.ecommerce.enableGA();
         this.product_view.enableGA();
     }
+
     // infinite scroll
     if (options.infinite_scroll)
     {

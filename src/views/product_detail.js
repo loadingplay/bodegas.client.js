@@ -39,6 +39,17 @@ ProductDetailView.prototype.render = function(product, callback)
     callback.call($el, product);
 
     this.sendPageView(product);
+
+//SE IMPLEMENTA DICCIONARIO DE ANALYTICS
+
+    var dict = {
+        ga_id: product.id,
+        ga_name: product.name,
+        ga_tag: product.tags,
+        ga_price: product.main_price,
+    };
+
+    $.analytics("product-detail", dict);
 };
 
 ProductDetailView.prototype.renderImages = function($images, product_id) 
