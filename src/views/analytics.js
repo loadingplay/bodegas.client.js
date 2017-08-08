@@ -47,6 +47,11 @@
         callback = callback === undefined ? $.noop : callback;
         method = method === undefined ? 'main' : method;
 
+        if (window.ga === undefined)
+        {
+            return false;
+        }
+
         // if (method === 'main')
         // {
         //     var ondev_url = 'https://www.google-analytics.com/analytics_debug.js';
