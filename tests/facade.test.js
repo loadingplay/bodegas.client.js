@@ -61,4 +61,8 @@ QUnit.test('General loading', function(assert)
         assert.notEqual($product_detail.html(), '', 'products loaded');
         done3();
     });
+
+    // test old api
+    assert.notOk($(document).ecommerce() instanceof jQuery, 'not jQuery');
+    assert.ok($('<div></div>').ecommerce() instanceof jQuery, 'jQuery');
 });

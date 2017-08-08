@@ -136,7 +136,7 @@
             Utils.base_url = options.base_url;
         }
 
-        if (this[0] === document)
+        if (this[0] instanceof Document)
         {
             // @deprecated: old code
             return methods[method].call(this, options);
