@@ -56,7 +56,6 @@ QUnit.test('get (product detail)', function(assert)
 QUnit.test('product detail on load', function(assert)
 {
     var product_loaded = assert.async();
-
     $(document).ecommerce(
         'product_detail',
         {

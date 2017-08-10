@@ -5,10 +5,10 @@
 
 var ProductBox = function($div, options)
 {
-    options = options || {};
+    options = options || {};
 
 
-    this.max_products = options.maxProducts || 10;
+    this.max_products = options.maxProducts || 10;
     this.template_origin = options.templateOrigin || '';
     this.app_public = options.app_public || 1;
     this.base_url = options.base_url || 'http://apibodegas.ondev.today/';

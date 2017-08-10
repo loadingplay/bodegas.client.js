@@ -97,6 +97,10 @@
                 f = new EcommerceFacade(options);
                 this.data(pluginName, f);
             }
+            else
+            {
+                f.changeOptions(options);
+            }
 
             return f;
         },
@@ -171,7 +175,7 @@
         'product_id'            : null,
         'infinite_scroll'       : true,
         'analytics'             : '',  // analytics code
-        'container'             : '.container',  // @deprecated: use $([target]).ecommerce instead
+        'container'             : null,  // @deprecated: use $([target]).ecommerce instead
         'user'                  : '',
         'operator'              : 'or', // solo se puede pasar mas de 1 tag con operator and, or solo funciona con 1 tag
         'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
@@ -240,6 +244,12 @@ var EcommerceFacade = function(options)
 EcommerceFacade.prototype.showProductList = function(page) 
 {
     var self = this;
+
+    if (this.options === undefined || !this.options.hasOwnProperty('app_public'))
+    {
+        console.error('you must select an app id or name');
+        return;
+    }
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
@@ -389,4 +399,15 @@ EcommerceFacade.prototype.triggerProductsLoaded = function(products)
 EcommerceFacade.prototype.triggerVariantsLoaded = function(variants) 
 {
     $(this.options.container).trigger('variants.loaded', [variants]);
+};
+
+/**
+ * change options
+ * @param  {object} options json object with options
+ */
+EcommerceFacade.prototype.changeOptions = function(options) 
+{
+    this.options = options;
+
+    // @todo: change other options
 };

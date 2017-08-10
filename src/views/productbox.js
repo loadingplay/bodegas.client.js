@@ -29,7 +29,7 @@ ProductBoxView.prototype.productsLoaded = function(product_list)
 
 ProductBoxView.prototype.render = function(cb) 
 {
-    cb = cb || $.noop;
+    cb = cb || $.noop;
     var self = this;
 
     this.controller.loadProducts(function(products){
