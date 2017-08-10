@@ -17,7 +17,7 @@ var ProductListView = function($target)
     this.on_click_end = $.noop;
     this.site_search = $('.site_search');
     this.no_products_template = '';
-    this.$target = $target === undefined ? $('.products') : $($target);
+    this.$target = !$target ? $('.products') : $($target);
 
     // PRIVATE VARS 
     var self = this;
