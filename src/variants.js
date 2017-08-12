@@ -19,7 +19,7 @@ Variants.prototype.get = function(product_sku, cb)
     jQuery.get(
         Utils.getURL('v1', ['variant', 'list']), 
         {
-            'site_name': this.site_name + '_' + product_sku
+            'namespace': this.site_name + '_' + product_sku
         },
         function(v)
         {
@@ -40,7 +40,7 @@ Variants.prototype.getValues = function(product_sku, variant_name, cb)
     jQuery.get(
         Utils.getURL('v1', ['variant', 'value', 'list']),
         {
-            'site_name': this.site_name + '_' + product_sku,
+            'namespace': this.site_name + '_' + product_sku,
             'variant': variant_name
         },
         function(v)

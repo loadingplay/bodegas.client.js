@@ -45,7 +45,7 @@ QUnit.test('renering test', function(assert)
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
 
-    var values = [{
+    var variants = [{
             "values": [{
                 "site_name": "me_NBK-SACO-NEGRA-C168", 
                 "id": 1, 
@@ -83,7 +83,7 @@ QUnit.test('renering test', function(assert)
             "variant_name": "color"
         }];
 
-    variants_view.renderValues(values);
+    variants_view.render(variants);
 
     assert.notEqual(
         $target.html().indexOf('<div class="variant-head">talla</div>'), 
@@ -94,5 +94,18 @@ QUnit.test('renering test', function(assert)
         $target.html().indexOf('<div class="variant-head">color</div>'), 
         -1, 'variant drawed'
     );
+
+    // test if value was rendered
+    var html = $target.html().replace(/\s/g, "");
+    var expected = '<div class="variant" >\
+        <div class="variant-head" >talla</div>\
+        <div class="variant-values">\
+            <div class="variant-value" >1</div>\
+            <div class="variant-value" >2</div>\
+            <div class="variant-value" >3</div>\
+        </div>\
+    </div>'.replace(/\s/g, "");
+
+    assert.notEqual(html.indexOf(expected), -1, 'is rendering values');
 
 });
