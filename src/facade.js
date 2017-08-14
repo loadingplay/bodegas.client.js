@@ -344,7 +344,7 @@ EcommerceFacade.prototype.loadVariants = function()
 
                 self.ecommerce.variants.getValues(product_sku, vs.join(","), function(variants)
                 {
-                    self.variants_view.renderValues(variants);
+                    self.variants_view.render(variants);
                     self.options.onLoad.call(this, variants);
                     self.triggerVariantsLoaded(variants);
                 })
