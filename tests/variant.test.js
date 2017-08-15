@@ -1,4 +1,47 @@
-QUnit.module('variants', {});
+QUnit.module('variants', {
+    setup: function()
+    {
+        // set varinats json
+        // should be equal to api
+        this.variants_json = [{
+            "values": [{
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 1, 
+                "value": "1", 
+                "variant_name": "talla"
+            }, {
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 2, 
+                "value": "2", 
+                "variant_name": "talla"
+            }, {
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 3, 
+                "value": "3", 
+                "variant_name": "talla"
+            }], 
+            "variant_name": "talla"
+        }, {
+            "values": [{
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 4, 
+                "value": "rojo", 
+                "variant_name": "color"
+            }, {
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 5, 
+                "value": "verde", 
+                "variant_name": "color"
+            }, {
+                "site_name": "me_NBK-SACO-NEGRA-C168", 
+                "id": 6, 
+                "value": "azul", 
+                "variant_name": "color"
+            }], 
+            "variant_name": "color"
+        }]
+    }
+});
 
 QUnit.test('load variants', function(assert) 
 {
@@ -45,45 +88,7 @@ QUnit.test('renering test', function(assert)
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
 
-    var variants = [{
-            "values": [{
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 1, 
-                "value": "1", 
-                "variant_name": "talla"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 2, 
-                "value": "2", 
-                "variant_name": "talla"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 3, 
-                "value": "3", 
-                "variant_name": "talla"
-            }], 
-            "variant_name": "talla"
-        }, {
-            "values": [{
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 4, 
-                "value": "rojo", 
-                "variant_name": "color"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 5, 
-                "value": "verde", 
-                "variant_name": "color"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 6, 
-                "value": "azul", 
-                "variant_name": "color"
-            }], 
-            "variant_name": "color"
-        }];
-
-    variants_view.render(variants);
+    variants_view.render(this.variants_json);
 
     assert.notEqual(
         $target.html().indexOf('<div class="variant-head">talla</div>'), 
@@ -107,5 +112,40 @@ QUnit.test('renering test', function(assert)
     </div>'.replace(/\s/g, "");
 
     assert.notEqual(html.indexOf(expected), -1, 'is rendering values');
+
+});
+
+
+/**
+ * test if the user can select a combination from variants
+ * i.e if the user is clicking on size and color, should get something like
+ * [SKU]-[SIZE]-[COLOR]
+ */
+QUnit.test('test select variant', function(assert) 
+{
+    // do some basic render for variants
+    var $target = $('<div></div>');
+    var variants_view = new VariantsView($target);
+
+    variants_view.render(this.variants_json);
+
+    // check if selected combination is empty
+    assert.equal(variants_view.getSelectedCombination(), "", 'combination empty');
+
+    // simulate click over some variants, should be 1
+    $('.variant-value[variant=talla]', $target)[0].click();
+    assert.equal(
+        variants_view.getSelectedCombination(), "1", 'combination is 1');
+
+    // now simulate click on second one, should be 2, 
+    // both are from "talla" and should be overwritten
+    $('.variant-value[variant=talla]', $target)[1].click();
+    assert.equal(
+        variants_view.getSelectedCombination(), "2", 'combination is 2');
+
+    // now click on other variant value, should be concatenated
+    $('.variant-value[variant=color]', $target)[0].click();
+    assert.equal(
+        variants_view.getSelectedCombination(), "2-rojo", 'combination is 2-rojo');
 
 });
