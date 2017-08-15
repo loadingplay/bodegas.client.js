@@ -2639,3 +2639,14 @@ VariantsView.prototype.render = function(variants)
 {
     this.$target.html(this.renderVariants(variants));
 };
+
+
+/**
+ * return currently selected variant
+ * @return {string} a string describing selected variant 
+ *                  i.e [sku]-[variant0]-...[variant n]
+ */ 
+VariantsView.prototype.getSelectedCombination = function() 
+{
+    return '';
+};
