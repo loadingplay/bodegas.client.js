@@ -6,11 +6,46 @@
 var VariantsView = function($target)
 {
     this.$target = $target;
-    this.value_template = '<div class="variant-value" >{{ value }}</div>'
+    this.value_template = '<div class="variant-value" variant="{{ variant_name }}" value="{{ value }}" >{{ value }}</div>'
     this.variant_template = '<div class="variant" >\
-            <div class="variant-head" >{{ variant_name }}</div>\
+            <div class="variant-head">{{ variant_name }}</div>\
             <div class="variant-values">{{ values }}</div>\
         </div>';
+
+    this.selected_values = [];
+
+    // triggers
+    this.initEvents();
+};
+
+
+/**
+ * get initialized all click events on the variants GUI
+ */
+VariantsView.prototype.initEvents = function() 
+{
+    var self = this;
+    $(this.$target).on('click', '.variant-value', function()
+    {
+        self.selectVariant($(this).attr('variant'), $(this).attr('value'));
+    });
+};
+
+VariantsView.prototype.selectVariant = function(variant, value) 
+{
+    var variant_value = { "variant": variant, "value": value };
+
+    // check if the variant was already selected
+    for (var i = 0; i < this.selected_values.length; i++) 
+    {
+        if (this.selected_values[i].variant === variant)
+        {
+            this.selected_values[i].value = value;
+            return
+        }
+    }
+
+    this.selected_values.push(variant_value);
 };
 
 /**
@@ -59,7 +94,6 @@ VariantsView.prototype.renderVariants = function(variants)
     var variant_builder = [];
     for (var i = 0; i < variants.length; i++) 
     {
-        console.log(this.renderValues(variants[i].values));
         var rendered = Utils.render(
             this.variant_template, 
             {
@@ -90,5 +124,12 @@ VariantsView.prototype.render = function(variants)
  */ 
 VariantsView.prototype.getSelectedCombination = function() 
 {
-    return '';
+    var builder = [];
+
+    // only join values
+    for (var i = 0; i < this.selected_values.length; i++) 
+    {
+        builder.push(this.selected_values[i].value);
+    }
+    return builder.join('-');
 };

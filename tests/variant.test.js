@@ -105,9 +105,9 @@ QUnit.test('renering test', function(assert)
     var expected = '<div class="variant" >\
         <div class="variant-head" >talla</div>\
         <div class="variant-values">\
-            <div class="variant-value" >1</div>\
-            <div class="variant-value" >2</div>\
-            <div class="variant-value" >3</div>\
+            <div class="variant-value" variant="talla" value="1" >1</div>\
+            <div class="variant-value" variant="talla" value="2" >2</div>\
+            <div class="variant-value" variant="talla" value="3" >3</div>\
         </div>\
     </div>'.replace(/\s/g, "");
 
