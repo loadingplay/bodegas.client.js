@@ -121,11 +121,12 @@ QUnit.test('renering test', function(assert)
  * i.e if the user is clicking on size and color, should get something like
  * [SKU]-[SIZE]-[COLOR]
  */
-QUnit.test('test select variant', function(assert) 
+QUnit.test('test select variant render', function(assert) 
 {
     // do some basic render for variants
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
+    var done = assert.async();
 
     variants_view.render(this.variants_json);
 
@@ -136,16 +137,38 @@ QUnit.test('test select variant', function(assert)
     $('.variant-value[variant=talla]', $target)[0].click();
     assert.equal(
         variants_view.getSelectedCombination(), "1", 'combination is 1');
+    // check if the corresponding div is active
+    assert.ok(
+        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'), 
+        'add the active class'
+    );
 
     // now simulate click on second one, should be 2, 
     // both are from "talla" and should be overwritten
     $('.variant-value[variant=talla]', $target)[1].click();
     assert.equal(
         variants_view.getSelectedCombination(), "2", 'combination is 2');
+    // check if the corresponding div is active
+    assert.notOk(
+        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'), 
+        'remove the active class'
+    );
+    assert.ok(
+        $($('.variant-value[variant=talla]', $target)[1]).hasClass('value-active'), 
+        'added the active class'
+    );
 
     // now click on other variant value, should be concatenated
     $('.variant-value[variant=color]', $target)[0].click();
     assert.equal(
         variants_view.getSelectedCombination(), "2-rojo", 'combination is 2-rojo');
+
+    // check if the event is working 
+    variants_view.$target.on('combination:selected', function(e, combination)
+    {
+        assert.equal(combination, '2-verde', 'event is working');
+        done();
+    });
+    $('.variant-value[variant=color]', $target)[1].click();
 
 });

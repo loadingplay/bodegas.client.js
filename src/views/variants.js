@@ -6,6 +6,7 @@
 var VariantsView = function($target)
 {
     this.$target = $target;
+    this.variants = [];
     this.value_template = '<div class="variant-value" variant="{{ variant_name }}" value="{{ value }}" >{{ value }}</div>'
     this.variant_template = '<div class="variant" >\
             <div class="variant-head">{{ variant_name }}</div>\
@@ -28,6 +29,14 @@ VariantsView.prototype.initEvents = function()
     $(this.$target).on('click', '.variant-value', function()
     {
         self.selectVariant($(this).attr('variant'), $(this).attr('value'));
+        // ad active class
+        $('.value-active', self.$target).removeClass('value-active');
+        $(this).addClass('value-active');
+
+        if (self.isValidCombination())
+        {
+            self.$target.trigger('combination:selected', [self.getSelectedCombination()]);
+        }
     });
 };
 
@@ -113,6 +122,7 @@ VariantsView.prototype.renderVariants = function(variants)
  */
 VariantsView.prototype.render = function(variants) 
 {
+    this.variants = variants;
     this.$target.html(this.renderVariants(variants));
 };
 
@@ -132,4 +142,12 @@ VariantsView.prototype.getSelectedCombination = function()
         builder.push(this.selected_values[i].value);
     }
     return builder.join('-');
+};
+
+/**
+ * check if all variants have a selected value
+ */
+VariantsView.prototype.isValidCombination = function() 
+{
+    return this.variants.length === this.selected_values.length;
 };

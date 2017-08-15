@@ -7,6 +7,8 @@ var Variants = function(options)
 {
     var options = options || {};
     this.site_name = options.site_name || '';
+
+    this.view = new VariantsView(options.target);
 };
 
 /**
@@ -16,6 +18,7 @@ var Variants = function(options)
  */
 Variants.prototype.get = function(product_sku, cb) 
 {
+    var self = this;
     jQuery.get(
         Utils.getURL('v1', ['variant', 'list']), 
         {
