@@ -48,9 +48,15 @@ QUnit.test('load variants', function(assert)
     var done = assert.async();
 
     // load product variants
+    var $cellar = $('<div></div>');
     var $holder = $('<div></div>');
 
-    $holder.ecommerce('load_variants')
+    $cellar.ecommerce('load_variants',
+    {
+        "variants": {
+            "container": $holder
+        }
+    })
     .on('variants.loaded', function(e, variants)
     {
         assert.notEqual($holder.html(), '', 'holder is not empty');

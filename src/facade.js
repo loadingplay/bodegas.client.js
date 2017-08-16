@@ -184,9 +184,14 @@
         /******* TEMPLATES *******/
         'no_products_template'  : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>',
 
-        /******* VARIANTS ********/
+        /******* VARIABLES ********/
         'product_sku'           : '',  // use this instead of product_id
-        'site_name'             : ''  // use this instead of app_public
+        'site_name'             : '',  // use this instead of app_public
+
+        /***** PRODUCT VARIANTS *******/
+        'variants': {
+            'container': ''  // variants warpper
+        }
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -202,7 +207,7 @@ var EcommerceFacade = function(options)
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
-    this.variants_view = new VariantsView(this.options.container);
+    this.variants_view = new VariantsView($(this.options.variants.container));
     this.animation = null;
 
     // initialize animation
