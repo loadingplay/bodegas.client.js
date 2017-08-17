@@ -27,8 +27,8 @@ var VariantsView = function($target)
  */
 VariantsView.prototype.setTemplates = function(variant_template, value_template) 
 {
-    this.variant_template = variant_template;
-    this.value_template = value_template;
+    this.variant_template = variant_template !== '' ? variant_template : this.variant_template;
+    this.value_template = value_template !== '' ? value_template : this.variant_template;
 };
 
 
@@ -39,7 +39,7 @@ VariantsView.prototype.initEvents = function()
 {
     var self = this;
     // $(document).on('click', $('.variant-value', $(this.$target)), function()
-    $(document).on('click', '.variant-value', function()  // this line doesnt allow multiple context
+    var valueClick = function()
     {
         self.selectVariant($(this).attr('variant'), $(this).attr('value'));
         // ad active class
@@ -50,7 +50,9 @@ VariantsView.prototype.initEvents = function()
         {
             $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
         }
-    });
+    }
+    $(document).on('click', '.variant-value', valueClick);
+    // $(this.$target).on('click', '.variant-value', valueClick);
 };
 
 VariantsView.prototype.selectVariant = function(variant, value) 
