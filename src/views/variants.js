@@ -13,10 +13,22 @@ var VariantsView = function($target)
             <div class="variant-values">{{ values }}</div>\
         </div>';
 
+    this.active_class = 'value-active';
+
     this.selected_values = [];
 
     // triggers
     this.initEvents();
+};
+/**
+ * change default templates for a brand new template
+ * @param {string} variant_template template for variant container
+ * @param {string} value_template   template for value container
+ */
+VariantsView.prototype.setTemplates = function(variant_template, value_template) 
+{
+    this.variant_template = variant_template;
+    this.value_template = value_template;
 };
 
 
@@ -26,16 +38,17 @@ var VariantsView = function($target)
 VariantsView.prototype.initEvents = function() 
 {
     var self = this;
-    $(this.$target).on('click', '.variant-value', function()
+    // $(document).on('click', $('.variant-value', $(this.$target)), function()
+    $(document).on('click', '.variant-value', function()  // this line doesnt allow multiple context
     {
         self.selectVariant($(this).attr('variant'), $(this).attr('value'));
         // ad active class
-        $('.value-active', self.$target).removeClass('value-active');
-        $(this).addClass('value-active');
+        $('.' + self.active_class, $(self.$target)).removeClass(self.active_class);
+        $(this).addClass(self.active_class);
 
         if (self.isValidCombination())
         {
-            self.$target.trigger('combination:selected', [self.getSelectedCombination()]);
+            $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
         }
     });
 };
@@ -123,7 +136,7 @@ VariantsView.prototype.renderVariants = function(variants)
 VariantsView.prototype.render = function(variants) 
 {
     this.variants = variants;
-    this.$target.html(this.renderVariants(variants));
+    $(this.$target).html(this.renderVariants(variants));
 };
 
 

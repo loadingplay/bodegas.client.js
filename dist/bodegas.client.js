@@ -288,8 +288,6 @@ var BodegasClient = function(checkout_url)
     this.tag = new Tag();
     this.product = new Product();
     this.cart = new ShoppingCart();
-
-    this.variants = new Variants();
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback) 
@@ -533,7 +531,7 @@ ExtraInfo.prototype.synchronize = function()
 
         if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
-            options = $.extend({}, $.fn[pluginName].defaults, options);
+            options = $.extend(true, {}, $.fn[pluginName].defaults, options);
             options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
             Utils.base_url = options.base_url;
@@ -589,7 +587,11 @@ ExtraInfo.prototype.synchronize = function()
 
         /***** PRODUCT VARIANTS *******/
         'variants': {
-            'container': ''  // variants warpper
+            'product_sku': '',
+            'container': '',  // variants warpper
+            'variant_template': '',  // ''  for use default
+            'value_template': '', // '' for use default
+            'active_class': 'value-active'  // this class is added when a value is selected
         }
     };
 
@@ -606,7 +608,16 @@ var EcommerceFacade = function(options)
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
-    this.variants_view = new VariantsView($(this.options.variants.container));
+
+    // variants init
+    this.variants = new Variants(options);
+    this.variants_view = new VariantsView(this.options.variants.container);
+    this.variants_view.active_class = this.options.variants.active_class;
+    this.variants_view.setTemplates(
+        this.options.variants.variant_template, 
+        this.options.variants.value_template
+    )
+
     this.animation = null;
 
     // initialize animation
@@ -730,12 +741,12 @@ EcommerceFacade.prototype.showProductDetail = function()
  */
 EcommerceFacade.prototype.loadVariants = function() 
 {
-    var product_sku = this.options.product_sku || Utils.getUrlParameter('sku');
+    var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.variants.get(
+        self.variants.get(
             product_sku,
             function(variants)
             {
@@ -746,7 +757,7 @@ EcommerceFacade.prototype.loadVariants = function()
                     vs.push(variants[i].name)
                 }
 
-                self.ecommerce.variants.getValues(product_sku, vs.join(","), function(variants)
+                self.variants.getValues(product_sku, vs.join(","), function(variants)
                 {
                     self.variants_view.render(variants);
                     self.options.onLoad.call(this, variants);
@@ -1560,9 +1571,7 @@ var Utils = {  //jshint ignore: line
 var Variants = function(options)
 {
     var options = options || {};
-    this.site_name = options.site_name || '';
-
-    this.view = new VariantsView(options.target);
+    this.site_name = options.site_name;
 };
 
 /**
@@ -1580,6 +1589,7 @@ Variants.prototype.get = function(product_sku, cb)
         },
         function(v)
         {
+
             cb(v.variants);
         }
     );
@@ -2579,10 +2589,22 @@ var VariantsView = function($target)
             <div class="variant-values">{{ values }}</div>\
         </div>';
 
+    this.active_class = 'value-active';
+
     this.selected_values = [];
 
     // triggers
     this.initEvents();
+};
+/**
+ * change default templates for a brand new template
+ * @param {string} variant_template template for variant container
+ * @param {string} value_template   template for value container
+ */
+VariantsView.prototype.setTemplates = function(variant_template, value_template) 
+{
+    this.variant_template = variant_template;
+    this.value_template = value_template;
 };
 
 
@@ -2592,16 +2614,17 @@ var VariantsView = function($target)
 VariantsView.prototype.initEvents = function() 
 {
     var self = this;
-    $(this.$target).on('click', '.variant-value', function()
+    // $(document).on('click', $('.variant-value', $(this.$target)), function()
+    $(document).on('click', '.variant-value', function()  // this line doesnt allow multiple context
     {
         self.selectVariant($(this).attr('variant'), $(this).attr('value'));
         // ad active class
-        $('.value-active', self.$target).removeClass('value-active');
-        $(this).addClass('value-active');
+        $('.' + self.active_class, $(self.$target)).removeClass(self.active_class);
+        $(this).addClass(self.active_class);
 
         if (self.isValidCombination())
         {
-            self.$target.trigger('combination:selected', [self.getSelectedCombination()]);
+            $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
         }
     });
 };
@@ -2689,7 +2712,7 @@ VariantsView.prototype.renderVariants = function(variants)
 VariantsView.prototype.render = function(variants) 
 {
     this.variants = variants;
-    this.$target.html(this.renderVariants(variants));
+    $(this.$target).html(this.renderVariants(variants));
 };
 
 

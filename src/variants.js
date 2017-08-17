@@ -6,9 +6,7 @@
 var Variants = function(options)
 {
     var options = options || {};
-    this.site_name = options.site_name || '';
-
-    this.view = new VariantsView(options.target);
+    this.site_name = options.site_name;
 };
 
 /**
@@ -26,6 +24,7 @@ Variants.prototype.get = function(product_sku, cb)
         },
         function(v)
         {
+
             cb(v.variants);
         }
     );

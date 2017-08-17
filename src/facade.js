@@ -134,7 +134,7 @@
 
         if (method !== 'set_data' && method !== 'set_shipping_cost')
         {
-            options = $.extend({}, $.fn[pluginName].defaults, options);
+            options = $.extend(true, {}, $.fn[pluginName].defaults, options);
             options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
             Utils.base_url = options.base_url;
@@ -190,7 +190,11 @@
 
         /***** PRODUCT VARIANTS *******/
         'variants': {
-            'container': ''  // variants warpper
+            'product_sku': '',
+            'container': '',  // variants warpper
+            'variant_template': '',  // ''  for use default
+            'value_template': '', // '' for use default
+            'active_class': 'value-active'  // this class is added when a value is selected
         }
     };
 
@@ -207,7 +211,16 @@ var EcommerceFacade = function(options)
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
-    this.variants_view = new VariantsView($(this.options.variants.container));
+
+    // variants init
+    this.variants = new Variants(options);
+    this.variants_view = new VariantsView(this.options.variants.container);
+    this.variants_view.active_class = this.options.variants.active_class;
+    this.variants_view.setTemplates(
+        this.options.variants.variant_template, 
+        this.options.variants.value_template
+    )
+
     this.animation = null;
 
     // initialize animation
@@ -331,12 +344,12 @@ EcommerceFacade.prototype.showProductDetail = function()
  */
 EcommerceFacade.prototype.loadVariants = function() 
 {
-    var product_sku = this.options.product_sku || Utils.getUrlParameter('sku');
+    var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
     var self = this;
 
     this.ecommerce.authenticate(this.options.app_public, function()
     {
-        self.ecommerce.variants.get(
+        self.variants.get(
             product_sku,
             function(variants)
             {
@@ -347,7 +360,7 @@ EcommerceFacade.prototype.loadVariants = function()
                     vs.push(variants[i].name)
                 }
 
-                self.ecommerce.variants.getValues(product_sku, vs.join(","), function(variants)
+                self.variants.getValues(product_sku, vs.join(","), function(variants)
                 {
                     self.variants_view.render(variants);
                     self.options.onLoad.call(this, variants);
