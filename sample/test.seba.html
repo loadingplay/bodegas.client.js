@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/sample/style.css?v=5">
+    <link rel="stylesheet" type="text/css" href="/sample/custom_style.css" />
+
+</head>
+<body>
+
+    <div class="products" ></div>
+
+
+    <script type="text/template" id="product_template" >
+        <div>
+            <h1>{{ name }}</h1>
+            <div>{{ main_price|money }}</div>
+        </div>
+    </script>
+
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="/bower_components/jquery.cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/dist/bodegas.client.js"></script>
+
+    <script type="text/javascript">
+        $('.products').ecommerce({ app_public: 50 })
+        .on('products.loaded', function(){
+            // your code here
+        });
+    </script>
+
+</body>
+</html>
