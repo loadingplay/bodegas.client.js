@@ -1,5 +1,5 @@
 QUnit.module('variants', {
-    setup: function()
+    beforeEach: function()
     {
         // set varinats json
         // should be equal to api
@@ -40,6 +40,10 @@ QUnit.module('variants', {
             }], 
             "variant_name": "color"
         }]
+    },
+    setup: function()
+    {
+        return this.beforeEach();
     }
 });
 
@@ -89,7 +93,7 @@ QUnit.test('no facade tests', function(assert)
     });
 });
 
-QUnit.test('renering test', function(assert) 
+QUnit.test('rendering test', function(assert) 
 {
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
@@ -133,6 +137,7 @@ QUnit.test('test select variant render', function(assert)
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
     var done = assert.async();
+    $target.appendTo($('.variants'));
 
     variants_view.render(this.variants_json);
 
