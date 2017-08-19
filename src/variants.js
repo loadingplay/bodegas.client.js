@@ -1,12 +1,12 @@
 /* globals jQuery */
 /* globals Utils */
 
-'use strict';
 
 var Variants = function(options)
 {
-    var options = options || {};
-    this.site_name = options.site_name;
+    // options = options === undefined ? { 'site_name': 'xx' } : options;
+    var opt = options === undefined ? { 'site_name': 'none' }:options;
+    this.site_name = opt.site_name;
 };
 
 /**

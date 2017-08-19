@@ -1,53 +1,56 @@
-QUnit.module('variants', {
-    beforeEach: function()
-    {
-        // set varinats json
-        // should be equal to api
-        this.variants_json = [{
-            "values": [{
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 1, 
-                "value": "1", 
-                "variant_name": "talla"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 2, 
-                "value": "2", 
-                "variant_name": "talla"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 3, 
-                "value": "3", 
-                "variant_name": "talla"
-            }], 
+/* global $ */
+
+var preset = function()
+{
+    // set varinats json
+    // should be equal to api
+    this.variants_json = [{
+        "values": [{
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 1,
+            "value": "1",
             "variant_name": "talla"
         }, {
-            "values": [{
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 4, 
-                "value": "rojo", 
-                "variant_name": "color"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 5, 
-                "value": "verde", 
-                "variant_name": "color"
-            }, {
-                "site_name": "me_NBK-SACO-NEGRA-C168", 
-                "id": 6, 
-                "value": "azul", 
-                "variant_name": "color"
-            }], 
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 2,
+            "value": "2",
+            "variant_name": "talla"
+        }, {
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 3,
+            "value": "3",
+            "variant_name": "talla"
+        }],
+        "variant_name": "talla"
+    }, {
+        "values": [{
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 4,
+            "value": "rojo",
             "variant_name": "color"
-        }]
-    },
-    setup: function()
-    {
-        return this.beforeEach();
-    }
-});
+        }, {
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 5,
+            "value": "verde",
+            "variant_name": "color"
+        }, {
+            "site_name": "me_NBK-SACO-NEGRA-C168",
+            "id": 6,
+            "value": "azul",
+            "variant_name": "color"
+        }],
+        "variant_name": "color"
+    }];
+};
 
-QUnit.test('load variants', function(assert) 
+var qunit_preconfig = {
+    beforeEach: preset,
+    setup: preset
+};
+
+QUnit.module('variants', qunit_preconfig);
+
+QUnit.test('load variants', function(assert)
 {
     var done = assert.async();
 
@@ -69,7 +72,7 @@ QUnit.test('load variants', function(assert)
 });
 
 
-QUnit.test('no facade tests', function(assert) 
+QUnit.test('no facade tests', function(assert)
 {
     var done = assert.async();
     var done2 = assert.async();
@@ -93,7 +96,7 @@ QUnit.test('no facade tests', function(assert)
     });
 });
 
-QUnit.test('rendering test', function(assert) 
+QUnit.test('rendering test', function(assert)
 {
     var $target = $('<div></div>');
     var variants_view = new VariantsView($target);
@@ -101,12 +104,12 @@ QUnit.test('rendering test', function(assert)
     variants_view.render(this.variants_json);
 
     assert.notEqual(
-        $target.html().indexOf('<div class="variant-head">talla</div>'), 
+        $target.html().indexOf('<div class="variant-head">talla</div>'),
         -1, 'variant drawed'
     );
 
     assert.notEqual(
-        $target.html().indexOf('<div class="variant-head">color</div>'), 
+        $target.html().indexOf('<div class="variant-head">color</div>'),
         -1, 'variant drawed'
     );
 
@@ -131,7 +134,7 @@ QUnit.test('rendering test', function(assert)
  * i.e if the user is clicking on size and color, should get something like
  * [SKU]-[SIZE]-[COLOR]
  */
-QUnit.test('test select variant render', function(assert) 
+QUnit.test('test select variant render', function(assert)
 {
     // do some basic render for variants
     var $target = $('<div></div>');
@@ -150,22 +153,22 @@ QUnit.test('test select variant render', function(assert)
         variants_view.getSelectedCombination(), "1", 'combination is 1');
     // check if the corresponding div is active
     assert.ok(
-        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'), 
+        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'),
         'add the active class'
     );
 
-    // now simulate click on second one, should be 2, 
+    // now simulate click on second one, should be 2,
     // both are from "talla" and should be overwritten
     $('.variant-value[variant=talla]', $target)[1].click();
     assert.equal(
         variants_view.getSelectedCombination(), "2", 'combination is 2');
     // check if the corresponding div is active
     assert.notOk(
-        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'), 
+        $($('.variant-value[variant=talla]', $target)[0]).hasClass('value-active'),
         'remove the active class'
     );
     assert.ok(
-        $($('.variant-value[variant=talla]', $target)[1]).hasClass('value-active'), 
+        $($('.variant-value[variant=talla]', $target)[1]).hasClass('value-active'),
         'added the active class'
     );
 
@@ -174,7 +177,7 @@ QUnit.test('test select variant render', function(assert)
     assert.equal(
         variants_view.getSelectedCombination(), "2-rojo", 'combination is 2-rojo');
 
-    // check if the event is working 
+    // check if the event is working
     variants_view.$target.on('combination:selected', function(e, combination)
     {
         assert.equal(combination, '2-verde', 'event is working');
