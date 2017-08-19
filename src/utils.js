@@ -14,7 +14,7 @@ var Utils = {  //jshint ignore: line
     {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     },
-    getURL : function(module, args) 
+    getURL : function(module, args)
     {
         if (!Utils.strEndsWith(Utils.base_url, '/'))
         {
@@ -30,7 +30,7 @@ var Utils = {  //jshint ignore: line
 
         return url;
     },
-    getURLWithoutParam : function(module) 
+    getURLWithoutParam : function(module)
     {
         if (!Utils.strEndsWith(Utils.base_url, '/'))
         {
@@ -105,7 +105,7 @@ var Utils = {  //jshint ignore: line
 
         var splitted_template = template.split('{{');
 
-        for (var i = 0; i < splitted_template.length; i++) 
+        for (var i = 0; i < splitted_template.length; i++)
         {
             var name = splitted_template[i].split('}}')[0];
             var html = splitted_template[i].split('}}')[1];
@@ -123,16 +123,16 @@ var Utils = {  //jshint ignore: line
     {
         var sPageURL = window.location.search.substring(1);
         var sURLVariables = sPageURL.split('&');
-        for (var i = 0; i < sURLVariables.length; i++) 
+        for (var i = 0; i < sURLVariables.length; i++)
         {
             var sParameterName = sURLVariables[i].split('=');
-            if (sParameterName[0] == sParam) 
+            if (sParameterName[0] == sParam)
             {
                 return sParameterName[1];
             }
         }
     },
-    createUUID : function() 
+    createUUID : function()
     {
         // http://www.ietf.org/rfc/rfc4122.txt
         var s = [];
@@ -205,4 +205,3 @@ var Utils = {  //jshint ignore: line
         return text;
     }
 };
-

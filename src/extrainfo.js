@@ -9,7 +9,7 @@ var ExtraInfo = function(cart_id)
     this.cart_id = cart_id;
 };
 
-ExtraInfo.prototype.set_data = function(index, data) 
+ExtraInfo.prototype.set_data = function(index, data)
 {
     if (this._isValidIndex(index))
     {
@@ -22,7 +22,7 @@ ExtraInfo.prototype.set_data = function(index, data)
     return false;
 };
 
-ExtraInfo.prototype.get_data = function(index) 
+ExtraInfo.prototype.get_data = function(index)
 {
     try
     {
@@ -43,8 +43,8 @@ ExtraInfo.prototype.get_data = function(index)
  * only string and numbers are valid
  * @param  {object}  index this value will be validated
  * @return {Boolean}       true if is string or number
- */ 
-ExtraInfo.prototype._isValidIndex = function(index) 
+ */
+ExtraInfo.prototype._isValidIndex = function(index)
 {
     if (typeof(index) === 'string')
         return true;
@@ -55,12 +55,12 @@ ExtraInfo.prototype._isValidIndex = function(index)
     return false;
 };
 
-ExtraInfo.prototype.synchronize = function() 
+ExtraInfo.prototype.synchronize = function()
 {
     var json_string = JSON.stringify(this.model);
     $.post(
-        Utils.getURL('cart', ['extra_info', this.cart_id]), 
-        {'data' : json_string}, 
+        Utils.getURL('cart', ['extra_info', this.cart_id]),
+        {'data' : json_string},
         function()
         {
             // nothing here...

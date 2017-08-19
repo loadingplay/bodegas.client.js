@@ -9,16 +9,16 @@ var ProductBoxView = function(controller)
     this.controller = controller;
 };
 
-ProductBoxView.prototype.getTemplate = function() 
+ProductBoxView.prototype.getTemplate = function()
 {
     return $(this.controller.template_origin).html();
 };
 
-ProductBoxView.prototype.productsLoaded = function(product_list) 
+ProductBoxView.prototype.productsLoaded = function(product_list)
 {
     var template = this.getTemplate();
 
-    for (var i = 0; i < product_list.length; i++) 
+    for (var i = 0; i < product_list.length; i++)
     {
         var product = product_list[i];
         var rendered = Utils.render(template, product);
@@ -27,7 +27,7 @@ ProductBoxView.prototype.productsLoaded = function(product_list)
     }
 };
 
-ProductBoxView.prototype.render = function(cb) 
+ProductBoxView.prototype.render = function(cb)
 {
     cb = cb || $.noop;
     var self = this;

@@ -33,7 +33,7 @@ var ShoppingCartView = function(controller)
     this.init();
 };
 
-ShoppingCartView.prototype.init = function() 
+ShoppingCartView.prototype.init = function()
 {
     var self = this;
     var q=1;
@@ -91,13 +91,13 @@ ShoppingCartView.prototype.init = function()
 };
 
 
-ShoppingCartView.prototype.removeLoading = function() 
+ShoppingCartView.prototype.removeLoading = function()
 {
     var $container = $('.container');
     $('.spinner', $container).remove();
 };
 
-ShoppingCartView.prototype.renderLoading = function() 
+ShoppingCartView.prototype.renderLoading = function()
 {
     this.removeLoading();
     if (!this.allcontainerLoaded)
@@ -113,13 +113,13 @@ ShoppingCartView.prototype.renderLoading = function()
 /**************** button actions ****************/
 
 
-ShoppingCartView.prototype.addOneClick = function($button) 
+ShoppingCartView.prototype.addOneClick = function($button)
 {
     var id = $button.attr('product-id');
     this.controller.addProduct(id);
 };
 
-ShoppingCartView.prototype.addToCartClick = function($button) 
+ShoppingCartView.prototype.addToCartClick = function($button)
 {
     var id = $button.attr('product-id');
     var name = $button.attr('product-name');
@@ -138,7 +138,7 @@ ShoppingCartView.prototype.addToCartClick = function($button)
  * collect and return checkout data
  * @return {object} checkout data bundle
  */
-ShoppingCartView.prototype.getCheckoutData = function() 
+ShoppingCartView.prototype.getCheckoutData = function()
 {
     return {
         checkout_url : this.controller.getCheckoutUrl(),
@@ -147,7 +147,7 @@ ShoppingCartView.prototype.getCheckoutData = function()
     };
 };
 
-ShoppingCartView.prototype.buyProductClick = function($button) 
+ShoppingCartView.prototype.buyProductClick = function($button)
 {
     var self = this;
 
@@ -171,14 +171,14 @@ ShoppingCartView.prototype.buyProductClick = function($button)
 
         // add the current product
         self.controller.addProduct(
-            product.id, 
-            product.price, 
-            product.name, 
-            product.upp, 
-            product.bullet1, 
-            product.bullet2, 
+            product.id,
+            product.price,
+            product.name,
+            product.upp,
+            product.bullet1,
+            product.bullet2,
             product.bullet3,
-            product.images, 
+            product.images,
             function()
             {
                 // proceed to checkout
@@ -187,21 +187,21 @@ ShoppingCartView.prototype.buyProductClick = function($button)
     });
 };
 
-ShoppingCartView.prototype.goToCheckout = function(checkout) 
+ShoppingCartView.prototype.goToCheckout = function(checkout)
 {
-    document.location.href = checkout.checkout_url + '?' + 
+    document.location.href = checkout.checkout_url + '?' +
                             'site_id=' + checkout.site_id +
                             '&cart_id=' + checkout.cart_id;
 };
 
-ShoppingCartView.prototype.removeOne = function($button) 
+ShoppingCartView.prototype.removeOne = function($button)
 {
     var id = $button.attr('product-id');
 
     this.controller.removeOne(id);
 };
 
-ShoppingCartView.prototype.removeProduct = function($button) 
+ShoppingCartView.prototype.removeProduct = function($button)
 {
     var id = $button.attr('product-id');
 
@@ -212,7 +212,7 @@ ShoppingCartView.prototype.removeProduct = function($button)
 /**************** rendering methos ****************/
 
 
-ShoppingCartView.prototype.render = function() 
+ShoppingCartView.prototype.render = function()
 {
     this.$cart_div.html('');
     this.$total_cart.html('');
@@ -227,7 +227,7 @@ ShoppingCartView.prototype.renderCheckoutData = function()
     try
     {
         var html = Utils.render(
-            this.checkout_template, 
+            this.checkout_template,
             this.getRenderDictionary());
 
         $('.checkout-form').html(html);
@@ -251,20 +251,20 @@ ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_templa
     }
 };
 
-ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart) 
+ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
 {
     try
     {
         var render_dict = this.getRenderDictionary();
         var $total = $(Utils.render(
-            this.total_template, 
+            this.total_template,
             render_dict));
 
         Utils.processPrice($total);
         $cart_div.append($total);
 
         var $built = $(Utils.render(
-            this.total_cart_template, 
+            this.total_cart_template,
             render_dict));
 
         Utils.processPrice($built);
@@ -277,12 +277,12 @@ ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
     }
 };
 
-ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items) 
+ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
 {
     try
     {
         var $units_total = $(Utils.render(
-            this.units_total_template, 
+            this.units_total_template,
             this.getRenderDictionary()));
 
         Utils.processPrice($units_total);
@@ -290,7 +290,7 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
         $('.units-total').html($units_total);
 
         var $built = $(Utils.render(
-            this.total_items_template, 
+            this.total_items_template,
             this.getRenderDictionary()));
 
         $total_items.html($built);
@@ -305,9 +305,9 @@ ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
  * return all variables tht should be rendered in a shopping cart
  * @return Dict dictionary with all variables
  */
-ShoppingCartView.prototype.getRenderDictionary = function() 
+ShoppingCartView.prototype.getRenderDictionary = function()
 {
-    return { 
+    return {
         'total' : this.controller.getTotal(),
         'shipping_cost': this.controller.shipping_cost,
         'units_total' : this.controller.getUnitsTotal(),

@@ -19,7 +19,7 @@ var ProductListView = function($target)
     this.no_products_template = '';
     this.$target = !$target ? $('.products') : $($target);
 
-    // PRIVATE VARS 
+    // PRIVATE VARS
     var self = this;
     this._onScroll = function()
     {
@@ -53,7 +53,7 @@ var ProductListView = function($target)
     this.renderSiteSearch(this.site_search_template);
 };
 
-ProductListView.prototype.initTemplates = function() 
+ProductListView.prototype.initTemplates = function()
 {
     this.tag_template = $.trim($('#tag_template').html());
     this.product_template = $.trim($('#product_template').html());
@@ -68,29 +68,29 @@ ProductListView.prototype.initTemplates = function()
 };
 
 
-ProductListView.prototype.init = function() 
+ProductListView.prototype.init = function()
 {
     $(document).on('scroll', this._onScroll);
     $(document).on('click', '.more-products', this._onClick);
 };
 
-ProductListView.prototype.onScrollEnd = function(callback) 
+ProductListView.prototype.onScrollEnd = function(callback)
 {
     this.on_scroll_end = callback;
 };
 
-ProductListView.prototype.onClickEnd = function(callback) 
+ProductListView.prototype.onClickEnd = function(callback)
 {
     this.on_click_end = callback;
 };
 
-ProductListView.prototype.renderTags = function(tags) 
+ProductListView.prototype.renderTags = function(tags)
 {
     // detect if tags are list
     if (tags === undefined) return;
 
     var $menu = $('.menu ul');
-    for (var i = 0; i < tags.length; i++) 
+    for (var i = 0; i < tags.length; i++)
     {
         var tag = tags[i];
         var rendered = Utils.render(this.tag_template, tag);
@@ -107,7 +107,7 @@ ProductListView.prototype.renderTags = function(tags)
  * @param  {Function} callback       [description]
  * @return {[type]}                  [description]
  */
-ProductListView.prototype.renderEmpty = function(products, page, callback) 
+ProductListView.prototype.renderEmpty = function(products, page, callback)
 {
     if (page === 1)
     {
@@ -127,7 +127,7 @@ ProductListView.prototype.renderEmpty = function(products, page, callback)
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-ProductListView.prototype.finishRendering = function(page, products, callback) 
+ProductListView.prototype.finishRendering = function(page, products, callback)
 {
     this.page = page;
     callback.call(this, products);
@@ -138,7 +138,7 @@ ProductListView.prototype.finishRendering = function(page, products, callback)
  * @param  {[type]} product [description]
  * @return {[type]}         [description]
  */
-ProductListView.prototype.renderProduct = function(product) 
+ProductListView.prototype.renderProduct = function(product)
 {
     var $rendered = $(Utils.render(this.product_template, product));
     this.renderProductImage($('.product-image', $rendered), product.id, $('.product-image-href', $rendered));
@@ -151,7 +151,7 @@ ProductListView.prototype.renderProduct = function(product)
     return $rendered;
 };
 
-ProductListView.prototype.renderProducts = function(products, page, callback) 
+ProductListView.prototype.renderProducts = function(products, page, callback)
 {
     var rendered;
     var html_builder = []
@@ -169,7 +169,7 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
     }
 
     // render product list
-    for (var i = 0; i < products.length; i++) 
+    for (var i = 0; i < products.length; i++)
     {
         html_builder.push(
             this.renderProduct(products[i])
@@ -184,20 +184,20 @@ ProductListView.prototype.renderProducts = function(products, page, callback)
 };
 
 
-ProductListView.prototype.showSoldOut = function($rendered) 
+ProductListView.prototype.showSoldOut = function($rendered)
 {
     $('.add-to-cart', $rendered).addClass('product-sold-out');
     $('.add-to-cart', $rendered).html('Agotado');  // @todo: add dictionary
     $('.add-to-cart', $rendered).val('Agotado');
 };
 
-ProductListView.prototype.removeLoading = function() 
+ProductListView.prototype.removeLoading = function()
 {
     $('.spinner', this.$target).remove();
     $('.more-products').css('display', 'none');
 };
 
-ProductListView.prototype.renderLoading = function() 
+ProductListView.prototype.renderLoading = function()
 {
     this.removeLoading();
     if (!this.all_products_loaded)
@@ -209,7 +209,7 @@ ProductListView.prototype.renderLoading = function()
 };
 
 
-ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref) 
+ProductListView.prototype.renderProductImage = function($image, product_id, $imagehref)
 {
     var url = Utils.getURL('product', ['images', product_id]);
     $.get(url, function(data)
@@ -239,7 +239,7 @@ ProductListView.prototype.renderProductImage = function($image, product_id, $ima
     });
 };
 
-ProductListView.prototype.renderSiteSearch = function(template) 
+ProductListView.prototype.renderSiteSearch = function(template)
 {
     if(this.site_search.length){
         var tag = Utils.getUrlParameter('tag');
@@ -249,8 +249,8 @@ ProductListView.prototype.renderSiteSearch = function(template)
             search_query = decodeURIComponent(search_query).replace(/\+/g, ' ');
         }
         var rendered = Utils.render(
-                        template, 
-                        { 
+                        template,
+                        {
                             'tag' : tag,
                             'search_query' : search_query
                         });
@@ -282,9 +282,9 @@ ProductListView.prototype.renderSiteSearch = function(template)
 };
 
 
-ProductListView.prototype.destroy = function() 
+ProductListView.prototype.destroy = function()
 {
-    try 
+    try
     {
         this.$target.html("");
         $(document).unbind('scroll', this._onScroll);

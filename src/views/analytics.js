@@ -1,7 +1,7 @@
 (function($)
 {
     /** cookie functions */
-    function createCookie(name, value, days) 
+    function createCookie(name, value, days)
     {
         var expires;
 
@@ -30,7 +30,7 @@
         createCookie(name, "", -1);
     }
     /** /cookie functions */
-    var s4 = function() 
+    var s4 = function()
     {
         return Math.floor((1 + Math.random()) * 0x10000)
           .toString(16)

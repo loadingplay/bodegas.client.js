@@ -21,7 +21,7 @@ var ShoppingCart = function(site_id, checkout_url)
     this.loadCart();
 };
 
-ShoppingCart.prototype.generateGUID = function() 
+ShoppingCart.prototype.generateGUID = function()
 {
     var old_guid = $.cookie('shopping-cart');
     var guid = old_guid;
@@ -36,26 +36,26 @@ ShoppingCart.prototype.generateGUID = function()
     return guid;
 };
 
-ShoppingCart.prototype.getGUID = function() 
+ShoppingCart.prototype.getGUID = function()
 {
     return this.guid;
 };
 
-ShoppingCart.prototype.getCheckoutUrl = function() 
+ShoppingCart.prototype.getCheckoutUrl = function()
 {
     return this.checkout_url;
 };
 
-ShoppingCart.prototype.getSiteId = function() 
+ShoppingCart.prototype.getSiteId = function()
 {
     return this.site_id;
 };
 
-ShoppingCart.prototype.saveModel = function(callback) 
+ShoppingCart.prototype.saveModel = function(callback)
 {
     var self=this;
-    $.post( 
-        Utils.getURL('cart', ['save', this.guid]), 
+    $.post(
+        Utils.getURL('cart', ['save', this.guid]),
         { 'json_data' : JSON.stringify(this.model) }, function(e)
         {
             (callback === undefined ? $.noop:callback)(e);
@@ -63,9 +63,9 @@ ShoppingCart.prototype.saveModel = function(callback)
         });
 };
 
-ShoppingCart.prototype.recalcTotals = function() 
+ShoppingCart.prototype.recalcTotals = function()
 {
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         var p = this.model[i];
 
@@ -74,7 +74,7 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback) 
+ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback)
 {
     id = parseInt(id);
     bullet1 = bullet1 === undefined ? '' : bullet1;
@@ -84,7 +84,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
 
     var images = [];
     var im = [];
-    for (var j = 0; j < 3; j++) 
+    for (var j = 0; j < 3; j++)
     {
         images.push(img);
     }
@@ -94,10 +94,10 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
-        this.model.push({ 
-            'id' : id, 
-            'price' : price, 
-            'name' : name, 
+        this.model.push({
+            'id' : id,
+            'price' : price,
+            'name' : name,
             'quantity' : 0,
             'upp': upp,
             'upp_total' : upp,
@@ -109,7 +109,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
         });
     }
 
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         if (this.model[i].id === id)
         {
@@ -131,7 +131,7 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
  * @param  {int} id  product id
  * @return {string}    url with product image
  */
-ShoppingCart.prototype.getProductImage = function(id) 
+ShoppingCart.prototype.getProductImage = function(id)
 {
     // implement this method outside
     return '';
@@ -141,9 +141,9 @@ ShoppingCart.prototype.getProductImage = function(id)
  * remove element from shopping cart
  * @param  {int} id  product id
  */
-ShoppingCart.prototype.removeProduct = function(id) 
+ShoppingCart.prototype.removeProduct = function(id)
 {
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         if (parseInt(id) === this.model[i].id)
         {
@@ -161,14 +161,14 @@ ShoppingCart.prototype.removeProduct = function(id)
  */
 ShoppingCart.prototype.removeOne = function(id)
 {
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         if (this.model[i].id === parseInt(id))
         {
             this.model[i].quantity -= 1;
             this.model[i].total = this.model[i].price * this.model[i].quantity;
             this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-            
+
             if (this.model[i].quantity <= 0)
             {
                 this.removeProduct(id);
@@ -185,7 +185,7 @@ ShoppingCart.prototype.removeOne = function(id)
  * return a list of productos
  * @return {list}  a list which contains products
  */
-ShoppingCart.prototype.getProducts = function() 
+ShoppingCart.prototype.getProducts = function()
 {
     return this.model;
 };
@@ -195,7 +195,7 @@ ShoppingCart.prototype.getProducts = function()
  * @param  {int} id product id
  * @return {boolean}    true if product exists, false otherwise
  */
-ShoppingCart.prototype.productExist = function(id) 
+ShoppingCart.prototype.productExist = function(id)
 {
     var pid = parseInt(id);
     // get the product from model, if exist or create from database
@@ -209,11 +209,11 @@ ShoppingCart.prototype.productExist = function(id)
     return false;
 };
 
-ShoppingCart.prototype.getTotal = function() 
+ShoppingCart.prototype.getTotal = function()
 {
     var total = 0;
 
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         var product = this.model[i];
         total += product.price * product.quantity;
@@ -223,11 +223,11 @@ ShoppingCart.prototype.getTotal = function()
     return total;
 };
 
-ShoppingCart.prototype.getUnitsTotal = function() 
+ShoppingCart.prototype.getUnitsTotal = function()
 {
     var units_total = 0;
 
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         var product = this.model[i];
         units_total += product.quantity;
@@ -239,11 +239,11 @@ ShoppingCart.prototype.getUnitsTotal = function()
 };
 
 /** upp == units per product */
-ShoppingCart.prototype.getUPPTotal = function() 
+ShoppingCart.prototype.getUPPTotal = function()
 {
     var units_total = 0;
 
-    for (var i = 0; i < this.model.length; i++) 
+    for (var i = 0; i < this.model.length; i++)
     {
         var product = this.model[i];
         units_total += parseInt(product.upp_total);
@@ -257,7 +257,7 @@ ShoppingCart.prototype.getUPPTotal = function()
  * load cart from a cooki
  * @param  {object} callback  callback executed when the cart is loaded
  */
-ShoppingCart.prototype.loadCart = function(callback) 
+ShoppingCart.prototype.loadCart = function(callback)
 {
     var self = this;
     var onload = callback === undefined ? $.noop : callback;
@@ -290,7 +290,7 @@ ShoppingCart.prototype.loadCart = function(callback)
     });
 };
 
-ShoppingCart.prototype.setShippingCost = function(shipping_cost) 
+ShoppingCart.prototype.setShippingCost = function(shipping_cost)
 {
     this.shipping_cost = shipping_cost;
     this.view.render();
@@ -300,14 +300,14 @@ ShoppingCart.prototype.setShippingCost = function(shipping_cost)
  * set google analytics enhanced for ecommerce enabled
  * @param  {function} ga google analytics function
  */
-ShoppingCart.prototype.enableGA = function() 
+ShoppingCart.prototype.enableGA = function()
 {
     this.is_ga_enabled = true;
 
     window.ga( 'require', 'ec');
 };
 
-ShoppingCart.prototype.gaAddProduct = function(product, position) 
+ShoppingCart.prototype.gaAddProduct = function(product, position)
 {
     try
     {
@@ -327,7 +327,7 @@ ShoppingCart.prototype.gaAddProduct = function(product, position)
     }
 };
 
-ShoppingCart.prototype.gaRemoveProduct = function(product) 
+ShoppingCart.prototype.gaRemoveProduct = function(product)
 {
     try
     {
@@ -345,7 +345,7 @@ ShoppingCart.prototype.gaRemoveProduct = function(product)
     }
 };
 
-ShoppingCart.prototype.gaSetProduct = function(product, position) 
+ShoppingCart.prototype.gaSetProduct = function(product, position)
 {
     window.ga( 'ec:addProduct', {
       'id': product.id,
@@ -355,7 +355,7 @@ ShoppingCart.prototype.gaSetProduct = function(product, position)
     });
 };
 
-ShoppingCart.prototype.clearCart = function(callback) 
+ShoppingCart.prototype.clearCart = function(callback)
 {
     this.model = [];
     this.saveModel(callback);

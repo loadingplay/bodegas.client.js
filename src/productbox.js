@@ -20,12 +20,12 @@ var ProductBox = function($div, options)
     this.view = new ProductBoxView(this);
 };
 
-ProductBox.prototype.getURL = function() 
+ProductBox.prototype.getURL = function()
 {
     var len = this.base_url.length;
     var base_url_limit = this.base_url.slice(len-1, len) === '/' ? 1 : 0;
     var base_url = this.base_url.substr(0, len - base_url_limit);
-    
+
     var url = [base_url,
                 'product/list',
                 this.app_public,
@@ -38,7 +38,7 @@ ProductBox.prototype.getURL = function()
 };
 
 
-ProductBox.prototype.loadProducts = function(callback) 
+ProductBox.prototype.loadProducts = function(callback)
 {
     callback = callback || $.noop;
 

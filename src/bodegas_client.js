@@ -19,7 +19,7 @@ var BodegasClient = function(checkout_url)
     this.cart = new ShoppingCart();
 };
 
-BodegasClient.prototype.authenticate = function(app_public, callback) 
+BodegasClient.prototype.authenticate = function(app_public, callback)
 {
     var self = this;
     jQuery.get(Utils.getURL('authenticate', [app_public]), function(data)
@@ -33,7 +33,7 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
 };
 
 
-BodegasClient.prototype.init = function(site_id) 
+BodegasClient.prototype.init = function(site_id)
 {
     this.site_id = site_id;
     this.tag.site_id = site_id;
@@ -45,13 +45,13 @@ BodegasClient.prototype.init = function(site_id)
 };
 
 
-BodegasClient.prototype.enableGA = function() 
+BodegasClient.prototype.enableGA = function()
 {
     this.cart.enableGA();
 };
 
 
-BodegasClient.prototype.destroy = function() 
+BodegasClient.prototype.destroy = function()
 {
     this.product.destroy();
 };

@@ -8,7 +8,7 @@ var Tag = function(site_id)
     this.site_id = site_id === undefined ? 0 : site_id;
 };
 
-Tag.prototype.listAll = function(callback) 
+Tag.prototype.listAll = function(callback)
 {
     $.get(Utils.getURL('tag', ['list_all', this.site_id]), function(data)
     {

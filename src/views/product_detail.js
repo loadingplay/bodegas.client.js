@@ -11,7 +11,7 @@ var ProductDetailView = function(container)
     this.initTemplates();
 };
 
-ProductDetailView.prototype.initTemplates = function() 
+ProductDetailView.prototype.initTemplates = function()
 {
     this.template = $.trim($('#product_detail').html());
 
@@ -23,7 +23,7 @@ ProductDetailView.prototype.initTemplates = function()
     this.renderLoading();
 };
 
-ProductDetailView.prototype.render = function(product, callback) 
+ProductDetailView.prototype.render = function(product, callback)
 {
     callback = callback === undefined ? $.noop : callback;
     var $el = $(this.container);
@@ -52,7 +52,7 @@ ProductDetailView.prototype.render = function(product, callback)
     $.analytics("product-detail", dict);
 };
 
-ProductDetailView.prototype.renderImages = function($images, product_id) 
+ProductDetailView.prototype.renderImages = function($images, product_id)
 {
     var self = this;
     var src = '';
@@ -83,7 +83,7 @@ ProductDetailView.prototype.renderImages = function($images, product_id)
 
 };
 
-ProductDetailView.prototype.loadImageToElement = function(image_url, $el) 
+ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
 {
     var $aux = $el.clone();
     $aux.load(function()
@@ -96,12 +96,12 @@ ProductDetailView.prototype.loadImageToElement = function(image_url, $el)
     $aux.fadeIn();
 };
 
-ProductDetailView.prototype.enableGA = function() 
+ProductDetailView.prototype.enableGA = function()
 {
     this.is_ga_enabled = true;
 };
 
-ProductDetailView.prototype.sendPageView = function(product) 
+ProductDetailView.prototype.sendPageView = function(product)
 {
     try
     {
@@ -122,13 +122,13 @@ ProductDetailView.prototype.sendPageView = function(product)
 };
 
 
-ProductDetailView.prototype.removeLoading = function() 
+ProductDetailView.prototype.removeLoading = function()
 {
     var $container = $(this.container);
     $('.spinner', $container).remove();
 };
 
-ProductDetailView.prototype.renderLoading = function() 
+ProductDetailView.prototype.renderLoading = function()
 {
     this.removeLoading();
     if (!this.allcontainerLoaded)

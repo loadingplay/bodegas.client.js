@@ -14,11 +14,11 @@ var Variants = function(options)
  * @param  {stirng}   product_sku the product identifier
  * @param  {Function} cb         callback
  */
-Variants.prototype.get = function(product_sku, cb) 
+Variants.prototype.get = function(product_sku, cb)
 {
     var self = this;
     jQuery.get(
-        Utils.getURL('v1', ['variant', 'list']), 
+        Utils.getURL('v1', ['variant', 'list']),
         {
             'namespace': this.site_name + '_' + product_sku
         },
@@ -37,7 +37,7 @@ Variants.prototype.get = function(product_sku, cb)
  * @param  {stirng}   variant_name the variant name or comma separated names
  * @param  {Function} cb           callback method
  */
-Variants.prototype.getValues = function(product_sku, variant_name, cb) 
+Variants.prototype.getValues = function(product_sku, variant_name, cb)
 {
     jQuery.get(
         Utils.getURL('v1', ['variant', 'value', 'list']),

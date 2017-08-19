@@ -6,7 +6,7 @@
 /* global ProductBox*/
 /* global window*/
 
-(function ( $, window, document, undefined ) 
+(function ( $, window, document, undefined )
 {
     'use strict';
 
@@ -72,7 +72,7 @@
             {
                 var data = $.data(this, 'product_box');
 
-                if (!data || data === undefined) 
+                if (!data || data === undefined)
                 {
                     var product_box = new ProductBox($(this), options);
                     product_box.view.render();
@@ -117,9 +117,9 @@
         }
     };
 
-    // A really lightweight plugin wrapper around the constructor, 
+    // A really lightweight plugin wrapper around the constructor,
     // preventing against multiple instantiations
-    $.fn[pluginName] = function( options_or_method, options ) 
+    $.fn[pluginName] = function( options_or_method, options )
     {
         var method = 'main';
 
@@ -217,14 +217,14 @@ var EcommerceFacade = function(options)
     this.variants_view = new VariantsView(this.options.variants.container);
     this.variants_view.active_class = this.options.variants.active_class;
     this.variants_view.setTemplates(
-        this.options.variants.variant_template, 
+        this.options.variants.variant_template,
         this.options.variants.value_template
     )
 
     this.animation = null;
 
     // initialize animation
-    if (options.animation === 'basic') 
+    if (options.animation === 'basic')
     {
         // init simmple animations (the only one for now)
         this.animation = new SimpleAnimation();
@@ -259,7 +259,7 @@ var EcommerceFacade = function(options)
     }
 };
 
-EcommerceFacade.prototype.showProductList = function(page) 
+EcommerceFacade.prototype.showProductList = function(page)
 {
     var self = this;
 
@@ -287,11 +287,11 @@ EcommerceFacade.prototype.showProductList = function(page)
         }
 
         self.ecommerce.product._list(
-            page, 
-            self.options.products_per_page, 
+            page,
+            self.options.products_per_page,
             self.options.ignore_stock,
-            tag, 
-            Utils.getUrlParameter('search_query'), 
+            tag,
+            Utils.getUrlParameter('search_query'),
             self.options.user,
             self.options.operator,
             self.options.column,
@@ -299,8 +299,8 @@ EcommerceFacade.prototype.showProductList = function(page)
             function(products)
             {
                 self.view.renderProducts(
-                    products, 
-                    page, 
+                    products,
+                    page,
                     function(products)
                     {
                         self.options.onLoad.call(this, products);
@@ -312,7 +312,7 @@ EcommerceFacade.prototype.showProductList = function(page)
     });
 };
 
-EcommerceFacade.prototype.showProductDetail = function() 
+EcommerceFacade.prototype.showProductDetail = function()
 {
     var product_id = this.options.product_id || Utils.getUrlParameter('id');
     var self = this;
@@ -320,7 +320,7 @@ EcommerceFacade.prototype.showProductDetail = function()
     this.ecommerce.authenticate(this.options.app_public, function()
     {
         self.ecommerce.product.get(
-            product_id, 
+            product_id,
             self.options.user,
             function(product)
             {
@@ -342,7 +342,7 @@ EcommerceFacade.prototype.showProductDetail = function()
 /**
  * load variants from api and render them in jquery target
  */
-EcommerceFacade.prototype.loadVariants = function() 
+EcommerceFacade.prototype.loadVariants = function()
 {
     var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
     var self = this;
@@ -355,7 +355,7 @@ EcommerceFacade.prototype.loadVariants = function()
             {
                 var vs = [];
 
-                for (var i = 0; i < variants.length; i++) 
+                for (var i = 0; i < variants.length; i++)
                 {
                     vs.push(variants[i].name)
                 }
@@ -370,7 +370,7 @@ EcommerceFacade.prototype.loadVariants = function()
     });
 };
 
-EcommerceFacade.prototype.setData = function(data) 
+EcommerceFacade.prototype.setData = function(data)
 {
     if (typeof data === 'object')
     {
@@ -389,13 +389,13 @@ EcommerceFacade.prototype.setData = function(data)
     }
 };
 
-EcommerceFacade.prototype.setShippingCost = function(data) 
+EcommerceFacade.prototype.setShippingCost = function(data)
 {
     this.ecommerce.cart.setShippingCost(data);
 };
 
 
-EcommerceFacade.prototype.destroy = function() 
+EcommerceFacade.prototype.destroy = function()
 {
     this.ecommerce.destroy();
     this.view.destroy();
@@ -405,16 +405,16 @@ EcommerceFacade.prototype.destroy = function()
  * trigger event when products are loaded
  * @param  {string} event event to trigger
  */
-EcommerceFacade.prototype.triggerProductsLoaded = function(products) 
+EcommerceFacade.prototype.triggerProductsLoaded = function(products)
 {
     $(this.options.container).trigger('products.loaded', [products]);
 };
 
 /**
  * thi event get triggered when all variants are loaded
- * @param  {list} variants variants list 
+ * @param  {list} variants variants list
  */
-EcommerceFacade.prototype.triggerVariantsLoaded = function(variants) 
+EcommerceFacade.prototype.triggerVariantsLoaded = function(variants)
 {
     $(this.options.container).trigger('variants.loaded', [variants]);
 };
@@ -423,7 +423,7 @@ EcommerceFacade.prototype.triggerVariantsLoaded = function(variants)
  * change options
  * @param  {object} options json object with options
  */
-EcommerceFacade.prototype.changeOptions = function(options) 
+EcommerceFacade.prototype.changeOptions = function(options)
 {
     this.options = options;
 
