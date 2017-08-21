@@ -17,7 +17,7 @@ QUnit.module(
     },
     afterEach : function()
     {
-        // $('.cart').html('');
+        $('.cart').html('');
         $.removeCookie('shopping-cart');
     }
 });
@@ -34,14 +34,14 @@ QUnit.test('cart', function(assert)
         var product2= products[1];
 
         shopping_cart.addProduct(
-            product.id, product.main_price, product.name, product.upp);
+            product.id, 'sku', product.main_price, product.name, product.upp);
         assert.equal(
             shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
         assert.equal(
             shopping_cart.getProducts()[0].images[0][1], '', 'message');
 
         shopping_cart.addProduct(
-            product.id, product.main_price, product.name, product.upp);
+            product.id, 'sku', product.main_price, product.name, product.upp);
         assert.equal(
             shopping_cart.getProducts().length, 1,
             'shoppint cart length == 1 after adding same product twice'
@@ -54,7 +54,7 @@ QUnit.test('cart', function(assert)
             shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4');
 
         shopping_cart.addProduct(
-            product2.id, product2.main_price, product2.name, product.upp);
+            product2.id, 'sku', product2.main_price, product2.name, product.upp);
         assert.equal(
             shopping_cart.getProducts().length, 2,
             'shoppint cart length == 2 after adding diferent product');
@@ -87,7 +87,7 @@ QUnit.test('totals', function(assert)
         var product = products[0];
 
         shopping_cart.addProduct(
-            product.id, product.main_price, product.name, product.upp);
+            product.id, 'sku', product.main_price, product.name, product.upp);
 
         assert.equal(
             shopping_cart.getProducts()[0].total,
@@ -100,7 +100,7 @@ QUnit.test('totals', function(assert)
             'upp total for just one added product');
 
         shopping_cart.addProduct(
-            product.id, product.main_price, product.name, product.upp);
+            product.id, 'sku', product.main_price, product.name, product.upp);
 
         assert.equal(
             shopping_cart.getProducts()[0].total,
@@ -137,7 +137,7 @@ QUnit.test('load from cache', function(assert)
         var product = products[0];
 
         shopping_cart.addProduct(
-            product.id, product.main_price, product.name, product.upp);
+            product.id, 'sku', product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'length is one');
 
         assert.equal(
@@ -243,7 +243,7 @@ QUnit.test('test add to cart with variants selected', function(assert)
 
                 // check if product was added within variant
                 assert.equal(facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
-                assert.equal(facade.ecommerce.cart.model[0].variant, '1-rojo');
+                assert.equal(facade.ecommerce.cart.model[0].combination, '1-rojo');
 
                 done();
             };

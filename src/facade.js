@@ -221,6 +221,11 @@ var EcommerceFacade = function(options)
         this.options.variants.value_template
     );
 
+    this.ecommerce.cart.getCurrentCombination = function()
+    {
+        return self.variants_view.getSelectedCombination();
+    };
+
     this.animation = null;
 
     // initialize animation

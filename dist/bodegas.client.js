@@ -619,6 +619,11 @@ var EcommerceFacade = function(options)
         this.options.variants.value_template
     );
 
+    this.ecommerce.cart.getCurrentCombination = function()
+    {
+        return self.variants_view.getSelectedCombination();
+    };
+
     this.animation = null;
 
     // initialize animation
@@ -985,8 +990,7 @@ ProductBox.prototype.loadProducts = function(callback)
 /*global $*/
 /*global ShoppingCartView*/
 /*global ExtraInfo*/
-
-'use strict';
+/*global window*/
 
 var ShoppingCart = function(site_id, checkout_url)
 {
@@ -1057,7 +1061,30 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback)
+/**
+ * return the currently selected combination
+ * @return {string} current combination
+ */
+ShoppingCart.prototype.getCurrentCombination = function ()
+{
+    // implemented outside
+    return "";
+};
+
+/**
+ * add an element to the shopping cart
+ * @param  {int}   id       product unique identifier
+ * @param  {float}   price     product price
+ * @param  {string}   name
+ * @param  {int}   upp      units per product
+ * @param  {string}   bullet1  some random text
+ * @param  {string}   bullet2  some random text
+ * @param  {string}   bullet3  some random text
+ * @param  {object}   img      json with images
+ * @param  {Function} callback callback this method when loaded
+ * @todo: use promisses
+ */
+ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1, bullet2, bullet3, img, callback)
 {
     id = parseInt(id);
     bullet1 = bullet1 === undefined ? '' : bullet1;
@@ -1073,12 +1100,18 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
     }
     im.push(images);
 
+    // fix sku with selected combination
+    var combination = this.getCurrentCombination();
+    sku = sku + '-' + combination;
+
     // doenst add quantity here, so dont cut the execution
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
         this.model.push({
             'id' : id,
+            'sku': sku,
+            'combination': combination,
             'price' : price,
             'name' : name,
             'quantity' : 0,
@@ -1216,8 +1249,6 @@ ShoppingCart.prototype.getUnitsTotal = function()
         units_total += product.quantity;
     }
 
-    // console.log("units total " + units_total);
-
     return units_total;
 };
 
@@ -1232,7 +1263,6 @@ ShoppingCart.prototype.getUPPTotal = function()
         units_total += parseInt(product.upp_total);
     }
 
-    // console.log("upp units total " + units_total);
     return units_total;
 };
 
@@ -1263,7 +1293,7 @@ ShoppingCart.prototype.loadCart = function(callback)
                 onload([]);
                 return;
             }
-            // console.log(cart_products.products);
+
             self.model = cart_products.products;
             self.recalcTotals();
             self.view.render();
@@ -1574,6 +1604,10 @@ var Utils = {  //jshint ignore: line
 /* globals Utils */
 
 
+/**
+ * Variant class definition
+ * @param  {object} options options comming from facade
+ */
 var Variants = function(options)
 {
     // options = options === undefined ? { 'site_name': 'xx' } : options;
@@ -2381,18 +2415,30 @@ ShoppingCartView.prototype.addOneClick = function($button)
     this.controller.addProduct(id);
 };
 
+/**
+ * get product data from button
+ * @param {object}  $button     jquery button with data
+ * @return {object} retur a list with all prouct elements
+ */
+ShoppingCartView.prototype.getProductData = function ($button)
+{
+    return [
+        $button.attr('product-id'),
+        $button.attr('product-sku'),
+        $button.attr('product-price'),
+        $button.attr('product-name'),
+        $button.attr('product-upp'),
+        $button.attr('product-bullet1'),
+        $button.attr('product-bullet2'),
+        $button.attr('product-bullet3'),
+        $button.attr('product-img')
+    ];
+};
+
 ShoppingCartView.prototype.addToCartClick = function($button)
 {
-    var id = $button.attr('product-id');
-    var name = $button.attr('product-name');
-    var price = $button.attr('product-price');
-    var upp = $button.attr('product-upp');
-    var bullet1 = $button.attr('product-bullet1');
-    var bullet2 = $button.attr('product-bullet2');
-    var bullet3 = $button.attr('product-bullet3');
-    var img = $button.attr('product-img');
-
-    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3, img);
+    this.controller.addProduct.apply(
+        this.controller, this.getProductData($button));
 };
 
 
@@ -2413,18 +2459,6 @@ ShoppingCartView.prototype.buyProductClick = function($button)
 {
     var self = this;
 
-    // get product data
-    var product = {
-        id : $button.attr('product-id'),
-        name : $button.attr('product-name'),
-        price : $button.attr('product-price'),
-        upp : $button.attr('product-upp'),
-        bullet1 : $button.attr('product-bullet1'),
-        bullet2 : $button.attr('product-bullet2'),
-        bullet3 : $button.attr('product-bullet3'),
-        img : $button.attr('product-img')
-    };
-
     // get checkout data
     var checkout = self.getCheckoutData();
 
@@ -2432,20 +2466,14 @@ ShoppingCartView.prototype.buyProductClick = function($button)
     this.controller.clearCart(function(){
 
         // add the current product
-        self.controller.addProduct(
-            product.id,
-            product.price,
-            product.name,
-            product.upp,
-            product.bullet1,
-            product.bullet2,
-            product.bullet3,
-            product.images,
-            function()
-            {
-                // proceed to checkout
-                self.goToCheckout(checkout);
-            });
+        self.controller.addProduct.apply(
+            self.controller,
+            self.getProductData($button).push(function()
+                {
+                    // proceed to checkout
+                    self.goToCheckout(checkout);
+                })
+            );
     });
 };
 
