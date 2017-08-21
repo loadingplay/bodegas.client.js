@@ -1,13 +1,13 @@
+/* globals document */
 /* globals jQuery */
+/* globals $ */
 /* globals Utils */
-
-'use strict';
 
 var VariantsView = function($target)
 {
     this.$target = $target;
     this.variants = [];
-    this.value_template = '<div class="variant-value" variant="{{ variant_name }}" value="{{ value }}" >{{ value }}</div>'
+    this.value_template = '<div class="variant-value" variant="{{ variant_name }}" value="{{ value }}" >{{ value }}</div>';
     this.variant_template = '<div class="variant" >\
             <div class="variant-head">{{ variant_name }}</div>\
             <div class="variant-values">{{ values }}</div>\
@@ -28,9 +28,8 @@ var VariantsView = function($target)
 VariantsView.prototype.setTemplates = function(variant_template, value_template)
 {
     this.variant_template = variant_template !== '' ? variant_template : this.variant_template;
-    this.value_template = value_template !== '' ? value_template : this.variant_template;
+    this.value_template = value_template !== '' ? value_template : this.value_template;
 };
-
 
 /**
  * get initialized all click events on the variants GUI
@@ -50,7 +49,7 @@ VariantsView.prototype.initEvents = function()
         {
             $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
         }
-    }
+    };
     $(document).on('click', '.variant-value', valueClick);
     // $(this.$target).on('click', '.variant-value', valueClick);
 };
@@ -65,7 +64,7 @@ VariantsView.prototype.selectVariant = function(variant, value)
         if (this.selected_values[i].variant === variant)
         {
             this.selected_values[i].value = value;
-            return
+            return;
         }
     }
 

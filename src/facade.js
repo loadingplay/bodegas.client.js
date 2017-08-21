@@ -219,7 +219,7 @@ var EcommerceFacade = function(options)
     this.variants_view.setTemplates(
         this.options.variants.variant_template,
         this.options.variants.value_template
-    )
+    );
 
     this.animation = null;
 
@@ -347,27 +347,33 @@ EcommerceFacade.prototype.loadVariants = function()
     var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
     var self = this;
 
-    this.ecommerce.authenticate(this.options.app_public, function()
-    {
-        self.variants.get(
-            product_sku,
-            function(variants)
+    // ensure templates and target
+    this.variants_view.$target = this.options.variants.container;
+    this.variants_view.setTemplates(
+        this.options.variants.variant_template,
+        this.options.variants.value_template
+    );
+
+    // load variants from database
+    self.variants.get(
+        product_sku,
+        function(variants)
+        {
+            var vs = [];
+
+            for (var i = 0; i < variants.length; i++)
             {
-                var vs = [];
+                vs.push(variants[i].name);
+            }
 
-                for (var i = 0; i < variants.length; i++)
-                {
-                    vs.push(variants[i].name)
-                }
-
-                self.variants.getValues(product_sku, vs.join(","), function(variants)
-                {
-                    self.variants_view.render(variants);
-                    self.options.onLoad.call(this, variants);
-                    self.triggerVariantsLoaded(variants);
-                })
+            self.variants.getValues(product_sku, vs.join(","), function(variants)
+            {
+                self.variants_view.render(variants);
+                self.options.onLoad.call(this, variants);
+                self.triggerVariantsLoaded(variants);
             });
-    });
+        }
+    );
 };
 
 EcommerceFacade.prototype.setData = function(data)

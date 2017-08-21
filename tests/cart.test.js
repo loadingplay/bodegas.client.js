@@ -8,18 +8,19 @@ var shopping_cart;
 
 
 QUnit.module(
-    'Shopping cart', 
+'Shopping cart',
+{
+    beforeEach: function()
     {
-        beforeEach: function()
-        {
-            product = new Product(2);
-            shopping_cart = new ShoppingCart(2);
-        },
-        afterEach : function()
-        {
-            $.removeCookie('shopping-cart');
-        }
-    });
+        product = new Product(2);
+        shopping_cart = new ShoppingCart(2);
+    },
+    afterEach : function()
+    {
+        // $('.cart').html('');
+        $.removeCookie('shopping-cart');
+    }
+});
 
 
 QUnit.test('cart', function(assert)
@@ -32,23 +33,45 @@ QUnit.test('cart', function(assert)
         var product = products[0];
         var product2= products[1];
 
-        shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
-        assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
-        assert.equal(shopping_cart.getProducts()[0].images[0][1], '', 'message');
+        shopping_cart.addProduct(
+            product.id, product.main_price, product.name, product.upp);
+        assert.equal(
+            shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
+        assert.equal(
+            shopping_cart.getProducts()[0].images[0][1], '', 'message');
 
-        shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
-        assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1 after adding same product twice');
-        assert.equal(shopping_cart.getProducts()[0].quantity, 2, 'quantity == 2 after adding same product twice');
-        assert.equal(shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4');
+        shopping_cart.addProduct(
+            product.id, product.main_price, product.name, product.upp);
+        assert.equal(
+            shopping_cart.getProducts().length, 1,
+            'shoppint cart length == 1 after adding same product twice'
+        );
+        assert.equal(
+            shopping_cart.getProducts()[0].quantity, 2,
+            'quantity == 2 after adding same product twice'
+        );
+        assert.equal(
+            shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4');
 
-        shopping_cart.addProduct(product2.id, product2.main_price, product2.name, product.upp);        
-        assert.equal(shopping_cart.getProducts().length, 2, 'shoppint cart length == 2 after adding diferent product'); 
+        shopping_cart.addProduct(
+            product2.id, product2.main_price, product2.name, product.upp);
+        assert.equal(
+            shopping_cart.getProducts().length, 2,
+            'shoppint cart length == 2 after adding diferent product');
 
         shopping_cart.removeOne(product.id);
-        assert.equal(shopping_cart.getProducts()[0].quantity, 1, 'quantity of first item == 1 after removing one');
-        assert.equal(shopping_cart.getProducts()[0].upp_total, 2, 'upp x quantity == 2');
+        assert.equal(
+            shopping_cart.getProducts()[0].quantity, 1,
+            'quantity of first item == 1 after removing one'
+        );
+        assert.equal(
+            shopping_cart.getProducts()[0].upp_total, 2, 'upp x quantity == 2');
         shopping_cart.removeOne(product.id);
-        assert.equal(shopping_cart.getProducts().length, 1, 'shoppint cart length == 1 after removing another one & quantity reached 0');
+        assert.equal(
+            shopping_cart.getProducts().length, 1,
+            'shoppint cart length == 1 after removing \
+            another one & quantity reached 0'
+        );
 
         products_loaded();
     });
@@ -63,11 +86,12 @@ QUnit.test('totals', function(assert)
     {
         var product = products[0];
 
-        shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
+        shopping_cart.addProduct(
+            product.id, product.main_price, product.name, product.upp);
 
         assert.equal(
-            shopping_cart.getProducts()[0].total, 
-            product.main_price, 
+            shopping_cart.getProducts()[0].total,
+            product.main_price,
             'total for just one added product');
 
         assert.equal(
@@ -75,7 +99,8 @@ QUnit.test('totals', function(assert)
             product.upp,
             'upp total for just one added product');
 
-        shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
+        shopping_cart.addProduct(
+            product.id, product.main_price, product.name, product.upp);
 
         assert.equal(
             shopping_cart.getProducts()[0].total,
@@ -111,20 +136,29 @@ QUnit.test('load from cache', function(assert)
         var new_shopping_cart;
         var product = products[0];
 
-        shopping_cart.addProduct(product.id, product.main_price, product.name, product.upp);
+        shopping_cart.addProduct(
+            product.id, product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'length is one');
 
-        assert.equal($.cookie('shopping-cart'), shopping_cart.getGUID(), 'guid created');
+        assert.equal(
+            $.cookie('shopping-cart'), shopping_cart.getGUID(), 'guid created');
 
         // create a brand new instance
         new_shopping_cart = new ShoppingCart();
 
         // check if guid is conserved
-        assert.equal(shopping_cart.getGUID(), new_shopping_cart.getGUID(), 'guid is conserved');
+        assert.equal(
+            shopping_cart.getGUID(), new_shopping_cart.getGUID(),
+            'guid is conserved'
+        );
 
         new_shopping_cart.loadCart(function()
         {
-            assert.deepEqual(new_shopping_cart.getProducts(), shopping_cart.getProducts(), 'old products are loaded');
+            assert.deepEqual(
+                new_shopping_cart.getProducts(),
+                shopping_cart.getProducts(),
+                'old products are loaded'
+            );
             shopping_cart_loaded();
         });
 
@@ -162,4 +196,67 @@ QUnit.test('callback on save cart', function(assert)
         assert.notEqual(e, undefined, 'callback is executed');
         callback_executed();
     });
+});
+
+QUnit.test('test add to cart with variants selected', function(assert)
+{
+    // init ecommerce
+    var done = assert.async();
+    var loaded = false;
+    var $container = $('<div></div>');
+    $container.appendTo($('.cart'));
+
+    // add product template
+    $('<div id="product_detail" >\
+        <div> \
+            {{ name }} \
+            <div class="variants" ></div>\
+            <button \
+                product-id="{{ id }}" product-name="{{ name }}" \
+                product-sku="{{ sku }}" product-price="{{ main_price }}" \
+                class="add-to-cart" >\
+                    add to cart\
+            </button>\
+        </div>\
+    <div>').appendTo($('.cart'));
+
+    var ecommerce = $container.ecommerce('product_detail', {
+        'app_public' : 100,
+        'base_url' : 'http://apibodegas.ondev.today/',
+        'product_id' : 1212  // this product has variants is mockjax
+    }).on(
+        "products.loaded",
+        function()
+        {
+            // define some functions
+            var variantsLoaded = function(e, variants)
+            {
+                // select a variant within the shopping cart
+                $('.variant-value[variant=talla]')[0].click();
+                $('.variant-value[variant=color]')[0].click();
+
+                var facade = ecommerce.data('ecommerce');
+                var selected_combination = facade.variants_view
+                    .getSelectedCombination();
+                // add a product to shopping cart
+                $('.add-to-cart')[0].click();
+
+                // check if product was added within variant
+                assert.equal(facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
+                assert.equal(facade.ecommerce.cart.model[0].variant, '1-rojo');
+
+                done();
+            };
+
+            // execute variants loading just once
+            if (loaded) return false;
+            loaded = true;
+
+            // init variants
+            $container.ecommerce(
+                'load_variants',
+                { "variants": { "container": $(".variants") } }
+            ).on("variants.loaded", variantsLoaded);
+        }
+    );
 });
