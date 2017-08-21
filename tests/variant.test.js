@@ -81,7 +81,7 @@ QUnit.test('no facade tests', function(assert)
     variants.get('aa', function(tags)
     {
         assert.equal(typeof tags, 'object', 'variant list');
-        assert.equal(tags[0]['name'], 'talla', 'is loading variants from API');
+        assert.equal(tags[0].name, 'talla', 'is loading variants from API');
 
         done();
     });
@@ -90,7 +90,7 @@ QUnit.test('no facade tests', function(assert)
     variants.getValues('aa', 'talla,color', function(values)
     {
         assert.equal(typeof values, 'object', 'values loaded');
-        assert.equal(values[0]["values"][0]["value"], '1', 'values loaded');
+        assert.equal(values[0].values[0].value, '1', 'values loaded');
 
         done2();
     });

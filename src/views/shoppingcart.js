@@ -1,8 +1,7 @@
 /*global ShoppingCart*/
+/*global document*/
 /*global $*/
 /*global Utils*/
-
-'use strict';
 
 var ShoppingCartView = function(controller)
 {
@@ -75,7 +74,7 @@ ShoppingCartView.prototype.init = function()
     $(document).on('change', this.options.quantityUnits, function(evt)
     {
         evt.preventDefault();
-        q =  $(this)["context"]["value"];
+        q =  $(this).context.value;
         // self.removeOne($(this));
         // self.render();
     });
