@@ -139,7 +139,7 @@ ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1,
 
     for (var i = 0; i < this.model.length; i++)
     {
-        if (this.model[i].id === id)
+        if (this.model[i].id === id && this.model[i].sku === sku)
         {
             this.model[i].quantity += 1;
             this.model[i].total = this.model[i].quantity * this.model[i].price;
