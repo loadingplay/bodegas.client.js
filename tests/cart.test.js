@@ -245,6 +245,17 @@ QUnit.test('test add to cart with variants selected', function(assert)
                 assert.equal(facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
                 assert.equal(facade.ecommerce.cart.model[0].combination, '1-rojo');
 
+                // select another combination
+                $('.variant-value[variant=talla]')[1].click();
+                $('.variant-value[variant=color]')[1].click();
+
+                // hit add to cart
+                $('.add-to-cart')[0].click();
+
+                // now should be 2 products in shopping cart
+                // since are differents sku
+                assert.equal(facade.ecommerce.cart.model.length, 2);
+
                 done();
             };
 

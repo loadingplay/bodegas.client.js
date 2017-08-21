@@ -1105,7 +1105,7 @@ ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1,
     sku = sku + '-' + combination;
 
     // doenst add quantity here, so dont cut the execution
-    if (!this.productExist(id))
+    if (!this.productExist(id, sku))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
         this.model.push({
@@ -1209,15 +1209,18 @@ ShoppingCart.prototype.getProducts = function()
 /**
  * check if product exists
  * @param  {int} id product id
+ * @param  {string}  sku also unique identifier (optional)
  * @return {boolean}    true if product exists, false otherwise
  */
-ShoppingCart.prototype.productExist = function(id)
+ShoppingCart.prototype.productExist = function(id, sku)
 {
     var pid = parseInt(id);
+    var final_sku = sku === undefined ? '':sku;
     // get the product from model, if exist or create from database
     for (var i = 0; i < this.model.length; i++)
     {
-        if (parseInt(this.model[i].id) === pid)
+        if (parseInt(this.model[i].id) === pid &&
+            final_sku === this.model[i].sku )
         {
             return true;
         }
