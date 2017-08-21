@@ -260,6 +260,13 @@ QUnit.test('test add to cart with variants selected', function(assert)
                 assert.equal(facade.ecommerce.cart.model[0].quantity, 1);
                 assert.equal(facade.ecommerce.cart.model[1].quantity, 1);
 
+                // test with addone and remove one
+                facade.ecommerce.cart.view.addOneClick(
+                    $('<div product-id="1212"></div>'));
+
+                assert.equal(facade.ecommerce.cart.model[0].quantity, 2);
+                assert.equal(facade.ecommerce.cart.model[1].quantity, 1);
+
                 done();
             };
 
