@@ -118,18 +118,30 @@ ShoppingCartView.prototype.addOneClick = function($button)
     this.controller.addProduct(id);
 };
 
+/**
+ * get product data from button
+ * @param {object}  $button     jquery button with data
+ * @return {object} retur a list with all prouct elements
+ */
+ShoppingCartView.prototype.getProductData = function ($button)
+{
+    return [
+        $button.attr('product-id'),
+        $button.attr('product-sku'),
+        $button.attr('product-price'),
+        $button.attr('product-name'),
+        $button.attr('product-upp'),
+        $button.attr('product-bullet1'),
+        $button.attr('product-bullet2'),
+        $button.attr('product-bullet3'),
+        $button.attr('product-img')
+    ];
+};
+
 ShoppingCartView.prototype.addToCartClick = function($button)
 {
-    var id = $button.attr('product-id');
-    var name = $button.attr('product-name');
-    var price = $button.attr('product-price');
-    var upp = $button.attr('product-upp');
-    var bullet1 = $button.attr('product-bullet1');
-    var bullet2 = $button.attr('product-bullet2');
-    var bullet3 = $button.attr('product-bullet3');
-    var img = $button.attr('product-img');
-
-    this.controller.addProduct(id, price, name, upp, bullet1, bullet2, bullet3, img);
+    this.controller.addProduct.apply(
+        this.controller, this.getProductData($button));
 };
 
 
@@ -150,18 +162,6 @@ ShoppingCartView.prototype.buyProductClick = function($button)
 {
     var self = this;
 
-    // get product data
-    var product = {
-        id : $button.attr('product-id'),
-        name : $button.attr('product-name'),
-        price : $button.attr('product-price'),
-        upp : $button.attr('product-upp'),
-        bullet1 : $button.attr('product-bullet1'),
-        bullet2 : $button.attr('product-bullet2'),
-        bullet3 : $button.attr('product-bullet3'),
-        img : $button.attr('product-img')
-    };
-
     // get checkout data
     var checkout = self.getCheckoutData();
 
@@ -169,20 +169,14 @@ ShoppingCartView.prototype.buyProductClick = function($button)
     this.controller.clearCart(function(){
 
         // add the current product
-        self.controller.addProduct(
-            product.id,
-            product.price,
-            product.name,
-            product.upp,
-            product.bullet1,
-            product.bullet2,
-            product.bullet3,
-            product.images,
-            function()
-            {
-                // proceed to checkout
-                self.goToCheckout(checkout);
-            });
+        self.controller.addProduct.apply(
+            self.controller,
+            self.getProductData($button).push(function()
+                {
+                    // proceed to checkout
+                    self.goToCheckout(checkout);
+                })
+            );
     });
 };
 

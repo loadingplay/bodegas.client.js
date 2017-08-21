@@ -2,6 +2,10 @@
 /* globals Utils */
 
 
+/**
+ * Variant class definition
+ * @param  {object} options options comming from facade
+ */
 var Variants = function(options)
 {
     // options = options === undefined ? { 'site_name': 'xx' } : options;

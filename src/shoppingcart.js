@@ -2,8 +2,7 @@
 /*global $*/
 /*global ShoppingCartView*/
 /*global ExtraInfo*/
-
-'use strict';
+/*global window*/
 
 var ShoppingCart = function(site_id, checkout_url)
 {
@@ -74,7 +73,30 @@ ShoppingCart.prototype.recalcTotals = function()
     }
 };
 
-ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bullet2, bullet3, img, callback)
+/**
+ * return the currently selected combination
+ * @return {string} current combination
+ */
+ShoppingCart.prototype.getCurrentCombination = function ()
+{
+    // implemented outside
+    return "";
+};
+
+/**
+ * add an element to the shopping cart
+ * @param  {int}   id       product unique identifier
+ * @param  {float}   price     product price
+ * @param  {string}   name
+ * @param  {int}   upp      units per product
+ * @param  {string}   bullet1  some random text
+ * @param  {string}   bullet2  some random text
+ * @param  {string}   bullet3  some random text
+ * @param  {object}   img      json with images
+ * @param  {Function} callback callback this method when loaded
+ * @todo: use promisses
+ */
+ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1, bullet2, bullet3, img, callback)
 {
     id = parseInt(id);
     bullet1 = bullet1 === undefined ? '' : bullet1;
@@ -90,12 +112,18 @@ ShoppingCart.prototype.addProduct = function(id, price, name, upp, bullet1, bull
     }
     im.push(images);
 
+    // fix sku with selected combination
+    var combination = this.getCurrentCombination();
+    sku = sku + '-' + combination;
+
     // doenst add quantity here, so dont cut the execution
     if (!this.productExist(id))
     {
         // upp = upp === undefined ? 1 : upp;  // protect this value
         this.model.push({
             'id' : id,
+            'sku': sku,
+            'combination': combination,
             'price' : price,
             'name' : name,
             'quantity' : 0,
@@ -233,8 +261,6 @@ ShoppingCart.prototype.getUnitsTotal = function()
         units_total += product.quantity;
     }
 
-    // console.log("units total " + units_total);
-
     return units_total;
 };
 
@@ -249,7 +275,6 @@ ShoppingCart.prototype.getUPPTotal = function()
         units_total += parseInt(product.upp_total);
     }
 
-    // console.log("upp units total " + units_total);
     return units_total;
 };
 
@@ -280,7 +305,7 @@ ShoppingCart.prototype.loadCart = function(callback)
                 onload([]);
                 return;
             }
-            // console.log(cart_products.products);
+
             self.model = cart_products.products;
             self.recalcTotals();
             self.view.render();
