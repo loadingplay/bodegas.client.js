@@ -256,6 +256,10 @@ QUnit.test('test add to cart with variants selected', function(assert)
                 // since are differents sku
                 assert.equal(facade.ecommerce.cart.model.length, 2);
 
+                // check both product doesnt add the same
+                assert.equal(facade.ecommerce.cart.model[0].quantity, 1);
+                assert.equal(facade.ecommerce.cart.model[1].quantity, 1);
+
                 done();
             };
 
