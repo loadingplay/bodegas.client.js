@@ -13,7 +13,7 @@ QUnit.module(
     beforeEach: function()
     {
         product = new Product(2);
-        shopping_cart = new ShoppingCart(2);
+        shopping_cart = new Cart(2);
     },
     afterEach : function()
     {
@@ -33,15 +33,24 @@ QUnit.test('cart', function(assert)
         var product = products[0];
         var product2= products[1];
 
+        // add a product
         shopping_cart.addProduct(
-            product.id, 'sku', product.main_price, product.name, product.upp);
+            product.id, '', '', product.main_price,
+            product.name, product.upp
+        );
+
+        // check the product was added correctly
         assert.equal(
             shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
-        assert.equal(
-            shopping_cart.getProducts()[0].images[0][1], '', 'message');
 
+        // TODO: fix those tests
+        assert.deepEqual(
+            shopping_cart.getProducts()[0].images,[['', '', '']], 'images should be blank...');
+
+        // add another
         shopping_cart.addProduct(
-            product.id, 'sku', product.main_price, product.name, product.upp);
+            product.id, '', '', product.main_price,
+            product.name, product.upp);
         assert.equal(
             shopping_cart.getProducts().length, 1,
             'shoppint cart length == 1 after adding same product twice'
@@ -51,10 +60,12 @@ QUnit.test('cart', function(assert)
             'quantity == 2 after adding same product twice'
         );
         assert.equal(
-            shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4');
+            shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4.');
 
+        // add a new product
         shopping_cart.addProduct(
-            product2.id, 'sku', product2.main_price, product2.name, product.upp);
+            product2.id, '', '', product2.main_price,
+            product2.name, product.upp);
         assert.equal(
             shopping_cart.getProducts().length, 2,
             'shoppint cart length == 2 after adding diferent product');
@@ -66,6 +77,8 @@ QUnit.test('cart', function(assert)
         );
         assert.equal(
             shopping_cart.getProducts()[0].upp_total, 2, 'upp x quantity == 2');
+
+        // remove a product
         shopping_cart.removeOne(product.id);
         assert.equal(
             shopping_cart.getProducts().length, 1,
@@ -87,7 +100,7 @@ QUnit.test('totals', function(assert)
         var product = products[0];
 
         shopping_cart.addProduct(
-            product.id, 'sku', product.main_price, product.name, product.upp);
+            product.id, product.sku, '', product.main_price, product.name, product.upp);
 
         assert.equal(
             shopping_cart.getProducts()[0].total,
@@ -100,7 +113,7 @@ QUnit.test('totals', function(assert)
             'upp total for just one added product');
 
         shopping_cart.addProduct(
-            product.id, 'sku', product.main_price, product.name, product.upp);
+            product.id, product.sku, '', product.main_price, product.name, product.upp);
 
         assert.equal(
             shopping_cart.getProducts()[0].total,
@@ -126,7 +139,6 @@ QUnit.test('totals', function(assert)
 
 QUnit.test('load from cache', function(assert)
 {
-    var products_loaded = assert.async();
     var shopping_cart_loaded = assert.async();
 
     $('.cart').html('');
@@ -137,14 +149,14 @@ QUnit.test('load from cache', function(assert)
         var product = products[0];
 
         shopping_cart.addProduct(
-            product.id, 'sku', product.main_price, product.name, product.upp);
+            product.id, product.sku, '', product.main_price, product.name, product.upp);
         assert.equal(shopping_cart.getProducts().length, 1, 'length is one');
 
         assert.equal(
             $.cookie('shopping-cart'), shopping_cart.getGUID(), 'guid created');
 
         // create a brand new instance
-        new_shopping_cart = new ShoppingCart();
+        new_shopping_cart = new Cart();
 
         // check if guid is conserved
         assert.equal(
@@ -162,7 +174,6 @@ QUnit.test('load from cache', function(assert)
             shopping_cart_loaded();
         });
 
-        products_loaded();
     });
 });
 
@@ -174,14 +185,17 @@ QUnit.test('load from cache an expired cart', function(assert)
 
     $('.cart').html('');
 
-    shopping_cart.guid = 'foo';
-    shopping_cart.loadCart(function(products)
+    shopping_cart.loadCart(function()
     {
-        assert.notEqual(shopping_cart.guid, 'foo', 'guids are not equals' );
-        assert.deepEqual(shopping_cart.model, [], 'model empty');
-        assert.notEqual(old_cookie, $.cookie('shopping-cart'));
+        shopping_cart.guid = 'foo';
+        shopping_cart.loadCart(function(products)
+        {
+            assert.notEqual(shopping_cart.guid, 'foo', 'guids are not equals' );
+            assert.deepEqual(shopping_cart.getProducts(), [], 'model empty');
+            assert.notEqual(old_cookie, $.cookie('shopping-cart'));
 
-        shopping_cart_loaded();
+            shopping_cart_loaded();
+        });
     });
 
 });
@@ -193,7 +207,7 @@ QUnit.test('callback on save cart', function(assert)
 
     shopping_cart.saveModel(function(e)
     {
-        assert.notEqual(e, undefined, 'callback is executed');
+        assert.ok(true, 'callback is executed');
         callback_executed();
     });
 });
@@ -243,7 +257,7 @@ QUnit.test('test add to cart with variants selected', function(assert)
 
                 // check if product was added within variant
                 assert.equal(
-                    facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
+                    facade.ecommerce.cart.getProducts()[0].sku, '2212121-1-rojo');
                 assert.equal(
                     facade.ecommerce.cart.model[0].combination, '1-rojo');
 

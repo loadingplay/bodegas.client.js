@@ -6,18 +6,18 @@
             <div>{{ id }}</div>
             <div>{{ name }}</div>
             <div>{{ price }}</div>
-            <button class="remove-from-cart" product-id="{{ id }}">Remove</button>
-            <button class="add-one" product-id="{{ id }}">+</button>
+            <button lp-cart-remove="{{ id }}">Remove</button>
+            <button lp-cart-add-one="{{ id }}">+</button>
             <span class="quantity" >{{ quantity }}</span>
-            <button class="remove-one" product-id="{{ id }}">-</button>
+            <button lp-cart-remove-one="{{ id }}" >-</button>
             <span class="product-total">{{ total }}</span>
         </div>
     </script>
 
 
     <script type="text/x-template" id="shopping-cart-total" >
-    <span class="total" >Total: <span class="money" >{{ total }}</span></span>
+        <span class="total" >Total: <span class="money" >{{ total }}</span></span>
     </script>
 
-    <button product-id="11" product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart id11</button>
-    <button product-id="9" product-name="Filete de Pescado y Atun en Salsa" product-price="4596" class="add-to-cart" >add to cart id9</button>
+    <button product-sku="11" lp-cart-add product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart id11</button>
+    <button product-sku="9" lp-cart-add product-name="Filete de Pescado y Atun en Salsa" product-price="4596" class="add-to-cart" >add to cart id9</button>

@@ -4,6 +4,7 @@
  * Interface for model actions
  */
 class ModelProvider {
+
     constructor()
     {
         // nothing here...
@@ -17,20 +18,34 @@ class ModelProvider {
     {
         // nothing here...
     }
+
+    static Empty()
+    {
+        return new ModelProvider();
+    }
+}
+
+class LPObject
+{
+    constructor()
+    {
+        this.id = Utils.createUUID();
+    }
 }
 
 
 /**
  * connect to API and retrieve some data
  */
-class Model
+class Model extends LPObject
 {
     /**
      * default constructor
      * @param  {ModelProvider} model_provider model provider interface
      */
-    constructor(model_provider)
+    constructor(model_provider=ModelProvider.Empty())
     {
+        super();
         this.setModelProvider(model_provider);
     }
 
@@ -60,16 +75,23 @@ class Model
     {
         let p = new Promise((resolve, reject) => {
             jQuery.get(Utils.getURLWithoutParam(endpoint), parameters)
-            .done((data) => {
-                this.model_provider.onAjaxRespond(endpoint, data);
-                resolve(data);
-            })
-            .fail(() => {
-                reject();
-            });
+                .done((data) => {
+                    resolve(data);
+                })
+                .fail(() => {
+                    reject();
+                });
+        });
+        Promise.all([p]).then((data) => {
+            this.onAjaxRespond(endpoint, data);
         });
 
         return p;
+    }
+
+    onAjaxRespond(endpoint, data)
+    {
+        this.model_provider.onAjaxRespond(endpoint, data);
     }
 
     /**
@@ -78,13 +100,13 @@ class Model
      * @param  {object} parameters JSON object with data to send throw post
      * @return {Promise}           JS Promise for async Ajax
      */
-    postData(endpoint, parameters)
+    post(endpoint, parameters)
     {
         let p = new Promise((resolve, reject) => {
             jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
             .done((data) => {
-                this.model_provider.onAjaxRespond(endpoint, data);
                 resolve(data);
+                this.model_provider.onAjaxRespond(endpoint, data);
             })
             .fail(() => {
                 reject();
@@ -108,7 +130,7 @@ class ViewDataProvider
     /**
      * this method is executed every time data is required
      */
-    getData()
+    getData(view)
     {
         console.warn("you must implement this method");
     }
@@ -123,12 +145,17 @@ class ViewDataProvider
     {
         console.warn("you must implement this method");
     }
+
+    static Empty()
+    {
+        return new ViewDataProvider();
+    }
 }
 
 /**
  * grab a template and render with some data
  */
-class View
+class View extends LPObject
 {
     /**
      * default constructor
@@ -136,8 +163,9 @@ class View
      * @param  {ViewDataProvider} view_data_provider
      *                                      where views get the data from
      */
-    constructor($target, view_data_provider)
+    constructor($target, view_data_provider=ViewDataProvider.Empty())
     {
+        super();
         this.$target = $target;
         this.template = '';
         this.click_actions = [];
@@ -150,7 +178,7 @@ class View
     render()
     {
         var html_builder = [];
-        var data = this.view_data_provider.getData();
+        var data = this.view_data_provider.getData(this);
 
         // both are common cases
         if ($.isArray(data))
@@ -230,9 +258,9 @@ class Module
         {
             this.onModelLoaded(endpoint, data);
         };
-        this.view_data_provider.getData = () =>
+        this.view_data_provider.getData = (view) =>
         {
-            return this.onViewRequestData();
+            return this.onViewRequestData(view);
         };
         this.view_data_provider.performAction = (tag_name, data, $element) =>
         {
@@ -262,6 +290,7 @@ class Module
     {
         if (model instanceof Model)
         {
+            model.setModelProvider(this.model_provider);
             this.models[key] = model;
         }
     }
@@ -270,6 +299,7 @@ class Module
     {
         if (view instanceof View)
         {
+            view.setDataProvider(this.view_data_provider);
             this.views[key] = view;
         }
     }
@@ -296,9 +326,14 @@ class Module
         console.warn("method must be imeplemented");
     }
 
-    onViewRequestData()
+    onViewRequestData(view)
     {
         console.warn("method must be implemented");
+    }
+
+    onActionPerformed(tag_name, data, $element)
+    {
+        console.warn("method must be imeplemented");
     }
 
 }
