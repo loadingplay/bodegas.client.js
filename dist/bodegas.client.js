@@ -327,6 +327,397 @@ BodegasClient.prototype.destroy = function()
     this.product.destroy();
 };
 
+/*global Utils*/
+/*global $*/
+/*global ShoppingCartView*/
+/*global ExtraInfo*/
+/*global window*/
+
+var ShoppingCart = function(site_id, checkout_url)
+{
+    this.shipping_cost = 0;
+    this.extra_info = new ExtraInfo(1);
+    this.model = [];
+    this.guid = this.generateGUID();
+    this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+    this.site_id = site_id === undefined ? 2 : site_id;
+    this.view = new ShoppingCartView(this);
+
+    // google analytics
+    this.is_ga_enabled = true;
+
+    this.loadCart();
+};
+
+ShoppingCart.prototype.generateGUID = function()
+{
+    var old_guid = $.cookie('shopping-cart');
+    var guid = old_guid;
+
+    if (old_guid === undefined || old_guid === '')
+    {
+        guid = Utils.createUUID();  // request a new guid
+        $.cookie('shopping-cart', guid);  // save to cookie
+    }
+
+    this.extra_info.cart_id = guid;
+    return guid;
+};
+
+ShoppingCart.prototype.getGUID = function()
+{
+    return this.guid;
+};
+
+ShoppingCart.prototype.getCheckoutUrl = function()
+{
+    return this.checkout_url;
+};
+
+ShoppingCart.prototype.getSiteId = function()
+{
+    return this.site_id;
+};
+
+ShoppingCart.prototype.saveModel = function(callback)
+{
+    var self=this;
+    $.post(
+        Utils.getURL('cart', ['save', this.guid]),
+        { 'json_data' : JSON.stringify(this.model) }, function(e)
+        {
+            (callback === undefined ? $.noop:callback)(e);
+            // self.loadCart();
+        });
+};
+
+ShoppingCart.prototype.recalcTotals = function()
+{
+    for (var i = 0; i < this.model.length; i++)
+    {
+        var p = this.model[i];
+
+        p.total = p.quantity * p.price;
+        p.upp_total = p.quantity * p.upp;
+    }
+};
+
+/**
+ * return the currently selected combination
+ * @return {string} current combination
+ */
+ShoppingCart.prototype.getCurrentCombination = function ()
+{
+    // implemented outside
+    return "";
+};
+
+/**
+ * add an element to the shopping cart
+ * @param  {int}   id       product unique identifier
+ * @param  {float}   price     product price
+ * @param  {string}   name
+ * @param  {int}   upp      units per product
+ * @param  {string}   bullet1  some random text
+ * @param  {string}   bullet2  some random text
+ * @param  {string}   bullet3  some random text
+ * @param  {object}   img      json with images
+ * @param  {Function} callback callback this method when loaded
+ * @todo: use promisses
+ */
+ShoppingCart.prototype.addProduct = function(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback)
+{
+    id = parseInt(id);
+    bullet1 = bullet1 === undefined ? '' : bullet1;
+    bullet2 = bullet2 === undefined ? '' : bullet2;
+    bullet3 = bullet3 === undefined ? '' : bullet3;
+    img = img === undefined ? this.getProductImage(id) : img;
+    combination = combination === undefined ? '' : combination;
+
+    var images = [];
+    var im = [];
+    for (var j = 0; j < 3; j++)
+    {
+        images.push(img);
+    }
+    im.push(images);
+
+    // fix sku with selected combination
+    sku = [sku, combination].join('-');
+
+    // doenst add quantity here, so dont cut the execution
+    if (!this.productExist(id, sku))
+    {
+        // upp = upp === undefined ? 1 : upp;  // protect this value
+        this.model.push({
+            'id' : id,
+            'sku': sku,
+            'combination': combination,
+            'price' : price,
+            'name' : name,
+            'quantity' : 0,
+            'upp': upp,
+            'upp_total' : upp,
+            'total' : price,
+            'bullet_1': bullet1,
+            'bullet_2': bullet2,
+            'bullet_3': bullet3,
+            'images' : im
+        });
+    }
+
+    for (var i = 0; i < this.model.length; i++)
+    {
+        if (this.model[i].id === id && this.model[i].sku === sku)
+        {
+            this.model[i].quantity += 1;
+            this.model[i].total = this.model[i].quantity * this.model[i].price;
+            this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
+
+            this.saveModel(callback);
+            this.gaAddProduct(this.model[i], i);
+
+            return;
+        }
+    }
+
+};
+
+/**
+ * get product image from id
+ * @param  {int} id  product id
+ * @return {string}    url with product image
+ */
+ShoppingCart.prototype.getProductImage = function(id)
+{
+    // implement this method outside
+    return '';
+};
+
+/**
+ * remove element from shopping cart
+ * @param  {int} id  product id
+ */
+ShoppingCart.prototype.removeProduct = function(id)
+{
+    for (var i = 0; i < this.model.length; i++)
+    {
+        if (parseInt(id) === this.model[i].id)
+        {
+            this.gaRemoveProduct(this.model[i]);
+            this.model.splice(i, 1);
+            this.saveModel();
+            return;
+        }
+    }
+};
+
+/**
+ * remove one product from the cart
+ * @param  {int} id  product id
+ */
+ShoppingCart.prototype.removeOne = function(id)
+{
+    for (var i = 0; i < this.model.length; i++)
+    {
+        if (this.model[i].id === parseInt(id))
+        {
+            this.model[i].quantity -= 1;
+            this.model[i].total = this.model[i].price * this.model[i].quantity;
+            this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
+
+            if (this.model[i].quantity <= 0)
+            {
+                this.removeProduct(id);
+            }
+
+            this.saveModel();
+            return;
+        }
+    }
+
+};
+
+/**
+ * return a list of productos
+ * @return {list}  a list which contains products
+ */
+ShoppingCart.prototype.getProducts = function()
+{
+    return this.model;
+};
+
+/**
+ * check if product exists
+ * @param  {int} id product id
+ * @param  {string}  sku also unique identifier (optional)
+ * @return {boolean}    true if product exists, false otherwise
+ */
+ShoppingCart.prototype.productExist = function(id, sku)
+{
+    var pid = parseInt(id);
+    var final_sku = sku === undefined ? '':sku;
+    // get the product from model, if exist or create from database
+    for (var i = 0; i < this.model.length; i++)
+    {
+        if (parseInt(this.model[i].id) === pid &&
+            final_sku === this.model[i].sku )
+        {
+            return true;
+        }
+    }
+    return false;
+};
+
+ShoppingCart.prototype.getTotal = function()
+{
+    var total = 0;
+
+    for (var i = 0; i < this.model.length; i++)
+    {
+        var product = this.model[i];
+        total += product.price * product.quantity;
+    }
+    total += this.shipping_cost;
+
+    return total;
+};
+
+ShoppingCart.prototype.getUnitsTotal = function()
+{
+    var units_total = 0;
+
+    for (var i = 0; i < this.model.length; i++)
+    {
+        var product = this.model[i];
+        units_total += product.quantity;
+    }
+
+    return units_total;
+};
+
+/** upp == units per product */
+ShoppingCart.prototype.getUPPTotal = function()
+{
+    var units_total = 0;
+
+    for (var i = 0; i < this.model.length; i++)
+    {
+        var product = this.model[i];
+        units_total += parseInt(product.upp_total);
+    }
+
+    return units_total;
+};
+
+/**
+ * load cart from a cooki
+ * @param  {object} callback  callback executed when the cart is loaded
+ */
+ShoppingCart.prototype.loadCart = function(callback)
+{
+    var self = this;
+    var onload = callback === undefined ? $.noop : callback;
+
+    var url = Utils.getURL(
+        'cart', [
+            'load',
+            this.getGUID()
+        ]);
+
+    $.ajax({
+        url: url,
+        cache: false,
+        success: function(cart_products)
+        {
+            if (cart_products.expired)
+            {
+                $.removeCookie('shopping-cart');
+                self.guid = self.generateGUID();
+                onload([]);
+                return;
+            }
+
+            self.model = cart_products.products;
+            self.recalcTotals();
+            self.view.render();
+
+            onload(cart_products);
+        }
+    });
+};
+
+ShoppingCart.prototype.setShippingCost = function(shipping_cost)
+{
+    this.shipping_cost = shipping_cost;
+    this.view.render();
+};
+
+/**
+ * set google analytics enhanced for ecommerce enabled
+ * @param  {function} ga google analytics function
+ */
+ShoppingCart.prototype.enableGA = function()
+{
+    this.is_ga_enabled = true;
+
+    window.ga( 'require', 'ec');
+};
+
+ShoppingCart.prototype.gaAddProduct = function(product, position)
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, position);
+
+            window.ga( 'ec:setAction', 'add');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+            // window.ga( 'ec:setAction', 'add');
+            // window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothing here...
+    }
+};
+
+ShoppingCart.prototype.gaRemoveProduct = function(product)
+{
+    try
+    {
+        if (this.is_ga_enabled)
+        {
+            this.gaSetProduct(product, 0);
+
+            window.ga( 'ec:setAction', 'remove');
+            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
+        }
+    }
+    catch(e)
+    {
+        // nothin here...
+    }
+};
+
+ShoppingCart.prototype.gaSetProduct = function(product, position)
+{
+    window.ga( 'ec:addProduct', {
+      'id': product.id,
+      'name': product.name,
+      'price' : product.main_price,
+      'position': position
+    });
+};
+
+ShoppingCart.prototype.clearCart = function(callback)
+{
+    this.model = [];
+    this.saveModel(callback);
+};
+
 /* global $ */
 /* global Utils */
 
@@ -747,7 +1138,8 @@ EcommerceFacade.prototype.showProductDetail = function()
  */
 EcommerceFacade.prototype.loadVariants = function()
 {
-    var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
+    var product_sku = this.options.variants.product_sku ||
+        Utils.getUrlParameter('sku');
     var self = this;
 
     // ensure templates and target
@@ -769,12 +1161,14 @@ EcommerceFacade.prototype.loadVariants = function()
                 vs.push(variants[i].name);
             }
 
-            self.variants.getValues(product_sku, vs.join(","), function(variants)
-            {
-                self.variants_view.render(variants);
-                self.options.onLoad.call(this, variants);
-                self.triggerVariantsLoaded(variants);
-            });
+            self.variants.getValues(
+                product_sku, vs.join(","), function(variants)
+                {
+                    self.variants_view.render(variants);
+                    self.options.onLoad.call(this, variants);
+                    self.triggerVariantsLoaded(variants);
+                }
+            );
         }
     );
 };
@@ -838,6 +1232,311 @@ EcommerceFacade.prototype.changeOptions = function(options)
 
     // @todo: change other options
 };
+
+/*jshint esversion: 6 */
+
+/**
+ * Interface for model actions
+ */
+class ModelProvider {
+    constructor()
+    {
+        // nothing here...
+    }
+
+    /**
+     * this method is called once an ajax request is performed
+     * @param  {object} data json data with request info
+     */
+    onAjaxRespond(endpoint, data)
+    {
+        // nothing here...
+    }
+}
+
+
+/**
+ * connect to API and retrieve some data
+ */
+class Model
+{
+    /**
+     * default constructor
+     * @param  {ModelProvider} model_provider model provider interface
+     */
+    constructor(model_provider)
+    {
+        this.setModelProvider(model_provider);
+    }
+
+    /**
+     * change current model_provider
+     * @param {ModelProvider} model_provider model provider interface
+     */
+    setModelProvider(model_provider)
+    {
+        if (model_provider instanceof ModelProvider)
+        {
+            this.model_provider = model_provider;
+        }
+        else
+        {
+            console.error("model provider should be ModelProvider instance");
+        }
+    }
+
+    /**
+     * load data from API
+     * @param  {strign} endpoint   the actual API endpoint
+     * @param  {object} parameters JSON object with data to send throw post
+     * @return {Promise} async callback when is already loaded
+     */
+    get(endpoint, parameters)
+    {
+        let p = new Promise((resolve, reject) => {
+            jQuery.get(Utils.getURLWithoutParam(endpoint), parameters)
+            .done((data) => {
+                this.model_provider.onAjaxRespond(endpoint, data);
+                resolve(data);
+            })
+            .fail(() => {
+                reject();
+            });
+        });
+
+        return p;
+    }
+
+    /**
+     *  post data to API
+     * @param  {strign} endpoint   the actual API endpoint
+     * @param  {object} parameters JSON object with data to send throw post
+     * @return {Promise}           JS Promise for async Ajax
+     */
+    postData(endpoint, parameters)
+    {
+        let p = new Promise((resolve, reject) => {
+            jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
+            .done((data) => {
+                this.model_provider.onAjaxRespond(endpoint, data);
+                resolve(data);
+            })
+            .fail(() => {
+                reject();
+            });
+        });
+        return p;
+    }
+
+}
+
+/**
+ * Interface for views
+ */
+class ViewDataProvider
+{
+    constructor()
+    {
+        // nothing here...
+    }
+
+    /**
+     * this method is executed every time data is required
+     */
+    getData()
+    {
+        console.warn("you must implement this method");
+    }
+
+    /**
+     * this method is called when user perform some action
+     * @param  {string} tag_name action identifier
+     * @param  {string} data     data contained in HTML tag [tag_name]
+     * @param  {jQuery} $element jquery element from the event
+     */
+    performAction(tag_name, data, $element)
+    {
+        console.warn("you must implement this method");
+    }
+}
+
+/**
+ * grab a template and render with some data
+ */
+class View
+{
+    /**
+     * default constructor
+     * @param  {jQuery} $target             jquery object with targeted div
+     * @param  {ViewDataProvider} view_data_provider
+     *                                      where views get the data from
+     */
+    constructor($target, view_data_provider)
+    {
+        this.$target = $target;
+        this.template = '';
+        this.click_actions = [];
+        this.setDataProvider(view_data_provider);
+    }
+
+    /**
+     * perform drawing operations in $target
+     */
+    render()
+    {
+        var html_builder = [];
+        var data = this.view_data_provider.getData();
+
+        // both are common cases
+        if ($.isArray(data))
+        {
+            for (var i = 0; i < data.length; i++)
+            {
+                html_builder.push(Utils.render(this.template, data[i]));
+            }
+        }
+        else
+        {
+            html_builder.push(Utils.render(this.template, data));
+        }
+
+        this.$target.html(html_builder.join(''));
+    }
+
+    setClickAction(action_tag)
+    {
+        $(document).on('click', '[' + action_tag + ']', (e) =>
+        {
+            var $el = $(e.currentTarget);
+            var data = $el.attr(action_tag);
+            this.view_data_provider.performAction(action_tag, data, $el);
+        });
+    }
+
+    /**
+     * change current template
+     * @param {string} template html template
+     */
+    setTemplate(template)
+    {
+        this.template = template;
+    }
+
+    /**
+     * change data provider
+     * @param {ViewDataProvider} view_data_provider
+     *                                 where views get the data from
+     */
+    setDataProvider(view_data_provider)
+    {
+        if (view_data_provider instanceof ViewDataProvider)
+        {
+            this.view_data_provider = view_data_provider;
+        }
+        else
+        {
+            console.error("error setting view_data_provider");
+        }
+    }
+}
+
+/**
+ * checkout module class definition
+ * define life cycle of a module
+ * LifeCycle
+ * onInit() -> onModelLoaded(model) -> (optional) onViewRendered -> onDestroy
+ */
+class Module
+{
+    /**
+     * init some properties
+     * @return {[type]} [description]
+     */
+    constructor()
+    {
+        this.views = {};  // load all views here
+        this.models = {};  // load all models here
+
+        // add model and view providers
+        this.model_provider = new ModelProvider();
+        this.view_data_provider = new ViewDataProvider();
+
+        this.model_provider.onAjaxRespond = (endpoint, data) =>
+        {
+            this.onModelLoaded(endpoint, data);
+        };
+        this.view_data_provider.getData = () =>
+        {
+            return this.onViewRequestData();
+        };
+        this.view_data_provider.performAction = (tag_name, data, $element) =>
+        {
+            this.onActionPerformed(tag_name, data, $element);
+        };
+
+        this.init();
+    }
+
+    /**
+     * initialize module
+     */
+    init(imodule)
+    {
+        if (!this.onInit())
+        {
+            return;
+        }
+    }
+
+    /**
+     * add a new model saved on key
+     * @param {string} key   key to access model later
+     * @param {Model} model  model object to be loaded
+     */
+    addModel(key, model)
+    {
+        if (model instanceof Model)
+        {
+            this.models[key] = model;
+        }
+    }
+
+    addView(key, view)
+    {
+        if (view instanceof View)
+        {
+            this.views[key] = view;
+        }
+    }
+
+    /** LYFECYCLE **/
+
+    /**
+     * method called before initialization
+     * add models and views here
+     * @return {boolean}    true if must continue lifecycle
+     */
+    onInit()
+    {
+        console.warn("method must be imeplemented");
+    }
+
+    /**
+     * render start rendering here
+     * @param {string} key   key to access model later
+     * @param {Model} model  model object to be loaded
+     */
+    onModelLoaded(endpoint, data)
+    {
+        console.warn("method must be imeplemented");
+    }
+
+    onViewRequestData()
+    {
+        console.warn("method must be implemented");
+    }
+
+}
 
 /* globals jQuery */
 /* globals Utils */
@@ -984,397 +1683,6 @@ ProductBox.prototype.loadProducts = function(callback)
     {
         callback(json.products);
     });
-};
-
-/*global Utils*/
-/*global $*/
-/*global ShoppingCartView*/
-/*global ExtraInfo*/
-/*global window*/
-
-var ShoppingCart = function(site_id, checkout_url)
-{
-    this.shipping_cost = 0;
-    this.extra_info = new ExtraInfo(1);
-    this.model = [];
-    this.guid = this.generateGUID();
-    this.checkout_url = checkout_url === undefined ? '' : checkout_url;
-    this.site_id = site_id === undefined ? 2 : site_id;
-    this.view = new ShoppingCartView(this);
-
-    // google analytics
-    this.is_ga_enabled = true;
-
-    this.loadCart();
-};
-
-ShoppingCart.prototype.generateGUID = function()
-{
-    var old_guid = $.cookie('shopping-cart');
-    var guid = old_guid;
-
-    if (old_guid === undefined || old_guid === '')
-    {
-        guid = Utils.createUUID();  // request a new guid
-        $.cookie('shopping-cart', guid);  // save to cookie
-    }
-
-    this.extra_info.cart_id = guid;
-    return guid;
-};
-
-ShoppingCart.prototype.getGUID = function()
-{
-    return this.guid;
-};
-
-ShoppingCart.prototype.getCheckoutUrl = function()
-{
-    return this.checkout_url;
-};
-
-ShoppingCart.prototype.getSiteId = function()
-{
-    return this.site_id;
-};
-
-ShoppingCart.prototype.saveModel = function(callback)
-{
-    var self=this;
-    $.post(
-        Utils.getURL('cart', ['save', this.guid]),
-        { 'json_data' : JSON.stringify(this.model) }, function(e)
-        {
-            (callback === undefined ? $.noop:callback)(e);
-            // self.loadCart();
-        });
-};
-
-ShoppingCart.prototype.recalcTotals = function()
-{
-    for (var i = 0; i < this.model.length; i++)
-    {
-        var p = this.model[i];
-
-        p.total = p.quantity * p.price;
-        p.upp_total = p.quantity * p.upp;
-    }
-};
-
-/**
- * return the currently selected combination
- * @return {string} current combination
- */
-ShoppingCart.prototype.getCurrentCombination = function ()
-{
-    // implemented outside
-    return "";
-};
-
-/**
- * add an element to the shopping cart
- * @param  {int}   id       product unique identifier
- * @param  {float}   price     product price
- * @param  {string}   name
- * @param  {int}   upp      units per product
- * @param  {string}   bullet1  some random text
- * @param  {string}   bullet2  some random text
- * @param  {string}   bullet3  some random text
- * @param  {object}   img      json with images
- * @param  {Function} callback callback this method when loaded
- * @todo: use promisses
- */
-ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1, bullet2, bullet3, img, callback)
-{
-    id = parseInt(id);
-    bullet1 = bullet1 === undefined ? '' : bullet1;
-    bullet2 = bullet2 === undefined ? '' : bullet2;
-    bullet3 = bullet3 === undefined ? '' : bullet3;
-    img = img === undefined ? this.getProductImage(id) : img;
-
-    var images = [];
-    var im = [];
-    for (var j = 0; j < 3; j++)
-    {
-        images.push(img);
-    }
-    im.push(images);
-
-    // fix sku with selected combination
-    var combination = this.getCurrentCombination();
-    sku = sku + '-' + combination;
-
-    // doenst add quantity here, so dont cut the execution
-    if (!this.productExist(id, sku))
-    {
-        // upp = upp === undefined ? 1 : upp;  // protect this value
-        this.model.push({
-            'id' : id,
-            'sku': sku,
-            'combination': combination,
-            'price' : price,
-            'name' : name,
-            'quantity' : 0,
-            'upp': upp,
-            'upp_total' : upp,
-            'total' : price,
-            'bullet_1': bullet1,
-            'bullet_2': bullet2,
-            'bullet_3': bullet3,
-            'images' : im
-        });
-    }
-
-    for (var i = 0; i < this.model.length; i++)
-    {
-        if (this.model[i].id === id && this.model[i].sku === sku)
-        {
-            this.model[i].quantity += 1;
-            this.model[i].total = this.model[i].quantity * this.model[i].price;
-            this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-
-            this.saveModel(callback);
-            this.gaAddProduct(this.model[i], i);
-
-            return;
-        }
-    }
-
-};
-
-/**
- * get product image from id
- * @param  {int} id  product id
- * @return {string}    url with product image
- */
-ShoppingCart.prototype.getProductImage = function(id)
-{
-    // implement this method outside
-    return '';
-};
-
-/**
- * remove element from shopping cart
- * @param  {int} id  product id
- */
-ShoppingCart.prototype.removeProduct = function(id)
-{
-    for (var i = 0; i < this.model.length; i++)
-    {
-        if (parseInt(id) === this.model[i].id)
-        {
-            this.gaRemoveProduct(this.model[i]);
-            this.model.splice(i, 1);
-            this.saveModel();
-            return;
-        }
-    }
-};
-
-/**
- * remove one product from the cart
- * @param  {int} id  product id
- */
-ShoppingCart.prototype.removeOne = function(id)
-{
-    for (var i = 0; i < this.model.length; i++)
-    {
-        if (this.model[i].id === parseInt(id))
-        {
-            this.model[i].quantity -= 1;
-            this.model[i].total = this.model[i].price * this.model[i].quantity;
-            this.model[i].upp_total = this.model[i].quantity * this.model[i].upp;
-
-            if (this.model[i].quantity <= 0)
-            {
-                this.removeProduct(id);
-            }
-
-            this.saveModel();
-            return;
-        }
-    }
-
-};
-
-/**
- * return a list of productos
- * @return {list}  a list which contains products
- */
-ShoppingCart.prototype.getProducts = function()
-{
-    return this.model;
-};
-
-/**
- * check if product exists
- * @param  {int} id product id
- * @param  {string}  sku also unique identifier (optional)
- * @return {boolean}    true if product exists, false otherwise
- */
-ShoppingCart.prototype.productExist = function(id, sku)
-{
-    var pid = parseInt(id);
-    var final_sku = sku === undefined ? '':sku;
-    // get the product from model, if exist or create from database
-    for (var i = 0; i < this.model.length; i++)
-    {
-        if (parseInt(this.model[i].id) === pid &&
-            final_sku === this.model[i].sku )
-        {
-            return true;
-        }
-    }
-    return false;
-};
-
-ShoppingCart.prototype.getTotal = function()
-{
-    var total = 0;
-
-    for (var i = 0; i < this.model.length; i++)
-    {
-        var product = this.model[i];
-        total += product.price * product.quantity;
-    }
-    total += this.shipping_cost;
-
-    return total;
-};
-
-ShoppingCart.prototype.getUnitsTotal = function()
-{
-    var units_total = 0;
-
-    for (var i = 0; i < this.model.length; i++)
-    {
-        var product = this.model[i];
-        units_total += product.quantity;
-    }
-
-    return units_total;
-};
-
-/** upp == units per product */
-ShoppingCart.prototype.getUPPTotal = function()
-{
-    var units_total = 0;
-
-    for (var i = 0; i < this.model.length; i++)
-    {
-        var product = this.model[i];
-        units_total += parseInt(product.upp_total);
-    }
-
-    return units_total;
-};
-
-/**
- * load cart from a cooki
- * @param  {object} callback  callback executed when the cart is loaded
- */
-ShoppingCart.prototype.loadCart = function(callback)
-{
-    var self = this;
-    var onload = callback === undefined ? $.noop : callback;
-
-    var url = Utils.getURL(
-        'cart', [
-            'load',
-            this.getGUID()
-        ]);
-
-    $.ajax({
-        url: url,
-        cache: false,
-        success: function(cart_products)
-        {
-            if (cart_products.expired)
-            {
-                $.removeCookie('shopping-cart');
-                self.guid = self.generateGUID();
-                onload([]);
-                return;
-            }
-
-            self.model = cart_products.products;
-            self.recalcTotals();
-            self.view.render();
-
-            onload(cart_products);
-        }
-    });
-};
-
-ShoppingCart.prototype.setShippingCost = function(shipping_cost)
-{
-    this.shipping_cost = shipping_cost;
-    this.view.render();
-};
-
-/**
- * set google analytics enhanced for ecommerce enabled
- * @param  {function} ga google analytics function
- */
-ShoppingCart.prototype.enableGA = function()
-{
-    this.is_ga_enabled = true;
-
-    window.ga( 'require', 'ec');
-};
-
-ShoppingCart.prototype.gaAddProduct = function(product, position)
-{
-    try
-    {
-        if (this.is_ga_enabled)
-        {
-            this.gaSetProduct(product, position);
-
-            window.ga( 'ec:setAction', 'add');
-            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
-            // window.ga( 'ec:setAction', 'add');
-            // window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
-        }
-    }
-    catch(e)
-    {
-        // nothing here...
-    }
-};
-
-ShoppingCart.prototype.gaRemoveProduct = function(product)
-{
-    try
-    {
-        if (this.is_ga_enabled)
-        {
-            this.gaSetProduct(product, 0);
-
-            window.ga( 'ec:setAction', 'remove');
-            window.ga( 'send', 'event', 'UX', 'click', 'add to cart');
-        }
-    }
-    catch(e)
-    {
-        // nothin here...
-    }
-};
-
-ShoppingCart.prototype.gaSetProduct = function(product, position)
-{
-    window.ga( 'ec:addProduct', {
-      'id': product.id,
-      'name': product.name,
-      'price' : product.main_price,
-      'position': position
-    });
-};
-
-ShoppingCart.prototype.clearCart = function(callback)
-{
-    this.model = [];
-    this.saveModel(callback);
 };
 
 /* globals $*/
@@ -1817,6 +2125,318 @@ Variants.prototype.getValues = function(product_sku, variant_name, cb)
     };
 
 })(jQuery);
+
+/*global ShoppingCart*/
+/*global document*/
+/*global $*/
+/*global Utils*/
+
+var ShoppingCartView = function(controller)
+{
+    this.controller = controller === undefined ? new ShoppingCart() : controller;
+    this.options = {
+        cartSelector : '.shopping-cart',
+        addToCartbutton : '.add-to-cart',
+        buyProductButton : '.buy-product',
+        removeFromCart : '.remove-from-cart',
+        addOne : '.add-one',
+        removeOne : '.remove-one',
+        quantityUnits : '.quantity_units'
+    };
+
+    this.$cart_div = $('.shopping-cart');
+    this.$cart_container = $('.cart-container');
+    this.$total_items = $('.total_items');
+    this.$total_cart = $('.total_cart');
+    this.cart_item_template = $('#shopping-cart-product').html();
+    this.total_template = $('#shopping-cart-total').html();
+    this.checkout_template = $('#shopping-cart-checkout-form').html();
+    this.units_total_template = $('#shopping-cart-units-total').html();
+    this.total_items_template = $('#total_items_template').html();
+    this.total_cart_template = $('#total_cart_template').html();
+
+    this.renderLoading();
+
+    this.init();
+};
+
+ShoppingCartView.prototype.init = function()
+{
+    var self = this;
+    var q=1;
+
+    $(document).on('click', this.options.addToCartbutton, function(evt)
+    {
+        evt.preventDefault();
+        if (!$(this).hasClass('product-sold-out'))
+        {
+            for (var i = 0; i < parseInt(q); i++) {
+                self.addToCartClick($(this));
+            }
+            // self.controller.loadCart();
+            self.render();
+            q=1;
+        }
+    });
+
+    $(document).on('click', this.options.buyProductButton, function(evt)
+    {
+        evt.preventDefault();
+        self.buyProductClick($(this));
+    });
+
+    $(document).on('click', this.options.addOne, function(evt)
+    {
+        evt.preventDefault();
+        self.addToCartClick($(this));
+        self.render();
+    });
+
+    $(document).on('click', this.options.removeOne, function(evt)
+    {
+        evt.preventDefault();
+        self.removeOne($(this));
+        self.render();
+    });
+
+    $(document).on('change', this.options.quantityUnits, function(evt)
+    {
+        evt.preventDefault();
+        q =  $(this).context.value;
+        // self.removeOne($(this));
+        // self.render();
+    });
+
+    $(document).on('click', this.options.removeFromCart, function(evt)
+    {
+        evt.preventDefault();
+        self.removeProduct($(this)); //debe enviar id de producto
+        self.render();
+    });
+
+    this.render();
+};
+
+
+ShoppingCartView.prototype.removeLoading = function()
+{
+    var $container = $('.container');
+    $('.spinner', $container).remove();
+};
+
+ShoppingCartView.prototype.renderLoading = function()
+{
+    this.removeLoading();
+    if (!this.allcontainerLoaded)
+    {
+        var $container = $('.container');
+        $container.append($('#product_loading').html());
+    }
+};
+
+
+
+
+/**************** button actions ****************/
+ShoppingCartView.prototype.addOneClick = function($button)
+{
+    this.controller.addProduct.apply(
+        this.controller, this.getProductData($button)
+    );
+};
+
+/**
+ * get product data from button
+ * @param {object}  $button     jquery button with data
+ * @return {object} retur a list with all prouct elements
+ */
+ShoppingCartView.prototype.getProductData = function ($button)
+{
+    return [
+        $button.attr('product-id'),
+        $button.attr('product-sku'),
+        $button.attr('product-combination'),
+        $button.attr('product-price'),
+        $button.attr('product-name'),
+        $button.attr('product-upp'),
+        $button.attr('product-bullet1'),
+        $button.attr('product-bullet2'),
+        $button.attr('product-bullet3'),
+        $button.attr('product-img')
+    ];
+};
+
+ShoppingCartView.prototype.addToCartClick = function($button)
+{
+    this.controller.addProduct.apply(
+        this.controller, this.getProductData($button));
+};
+
+
+/**
+ * collect and return checkout data
+ * @return {object} checkout data bundle
+ */
+ShoppingCartView.prototype.getCheckoutData = function()
+{
+    return {
+        checkout_url : this.controller.getCheckoutUrl(),
+        site_id : this.controller.getSiteId(),
+        cart_id : this.controller.getGUID()
+    };
+};
+
+ShoppingCartView.prototype.buyProductClick = function($button)
+{
+    var self = this;
+
+    // get checkout data
+    var checkout = self.getCheckoutData();
+
+    // delete all other products
+    this.controller.clearCart(function(){
+
+        // add the current product
+        self.controller.addProduct.apply(
+            self.controller,
+            self.getProductData($button).push(function()
+                {
+                    // proceed to checkout
+                    self.goToCheckout(checkout);
+                })
+            );
+    });
+};
+
+ShoppingCartView.prototype.goToCheckout = function(checkout)
+{
+    document.location.href = checkout.checkout_url + '?' +
+                            'site_id=' + checkout.site_id +
+                            '&cart_id=' + checkout.cart_id;
+};
+
+ShoppingCartView.prototype.removeOne = function($button)
+{
+    var id = $button.attr('product-id');
+    this.controller.removeOne(id);
+};
+
+ShoppingCartView.prototype.removeProduct = function($button)
+{
+    var id = $button.attr('product-id');
+
+    this.controller.removeProduct(id);
+};
+
+
+/**************** rendering methos ****************/
+
+
+ShoppingCartView.prototype.render = function()
+{
+    this.$cart_div.html('');
+    this.$total_cart.html('');
+    this.renderProducts(this.$cart_div, this.cart_item_template);
+    this.renderTotal(this.$cart_div, this.$total_cart);
+    this.renderUnitsTotal(this.$cart_div, this.$total_items);
+    this.renderCheckoutData(this.$cart_div);
+};
+
+ShoppingCartView.prototype.renderCheckoutData = function()
+{
+    try
+    {
+        var html = Utils.render(
+            this.checkout_template,
+            this.getRenderDictionary());
+
+        $('.checkout-form').html(html);
+    }
+    catch(ex)
+    {
+        // nothing here...
+    }
+};
+
+ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
+{
+    var productos = this.controller.getProducts();
+
+    for (var i = 0; i < productos.length; i++)
+    {
+        var $builder = $(Utils.render(cart_item_template, productos[i]));
+        this.removeLoading();
+        $cart_div.append($builder);
+        Utils.processPrice($builder);
+    }
+};
+
+ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
+{
+    try
+    {
+        var render_dict = this.getRenderDictionary();
+        var $total = $(Utils.render(
+            this.total_template,
+            render_dict));
+
+        Utils.processPrice($total);
+        $cart_div.append($total);
+
+        var $built = $(Utils.render(
+            this.total_cart_template,
+            render_dict));
+
+        Utils.processPrice($built);
+        $total_cart.html($built);
+
+    }
+    catch(ex)
+    {
+        // nothing here...
+    }
+};
+
+ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
+{
+    try
+    {
+        var $units_total = $(Utils.render(
+            this.units_total_template,
+            this.getRenderDictionary()));
+
+        Utils.processPrice($units_total);
+        // $cart_div.append($units_total);
+        $('.units-total').html($units_total);
+
+        var $built = $(Utils.render(
+            this.total_items_template,
+            this.getRenderDictionary()));
+
+        $total_items.html($built);
+    }
+    catch(ex)
+    {
+        // nothing here ...
+    }
+};
+
+/**
+ * return all variables tht should be rendered in a shopping cart
+ * @return Dict dictionary with all variables
+ */
+ShoppingCartView.prototype.getRenderDictionary = function()
+{
+    return {
+        'total' : this.controller.getTotal(),
+        'shipping_cost': this.controller.shipping_cost,
+        'units_total' : this.controller.getUnitsTotal(),
+        'upp_total' : this.controller.getUPPTotal(),
+        'checkout_url' : this.controller.getCheckoutUrl(),
+        'site_id' : this.controller.getSiteId(),
+        'cart_id' : this.controller.getGUID()
+    };
+};
 
 /* globals Utils */
 /* globals $*/
@@ -2296,319 +2916,6 @@ ProductBoxView.prototype.render = function(cb)
         self.controller.onLoad.call(self.controller.$container, products);  // event
         cb();
     });
-};
-
-/*global ShoppingCart*/
-/*global document*/
-/*global $*/
-/*global Utils*/
-
-var ShoppingCartView = function(controller)
-{
-    this.controller = controller === undefined ? new ShoppingCart() : controller;
-    this.options = {
-        cartSelector : '.shopping-cart',
-        addToCartbutton : '.add-to-cart',
-        buyProductButton : '.buy-product',
-        removeFromCart : '.remove-from-cart',
-        addOne : '.add-one',
-        removeOne : '.remove-one',
-        quantityUnits : '.quantity_units'
-    };
-
-    this.$cart_div = $('.shopping-cart');
-    this.$cart_container = $('.cart-container');
-    this.$total_items = $('.total_items');
-    this.$total_cart = $('.total_cart');
-    this.cart_item_template = $('#shopping-cart-product').html();
-    this.total_template = $('#shopping-cart-total').html();
-    this.checkout_template = $('#shopping-cart-checkout-form').html();
-    this.units_total_template = $('#shopping-cart-units-total').html();
-    this.total_items_template = $('#total_items_template').html();
-    this.total_cart_template = $('#total_cart_template').html();
-
-    this.renderLoading();
-
-    this.init();
-};
-
-ShoppingCartView.prototype.init = function()
-{
-    var self = this;
-    var q=1;
-
-    $(document).on('click', this.options.addToCartbutton, function(evt)
-    {
-        evt.preventDefault();
-        if (!$(this).hasClass('product-sold-out'))
-        {
-            for (var i = 0; i < parseInt(q); i++) {
-                self.addToCartClick($(this));
-            }
-            // self.controller.loadCart();
-            self.render();
-            q=1;
-        }
-    });
-
-    $(document).on('click', this.options.buyProductButton, function(evt)
-    {
-        evt.preventDefault();
-        self.buyProductClick($(this));
-    });
-
-    $(document).on('click', this.options.addOne, function(evt)
-    {
-        evt.preventDefault();
-        self.addOneClick($(this));
-        self.render();
-    });
-
-    $(document).on('click', this.options.removeOne, function(evt)
-    {
-        evt.preventDefault();
-        self.removeOne($(this));
-        self.render();
-    });
-
-    $(document).on('change', this.options.quantityUnits, function(evt)
-    {
-        evt.preventDefault();
-        q =  $(this).context.value;
-        // self.removeOne($(this));
-        // self.render();
-    });
-
-    $(document).on('click', this.options.removeFromCart, function(evt)
-    {
-        evt.preventDefault();
-        self.removeProduct($(this)); //debe enviar id de producto
-        self.render();
-    });
-
-    this.render();
-};
-
-
-ShoppingCartView.prototype.removeLoading = function()
-{
-    var $container = $('.container');
-    $('.spinner', $container).remove();
-};
-
-ShoppingCartView.prototype.renderLoading = function()
-{
-    this.removeLoading();
-    if (!this.allcontainerLoaded)
-    {
-        var $container = $('.container');
-        $container.append($('#product_loading').html());
-    }
-};
-
-
-
-
-/**************** button actions ****************/
-
-
-ShoppingCartView.prototype.addOneClick = function($button)
-{
-    var id = $button.attr('product-id');
-    this.controller.addProduct(id);
-};
-
-/**
- * get product data from button
- * @param {object}  $button     jquery button with data
- * @return {object} retur a list with all prouct elements
- */
-ShoppingCartView.prototype.getProductData = function ($button)
-{
-    return [
-        $button.attr('product-id'),
-        $button.attr('product-sku'),
-        $button.attr('product-price'),
-        $button.attr('product-name'),
-        $button.attr('product-upp'),
-        $button.attr('product-bullet1'),
-        $button.attr('product-bullet2'),
-        $button.attr('product-bullet3'),
-        $button.attr('product-img')
-    ];
-};
-
-ShoppingCartView.prototype.addToCartClick = function($button)
-{
-    this.controller.addProduct.apply(
-        this.controller, this.getProductData($button));
-};
-
-
-/**
- * collect and return checkout data
- * @return {object} checkout data bundle
- */
-ShoppingCartView.prototype.getCheckoutData = function()
-{
-    return {
-        checkout_url : this.controller.getCheckoutUrl(),
-        site_id : this.controller.getSiteId(),
-        cart_id : this.controller.getGUID()
-    };
-};
-
-ShoppingCartView.prototype.buyProductClick = function($button)
-{
-    var self = this;
-
-    // get checkout data
-    var checkout = self.getCheckoutData();
-
-    // delete all other products
-    this.controller.clearCart(function(){
-
-        // add the current product
-        self.controller.addProduct.apply(
-            self.controller,
-            self.getProductData($button).push(function()
-                {
-                    // proceed to checkout
-                    self.goToCheckout(checkout);
-                })
-            );
-    });
-};
-
-ShoppingCartView.prototype.goToCheckout = function(checkout)
-{
-    document.location.href = checkout.checkout_url + '?' +
-                            'site_id=' + checkout.site_id +
-                            '&cart_id=' + checkout.cart_id;
-};
-
-ShoppingCartView.prototype.removeOne = function($button)
-{
-    var id = $button.attr('product-id');
-
-    this.controller.removeOne(id);
-};
-
-ShoppingCartView.prototype.removeProduct = function($button)
-{
-    var id = $button.attr('product-id');
-
-    this.controller.removeProduct(id);
-};
-
-
-/**************** rendering methos ****************/
-
-
-ShoppingCartView.prototype.render = function()
-{
-    this.$cart_div.html('');
-    this.$total_cart.html('');
-    this.renderProducts(this.$cart_div, this.cart_item_template);
-    this.renderTotal(this.$cart_div, this.$total_cart);
-    this.renderUnitsTotal(this.$cart_div, this.$total_items);
-    this.renderCheckoutData(this.$cart_div);
-};
-
-ShoppingCartView.prototype.renderCheckoutData = function()
-{
-    try
-    {
-        var html = Utils.render(
-            this.checkout_template,
-            this.getRenderDictionary());
-
-        $('.checkout-form').html(html);
-    }
-    catch(ex)
-    {
-        // nothing here...
-    }
-};
-
-ShoppingCartView.prototype.renderProducts = function($cart_div, cart_item_template)
-{
-    var productos = this.controller.getProducts();
-
-    for (var i = 0; i < productos.length; i++)
-    {
-        var $builder = $(Utils.render(cart_item_template, productos[i]));
-        this.removeLoading();
-        $cart_div.append($builder);
-        Utils.processPrice($builder);
-    }
-};
-
-ShoppingCartView.prototype.renderTotal = function($cart_div, $total_cart)
-{
-    try
-    {
-        var render_dict = this.getRenderDictionary();
-        var $total = $(Utils.render(
-            this.total_template,
-            render_dict));
-
-        Utils.processPrice($total);
-        $cart_div.append($total);
-
-        var $built = $(Utils.render(
-            this.total_cart_template,
-            render_dict));
-
-        Utils.processPrice($built);
-        $total_cart.html($built);
-
-    }
-    catch(ex)
-    {
-        // nothing here...
-    }
-};
-
-ShoppingCartView.prototype.renderUnitsTotal = function($cart_div, $total_items)
-{
-    try
-    {
-        var $units_total = $(Utils.render(
-            this.units_total_template,
-            this.getRenderDictionary()));
-
-        Utils.processPrice($units_total);
-        // $cart_div.append($units_total);
-        $('.units-total').html($units_total);
-
-        var $built = $(Utils.render(
-            this.total_items_template,
-            this.getRenderDictionary()));
-
-        $total_items.html($built);
-    }
-    catch(ex)
-    {
-        // nothing here ...
-    }
-};
-
-/**
- * return all variables tht should be rendered in a shopping cart
- * @return Dict dictionary with all variables
- */
-ShoppingCartView.prototype.getRenderDictionary = function()
-{
-    return {
-        'total' : this.controller.getTotal(),
-        'shipping_cost': this.controller.shipping_cost,
-        'units_total' : this.controller.getUnitsTotal(),
-        'upp_total' : this.controller.getUPPTotal(),
-        'checkout_url' : this.controller.getCheckoutUrl(),
-        'site_id' : this.controller.getSiteId(),
-        'cart_id' : this.controller.getGUID()
-    };
 };
 
 /* globals document */

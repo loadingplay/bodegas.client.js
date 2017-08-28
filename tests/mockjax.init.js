@@ -226,20 +226,20 @@ $.mockjax({
 $.mockjax({
     url: new RegExp(base_url + "/cart/load/(.+)"),
     urlParams: ["protocol", "cart_id"],
-    response: function(settings) 
+    response: function(settings)
     {
         var products = shopping_carts[settings.urlParams.cart_id] === undefined ? [] : shopping_carts[settings.urlParams.cart_id];
         var expired = (settings.urlParams.cart_id === "foo");
 
         this.responseText = {
-            "checkout_url": "", 
-            "expired" : expired, 
-            "failure_url": "", 
-            "products": products, 
-            "webpay_url": "", 
-            "success_url": "", 
-            "total": 0, 
-            "cart_id": expired ? 'asd' : settings.urlParams.cart_id, 
+            "checkout_url": "",
+            "expired" : expired,
+            "failure_url": "",
+            "products": products,
+            "webpay_url": "",
+            "success_url": "",
+            "total": 0,
+            "cart_id": expired ? 'asd' : settings.urlParams.cart_id,
             "session_id": ""
         };
     }
@@ -288,48 +288,48 @@ $.mockjax({
         if (settings.urlParams.product_id === "1127")
         {
             this.responseText = {
-                "bulk_price": 1, 
-                "stores": [], 
-                "bullet_3": "foo", 
-                "bullet_2": "3k", 
-                "site_id": 2, 
-                "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", 
-                "id": 1127, 
-                "sku": "2212107", 
-                "weight": null, 
-                "profit_margin": null, 
-                "main_price": 6494, 
-                "cost_price": 6494, 
-                "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", 
-                "tags": [1], 
-                "brand": "CAT CHOW", 
-                "manufacturer": "Nestle", 
-                "name": "Cat Chow Adultos", 
-                "enabled": false, 
-                "for_sale": true, 
-                "promotion_price": 0, 
-                "position": 0, 
+                "bulk_price": 1,
+                "stores": [],
+                "bullet_3": "foo",
+                "bullet_2": "3k",
+                "site_id": 2,
+                "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os",
+                "id": 1127,
+                "sku": "2212107",
+                "weight": null,
+                "profit_margin": null,
+                "main_price": 6494,
+                "cost_price": 6494,
+                "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>",
+                "tags": [1],
+                "brand": "CAT CHOW",
+                "manufacturer": "Nestle",
+                "name": "Cat Chow Adultos",
+                "enabled": false,
+                "for_sale": true,
+                "promotion_price": 0,
+                "position": 0,
                 "upp": 1
             }
         }
         else
         {
             this.responseText = {
-                "bulk_price": 1, 
-                "upp" : 2, 
-                "sku": "2212121", 
-                "bullet_three": null, 
-                "description": "<ul><li>Snack para perros, Integral Junior Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.<\/li><\/ul>", 
-                "bullet_one": null, 
-                "bullet_two": null, 
-                "brand": "CAT CHOW", 
-                "enabled": false, 
-                "name": "CAT CHOW Adultos  8 Kg", 
-                "site_id": 2, 
-                "main_price": 13860, 
-                "manufacturer": "Nestle", 
-                "id": settings.urlParams.product_id, 
-                "promotion_price": 1, 
+                "bulk_price": 1,
+                "upp" : 2,
+                "sku": "2212121",
+                "bullet_three": null,
+                "description": "<ul><li>Snack para perros, Integral Junior Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.<\/li><\/ul>",
+                "bullet_one": null,
+                "bullet_two": null,
+                "brand": "CAT CHOW",
+                "enabled": false,
+                "name": "CAT CHOW Adultos  8 Kg",
+                "site_id": 2,
+                "main_price": 13860,
+                "manufacturer": "Nestle",
+                "id": settings.urlParams.product_id,
+                "promotion_price": 1,
                 "cost_price": 13860,
                 "upp": 2
             };
@@ -413,51 +413,77 @@ $.mockjax({
     }
 });
 
-
 $.mockjax({
     url: new RegExp(base_url + "/variant/value/list"),
     type: "get",
     response: function(settings)
     {
         this.responseText = {
-            "status": "success", 
+            "status": "success",
             "values": [{
                 "values": [{
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 1, 
-                    "value": "1", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 1,
+                    "value": "1",
                     "variant_name": "talla"
                 }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 2, 
-                    "value": "2", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 2,
+                    "value": "2",
                     "variant_name": "talla"
                 }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 3, 
-                    "value": "3", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 3,
+                    "value": "3",
                     "variant_name": "talla"
-                }], 
+                }],
                 "variant_name": "talla"
             }, {
                 "values": [{
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 4, 
-                    "value": "rojo", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 4,
+                    "value": "rojo",
                     "variant_name": "color"
                 }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 5, 
-                    "value": "verde", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 5,
+                    "value": "verde",
                     "variant_name": "color"
                 }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168", 
-                    "id": 6, 
-                    "value": "azul", 
+                    "site_name": "me_NBK-SACO-NEGRA-C168",
+                    "id": 6,
+                    "value": "azul",
                     "variant_name": "color"
-                }], 
+                }],
                 "variant_name": "color"
             }]
         };
+    }
+});
+
+$.mockjax({
+    url: new RegExp(base_url + "/test_model"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = { 'message': 'foo' };
+    }
+});
+
+$.mockjax({
+    url: new RegExp(base_url + "/test"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {};
+    }
+});
+
+$.mockjax({
+    url: new RegExp(base_url + "/test2"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {};
     }
 });

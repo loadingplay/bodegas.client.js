@@ -96,13 +96,14 @@ ShoppingCart.prototype.getCurrentCombination = function ()
  * @param  {Function} callback callback this method when loaded
  * @todo: use promisses
  */
-ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1, bullet2, bullet3, img, callback)
+ShoppingCart.prototype.addProduct = function(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback)
 {
     id = parseInt(id);
     bullet1 = bullet1 === undefined ? '' : bullet1;
     bullet2 = bullet2 === undefined ? '' : bullet2;
     bullet3 = bullet3 === undefined ? '' : bullet3;
     img = img === undefined ? this.getProductImage(id) : img;
+    combination = combination === undefined ? '' : combination;
 
     var images = [];
     var im = [];
@@ -113,8 +114,7 @@ ShoppingCart.prototype.addProduct = function(id, sku, price, name, upp, bullet1,
     im.push(images);
 
     // fix sku with selected combination
-    var combination = this.getCurrentCombination();
-    sku = sku + '-' + combination;
+    sku = [sku, combination].join('-');
 
     // doenst add quantity here, so dont cut the execution
     if (!this.productExist(id, sku))
