@@ -1,8 +1,8 @@
 /* global jQuery */
 /* global Utils */
+/* global Cart */
 /* global Tag */
 /* global Product */
-/* global ShoppingCart */
 
 
 'use strict';
@@ -16,7 +16,7 @@ var BodegasClient = function(checkout_url)
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new ShoppingCart();
+    this.cart = new Cart();
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback)

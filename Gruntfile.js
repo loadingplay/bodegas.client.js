@@ -49,7 +49,13 @@
 
             concat: {
                 js: {
-                    src: ['src/**/*.js'],
+                    src: [
+                        'src/*.js',
+                        'src/model/*.js',
+                        'src/view/*.js',
+                        'src/views/*.js',
+                        'src/modules/*.js'
+                    ],
                     dest: 'dist/bodegas.client.js',
                 },
                 css: {
