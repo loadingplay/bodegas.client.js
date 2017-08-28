@@ -349,7 +349,8 @@ EcommerceFacade.prototype.showProductDetail = function()
  */
 EcommerceFacade.prototype.loadVariants = function()
 {
-    var product_sku = this.options.variants.product_sku || Utils.getUrlParameter('sku');
+    var product_sku = this.options.variants.product_sku ||
+        Utils.getUrlParameter('sku');
     var self = this;
 
     // ensure templates and target
@@ -371,12 +372,14 @@ EcommerceFacade.prototype.loadVariants = function()
                 vs.push(variants[i].name);
             }
 
-            self.variants.getValues(product_sku, vs.join(","), function(variants)
-            {
-                self.variants_view.render(variants);
-                self.options.onLoad.call(this, variants);
-                self.triggerVariantsLoaded(variants);
-            });
+            self.variants.getValues(
+                product_sku, vs.join(","), function(variants)
+                {
+                    self.variants_view.render(variants);
+                    self.options.onLoad.call(this, variants);
+                    self.triggerVariantsLoaded(variants);
+                }
+            );
         }
     );
 };

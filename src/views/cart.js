@@ -60,7 +60,7 @@ ShoppingCartView.prototype.init = function()
     $(document).on('click', this.options.addOne, function(evt)
     {
         evt.preventDefault();
-        self.addOneClick($(this));
+        self.addToCartClick($(this));
         self.render();
     });
 
@@ -110,12 +110,11 @@ ShoppingCartView.prototype.renderLoading = function()
 
 
 /**************** button actions ****************/
-
-
 ShoppingCartView.prototype.addOneClick = function($button)
 {
-    var id = $button.attr('product-id');
-    this.controller.addProduct(id);
+    this.controller.addProduct.apply(
+        this.controller, this.getProductData($button)
+    );
 };
 
 /**
@@ -128,6 +127,7 @@ ShoppingCartView.prototype.getProductData = function ($button)
     return [
         $button.attr('product-id'),
         $button.attr('product-sku'),
+        $button.attr('product-combination'),
         $button.attr('product-price'),
         $button.attr('product-name'),
         $button.attr('product-upp'),
@@ -190,7 +190,6 @@ ShoppingCartView.prototype.goToCheckout = function(checkout)
 ShoppingCartView.prototype.removeOne = function($button)
 {
     var id = $button.attr('product-id');
-
     this.controller.removeOne(id);
 };
 

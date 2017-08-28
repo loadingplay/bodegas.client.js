@@ -242,8 +242,10 @@ QUnit.test('test add to cart with variants selected', function(assert)
                 $('.add-to-cart')[0].click();
 
                 // check if product was added within variant
-                assert.equal(facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
-                assert.equal(facade.ecommerce.cart.model[0].combination, '1-rojo');
+                assert.equal(
+                    facade.ecommerce.cart.model[0].sku, '2212121-1-rojo');
+                assert.equal(
+                    facade.ecommerce.cart.model[0].combination, '1-rojo');
 
                 // select another combination
                 $('.variant-value[variant=talla]')[1].click();
@@ -262,7 +264,8 @@ QUnit.test('test add to cart with variants selected', function(assert)
 
                 // test with addone and remove one
                 facade.ecommerce.cart.view.addOneClick(
-                    $('<div product-id="1212"></div>'));
+                    $('<div product-id="1212" ></div>')
+                );
 
                 assert.equal(facade.ecommerce.cart.model[0].quantity, 2);
                 assert.equal(facade.ecommerce.cart.model[1].quantity, 1);
