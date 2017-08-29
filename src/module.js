@@ -218,6 +218,7 @@ class View extends LPObject
     {
         $(document).on('click', '[' + action_tag + ']', (e) =>
         {
+            e.preventDefault();
             var $el = $(e.currentTarget);
             var data = $el.attr(action_tag);
             this.view_data_provider.performAction(action_tag, data, $el);
