@@ -23,6 +23,7 @@ class Cart extends Module
         this.cart_model = new CartProductListModel(this.extra_info);
         this.product_view = new CartProductListView();
         this.total_view = new CartTotalView();
+        this.total_extern_view = new ExternalCartTotalView();
 
         // google analytics
         this.is_ga_enabled = true;
@@ -31,9 +32,13 @@ class Cart extends Module
         this.addModel('product-list', this.cart_model);
         this.addView('product-list-view', this.product_view);
         this.addView('total-view', this.total_view);
+        this.addView('total-extern-view', this.total_extern_view);
 
         // add view actions
         this.product_view.setClickAction('lp-cart-add');
+        this.total_view.setClickAction('lp-cart-add-one');
+        this.total_view.setClickAction('lp-cart-remove-one');
+        this.total_view.setClickAction('lp-cart-remove');
 
         this.cart_model.loadProducts();
 
@@ -49,8 +54,19 @@ class Cart extends Module
     {
         if (endpoint.indexOf('cart/load') === 0)
         {
-            this.onLoadCart(data.products);
             this.product_view.render();
+            this.total_view.render();
+            this.total_extern_view.render();
+
+            try
+            {
+                this.onLoadCart(data.products);
+            }
+            catch(ex)
+            {
+                console.log(ex);
+                // nothing here...
+            }
         }
         if (endpoint.indexOf('cart/save') === 0)
         {
@@ -58,30 +74,63 @@ class Cart extends Module
         }
     }
 
+    onModelUpdate(model)
+    {
+        this.product_view.render();
+        this.total_view.render();
+    }
+
     onActionPerformed(tag_name, data, $element)
     {
         if (tag_name === 'lp-cart-add')
         {
-            var combination = $element.attr('product-combination');
-            var sku = $element.attr('product-sku');
-            this.cart_model.addProduct(sku, combination);
+            this.cart_model.addProduct(
+                $element.attr('product-sku'),
+                $element.attr('product-combination'),
+                $element.attr('product-price'),
+                $element.attr('product-name'),
+                $element.attr('product-upp'),
+                $element.attr('product-bullet1'),
+                $element.attr('product-bullet2'),
+                $element.attr('product-bullet3'),
+                $element.attr('product-img'));
         }
 
-        if (tag_name === "lp-add-one")
+        if (tag_name === "lp-cart-add-one")
         {
             this.cart_model.addOne(data);
         }
+
+        if (tag_name === "lp-cart-remove-one")
+        {
+            this.cart_model.removeOne(data);
+        }
+
+        if (tag_name === "lp-cart-remove")
+        {
+            this.cart_model.removeProduct(data);
+        }
     }
 
-    onViewRequestData(view_name)
+    onViewRequestData(view)
     {
-        if (view_name === 'product-list-view')
+        if (view.id === this.product_view.id)
         {
             return this.getProducts();
         }
-        if (view_name === 'total-view')
+        if (view.id === this.total_view.id ||
+            view.id === this.total_extern_view.id
+        )
         {
-            return {};
+            return {
+                'total' : this.getTotal(),
+                'shipping_cost': this.shipping_cost,
+                'units_total' : this.getUnitsTotal(),
+                'upp_total' : this.getUPPTotal(),
+                'checkout_url' : this.getCheckoutUrl(),
+                'site_id' : this.getSiteId(),
+                'cart_id' : this.getGUID()
+            };
         }
     }
 

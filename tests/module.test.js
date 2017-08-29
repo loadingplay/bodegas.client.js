@@ -109,7 +109,7 @@ QUnit.test('Model', function(assert)
     var mp = new ModelProvider();
     mp.onAjaxRespond = function(endpoint, data)
     {
-        assert.equal(data.message, 'foo');
+        assert.equal(data[0].message, 'foo');
         done();
     };
 

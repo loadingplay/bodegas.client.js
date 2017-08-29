@@ -3,9 +3,9 @@
 
     <script type="text/x-template" id="shopping-cart-product">
         <div class="product" >
-            <div>{{ id }}</div>
-            <div>{{ name }}</div>
-            <div>{{ price }}</div>
+            <div>s:{{ sku }}</div>
+            <div>n: {{ name }}</div>
+            <div>p: {{ price }}</div>
             <button lp-cart-remove="{{ id }}">Remove</button>
             <button lp-cart-add-one="{{ id }}">+</button>
             <span class="quantity" >{{ quantity }}</span>
@@ -16,7 +16,7 @@
 
 
     <script type="text/x-template" id="shopping-cart-total" >
-        <span class="total" >Total: <span class="money" >{{ total }}</span></span>
+        <span class="total" >Total: <span>{{ total|money }}</span></span>
     </script>
 
     <button product-sku="11" lp-cart-add product-name="Adulto Pollo y Verdura" product-price="82736" class="add-to-cart" >add to cart id11</button>
