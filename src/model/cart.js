@@ -166,15 +166,18 @@ class CartProductListModel extends Model
             this.products.push(cp);
         }
 
-        this.addOne(cp.id);
-        this.saveCart(callback);
+        this.addOne(cp.id, callback);
 
     }
 
-    addOne(id)
+    addOne(id, callback=$.noop)
     {
-        this.findProductByID(id).quantity += 1;
-        return;
+        var p = this.findProductByID(id);
+        if (p)
+        {
+            p.quantity += 1;
+            this.saveCart(callback);
+        }
     }
 
     /**
@@ -189,6 +192,7 @@ class CartProductListModel extends Model
         }).then(()=>{
             callback();
         });
+        this.modelUpdate();
     }
 
     findProductByID(id)
@@ -246,6 +250,11 @@ class CartProductListModel extends Model
     {
         var p = this.findProductByID(id);
 
+        if (!p)
+        {
+            return false;
+        }
+
         p.quantity -= 1;
         if (p.quantity <= 0)
         {
@@ -280,9 +289,9 @@ class CartProductListModel extends Model
     {
         var units_total = 0;
 
-        for (var i = 0; i < this.model.length; i++)
+        for (var i = 0; i < this.products.length; i++)
         {
-            var product = this.model[i];
+            var product = this.products[i];
             units_total += product.quantity;
         }
 

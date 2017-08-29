@@ -19,6 +19,11 @@ class ModelProvider {
         // nothing here...
     }
 
+    onModelUpdate(model)
+    {
+        // nothing here...
+    }
+
     static Empty()
     {
         return new ModelProvider();
@@ -92,6 +97,11 @@ class Model extends LPObject
     onAjaxRespond(endpoint, data)
     {
         this.model_provider.onAjaxRespond(endpoint, data);
+    }
+
+    modelUpdate()
+    {
+        this.model_provider.onModelUpdate(this);
     }
 
     /**
@@ -169,6 +179,7 @@ class View extends LPObject
         this.$target = $target;
         this.template = '';
         this.click_actions = [];
+        this.append = false;  // render method
         this.setDataProvider(view_data_provider);
     }
 
@@ -193,7 +204,14 @@ class View extends LPObject
             html_builder.push(Utils.render(this.template, data));
         }
 
-        this.$target.html(html_builder.join(''));
+        if (this.append)
+        {
+            this.$target.append(html_builder.join(''));
+        }
+        else
+        {
+            this.$target.html(html_builder.join(''));
+        }
     }
 
     setClickAction(action_tag)
@@ -257,6 +275,10 @@ class Module
         this.model_provider.onAjaxRespond = (endpoint, data) =>
         {
             this.onModelLoaded(endpoint, data);
+        };
+        this.model_provider.onModelUpdate = (model) =>
+        {
+            this.onModelUpdate(model)
         };
         this.view_data_provider.getData = (view) =>
         {
@@ -324,6 +346,11 @@ class Module
     onModelLoaded(endpoint, data)
     {
         console.warn("method must be imeplemented");
+    }
+
+    onModelUpdate(model)
+    {
+        console.warn("method must be implemented");
     }
 
     onViewRequestData(view)

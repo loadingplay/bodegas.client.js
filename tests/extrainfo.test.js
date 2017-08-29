@@ -1,5 +1,5 @@
 /* global QUnit */
-/* global ShoppingCart */
+/* global Cart */
 /* global ExtraInfo */
 
 var shopping_cart;
@@ -7,7 +7,7 @@ var shopping_cart;
 QUnit.module('ExtraInfo', {
     beforeEach : function()
     {
-        shopping_cart = new ShoppingCart(2);
+        shopping_cart = new Cart(2);
     }
 });
 
@@ -41,7 +41,7 @@ QUnit.test('Read', function(assert)
 });
 
 
-QUnit.test('check functions from facade', function(assert) 
+QUnit.test('check functions from facade', function(assert)
 {
     var f = $(document).ecommerce('set_data', {'foo' : 1});
     assert.equal(f.ecommerce.cart.extra_info.get_data('foo'), 1, 'get data working');

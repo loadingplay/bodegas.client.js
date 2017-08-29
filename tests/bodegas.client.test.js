@@ -2,7 +2,7 @@
 /*global BodegasClient*/
 /*global Product*/
 /*global Tag*/
-/*global ShoppingCart*/
+/*global Cart*/
 
 
 QUnit.module('Bodegas Client', {});
@@ -32,5 +32,5 @@ QUnit.test('init', function(assert)
     assert.equal(bodegas.site_id, 100, 'app id initialized');
     assert.ok(bodegas.product instanceof Product, 'product initialized');
     assert.ok(bodegas.tag instanceof Tag, 'tag initialized');
-    assert.ok(bodegas.cart instanceof ShoppingCart, 'cart initialized');
+    assert.ok(bodegas.cart instanceof Cart, 'cart initialized');
 });
