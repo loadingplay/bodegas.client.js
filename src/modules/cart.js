@@ -58,15 +58,7 @@ class Cart extends Module
             this.total_view.render();
             this.total_extern_view.render();
 
-            try
-            {
-                this.onLoadCart(data.products);
-            }
-            catch(ex)
-            {
-                console.log(ex);
-                // nothing here...
-            }
+            this.onLoadCart(data.products);
         }
         if (endpoint.indexOf('cart/save') === 0)
         {
@@ -288,7 +280,7 @@ class Cart extends Module
      * load cart from a cooki
      * @param  {object} callback  callback executed when the cart is loaded
      */
-    loadCart(callback)
+    loadCart(callback=$.noop)
     {
         this.onLoadCart = callback;
     }

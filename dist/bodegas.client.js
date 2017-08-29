@@ -719,25 +719,21 @@ EcommerceFacade.prototype.showProductDetail = function()
 {
     var product_id = this.options.product_id || Utils.getUrlParameter('id');
     var self = this;
-
-    this.ecommerce.authenticate(this.options.app_public, function()
-    {
-        self.ecommerce.product.get(
-            product_id,
-            self.options.user,
-            function(product)
-            {
-                self.product_view.render(
-                    product,
-                    function(products)
-                    {
-                        self.options.onLoad.call(this, products);
-                        self.triggerProductsLoaded(products);
-                    }
-                );
-            }
-        );
-    });
+    self.ecommerce.product.get(
+        product_id,
+        self.options.user,
+        function(product)
+        {
+            self.product_view.render(
+                product,
+                function(products)
+                {
+                    self.options.onLoad.call(this, products);
+                    self.triggerProductsLoaded(products);
+                }
+            );
+        }
+    );
 
 };
 
@@ -1062,6 +1058,7 @@ class View extends LPObject
     {
         $(document).on('click', '[' + action_tag + ']', (e) =>
         {
+            e.preventDefault();
             var $el = $(e.currentTarget);
             var data = $el.attr(action_tag);
             this.view_data_provider.performAction(action_tag, data, $el);
@@ -3165,15 +3162,7 @@ class Cart extends Module
             this.total_view.render();
             this.total_extern_view.render();
 
-            try
-            {
-                this.onLoadCart(data.products);
-            }
-            catch(ex)
-            {
-                console.log(ex);
-                // nothing here...
-            }
+            this.onLoadCart(data.products);
         }
         if (endpoint.indexOf('cart/save') === 0)
         {
@@ -3395,7 +3384,7 @@ class Cart extends Module
      * load cart from a cooki
      * @param  {object} callback  callback executed when the cart is loaded
      */
-    loadCart(callback)
+    loadCart(callback=$.noop)
     {
         this.onLoadCart = callback;
     }
