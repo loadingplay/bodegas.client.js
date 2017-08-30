@@ -41,11 +41,13 @@ QUnit.test('cart', function(assert)
 
         // check the product was added correctly
         assert.equal(
-            shopping_cart.getProducts().length, 1, 'shoppint cart length == 1');
+            shopping_cart.getProducts().length, 1,
+            'shoppint cart length == 1');
 
         // TODO: fix those tests
         assert.deepEqual(
-            shopping_cart.getProducts()[0].images,[['', '', '']], 'images should be blank...');
+            shopping_cart.getProducts()[0].images,[['', '', '']],
+            'images should be blank...');
 
         // add another
         shopping_cart.addProduct(
@@ -60,7 +62,8 @@ QUnit.test('cart', function(assert)
             'quantity == 2 after adding same product twice'
         );
         assert.equal(
-            shopping_cart.getProducts()[0].upp_total, 4, 'upp x quantity == 4.');
+            shopping_cart.getProducts()[0].upp_total, 4,
+            'upp x quantity == 4.');
 
         // add a new product
         shopping_cart.addProduct(
@@ -76,7 +79,8 @@ QUnit.test('cart', function(assert)
             'quantity of first item == 1 after removing one'
         );
         assert.equal(
-            shopping_cart.getProducts()[0].upp_total, 2, 'upp x quantity == 2');
+            shopping_cart.getProducts()[0].upp_total, 2,
+            'upp x quantity == 2');
 
         // remove a product
         shopping_cart.removeOne(product.id);
@@ -94,6 +98,8 @@ QUnit.test('cart', function(assert)
 QUnit.test('totals', function(assert)
 {
     var products_loaded = assert.async();
+
+    shopping_cart = new Cart(2);
 
     product.list(1,10, function(products)
     {
@@ -209,6 +215,7 @@ QUnit.test('callback on save cart', function(assert)
     {
         assert.ok(true, 'callback is executed');
         callback_executed();
+        shopping_cart.saveModel($.noop);
     });
 });
 

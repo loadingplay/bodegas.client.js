@@ -35,6 +35,24 @@ class ExternalCartTotalView extends View
 }
 
 
+class UnitsTotalView extends View
+{
+    constructor()
+    {
+        super($('.units-total'));
+        this.setTemplate($('#shopping-cart-units-total').html());
+    }
+}
+
+class CheckoutFormView extends View
+{
+    constructor()
+    {
+        super($('.checkout-form'));
+        this.setTemplate($('#shopping-cart-checkout-form').html());
+    }
+}
+
 // class CartView extends View {
 //     constructor(data_provider)
 //     {

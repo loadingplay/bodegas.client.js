@@ -16,7 +16,7 @@ var BodegasClient = function(checkout_url)
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new Cart();
+    this.cart = new Cart(this.site_id, this.checkout_url);
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback)

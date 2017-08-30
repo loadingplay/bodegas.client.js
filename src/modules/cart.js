@@ -24,6 +24,8 @@ class Cart extends Module
         this.product_view = new CartProductListView();
         this.total_view = new CartTotalView();
         this.total_extern_view = new ExternalCartTotalView();
+        this.units_total_view = new UnitsTotalView();
+        this.checkout_form_view = new CheckoutFormView();
 
         // google analytics
         this.is_ga_enabled = true;
@@ -33,6 +35,8 @@ class Cart extends Module
         this.addView('product-list-view', this.product_view);
         this.addView('total-view', this.total_view);
         this.addView('total-extern-view', this.total_extern_view);
+        this.addView('units-total-view', this.units_total_view);
+        this.addView('checkout-form-view', this.checkout_form_view);
 
         // add view actions
         this.product_view.setClickAction('lp-cart-add');
@@ -57,6 +61,8 @@ class Cart extends Module
             this.product_view.render();
             this.total_view.render();
             this.total_extern_view.render();
+            this.units_total_view.render();
+            this.checkout_form_view.render();
 
             this.onLoadCart(data.products);
         }
@@ -70,6 +76,9 @@ class Cart extends Module
     {
         this.product_view.render();
         this.total_view.render();
+        this.total_extern_view.render();
+        this.units_total_view.render();
+        this.checkout_form_view.render();
     }
 
     onActionPerformed(tag_name, data, $element)
@@ -111,7 +120,9 @@ class Cart extends Module
             return this.getProducts();
         }
         if (view.id === this.total_view.id ||
-            view.id === this.total_extern_view.id
+            view.id === this.total_extern_view.id ||
+            view.id === this.units_total_view.id ||
+            view.id === this.checkout_form_view.id
         )
         {
             return {
@@ -190,16 +201,8 @@ class Cart extends Module
         );
 
         this.gaAddProduct({
-            id,
-            sku,
-            combination,
-            price,
-            name,
-            upp,
-            bullet1,
-            bullet2,
-            bullet3,
-            img
+            id, sku, combination, price, name, upp,
+            bullet1, bullet2, bullet3, img
         }, this.cart_model.findProductIndex(id));
     }
 
@@ -289,6 +292,10 @@ class Cart extends Module
     {
         this.shipping_cost = shipping_cost;
         this.product_view.render();
+        this.total_view.render();
+        this.total_extern_view.render();
+        this.units_total_view.render();
+        this.checkout_form_view.render();
     }
 
     /**
