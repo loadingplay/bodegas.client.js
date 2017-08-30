@@ -60,6 +60,7 @@ QUnit.test('load variants', function(assert)
 
     $cellar.ecommerce('load_variants',
     {
+        'infinite_scroll': false,
         "variants": {
             "container": $holder
         }
