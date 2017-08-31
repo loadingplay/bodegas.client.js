@@ -25,6 +25,7 @@ QUnit.test('LyfeCycle', function(assert)
     var done = assert.async();
     var $target = $('<div></div>');
 
+    /** this code doesnt work in unittests with es5 :_(
     class MyModule extends Module {
         onInit()
         {
@@ -53,47 +54,51 @@ QUnit.test('LyfeCycle', function(assert)
             return this.model.data;
         }
     }
+    */
 
-    var m = new MyModule();
-    // // start some async tests
-    // var done = assert.async();
-    // var done2 = assert.async();
-    //
-    // class MyModule extends Module
-    // {
-    //     // implement abstract methods
-    //     onInit()
-    //     {
-    //         var m = new Model('test');
-    //         this.addModel('foo', m);
-    //
-    //         return true;
-    //     }
-    //
-    //     // this method will be called each time a model is loaded
-    //     onModelLoaded(name, model)
-    //     {
-    //         if (name === "foo")
-    //         {
-    //             assert.equal('foo', name, 'model loaded');
-    //             this.addModel('bar', new Model('test2'));
-    //             this.processModels();  // will only process new models
-    //
-    //             // render should be done here
-    //
-    //             done();
-    //         }
-    //         else
-    //         {
-    //             assert.equal('bar', name, 'model loaded');
-    //             done2();
-    //
-    //             // render should be done here
-    //         }
-    //     }
-    // }
-    //
-    // new MyModule();
+    var MyModule = function()
+    {
+
+    };
+
+    MyModule.onInit = function()
+    {
+       this.model = new Model(this.model_provider);
+       this.addModel('test', this.model);
+
+       // perform a get
+       this.model.get('test_model', { 'test': 'foo' });
+
+       // test_model
+       this.view = new View($target, this.view_data_provider);
+       this.view.setTemplate('{{ message }}');
+       this.addView('test', this.view);
+    };
+
+    MyModule.onModelLoaded = function(endpoint, data)
+    {
+       this.model.data = data;
+       this.view.render();
+       assert.equal($target.html(), 'foo');
+       done();
+    };
+
+    MyModule.onViewRequestData = function(view_name, view)
+    {
+       return this.model.data;
+    };
+
+    MyModule.onModelUpdate = function()
+    {
+        return this.model.data;
+    };
+
+    MyModule.onActionPerformed = function(tag_name, data, $element)
+    {
+        // nothing here
+    };
+
+    var m = new Module();
 
 });
 
