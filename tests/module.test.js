@@ -58,10 +58,12 @@ QUnit.test('LyfeCycle', function(assert)
 
     var MyModule = function()
     {
-
+        Module.call(this);
     };
 
-    MyModule.onInit = function()
+    MyModule.prototype = Module.prototype;
+
+    MyModule.prototype.onInit = function()
     {
        this.model = new Model(this.model_provider);
        this.addModel('test', this.model);
@@ -75,7 +77,7 @@ QUnit.test('LyfeCycle', function(assert)
        this.addView('test', this.view);
     };
 
-    MyModule.onModelLoaded = function(endpoint, data)
+    MyModule.prototype.onModelLoaded = function(endpoint, data)
     {
        this.model.data = data;
        this.view.render();
@@ -83,17 +85,17 @@ QUnit.test('LyfeCycle', function(assert)
        done();
     };
 
-    MyModule.onViewRequestData = function(view_name, view)
+    MyModule.prototype.onViewRequestData = function(view_name, view)
     {
        return this.model.data;
     };
 
-    MyModule.onModelUpdate = function()
+    MyModule.prototype.onModelUpdate = function()
     {
         return this.model.data;
     };
 
-    MyModule.onActionPerformed = function(tag_name, data, $element)
+    MyModule.prototype.onActionPerformed = function(tag_name, data, $element)
     {
         // nothing here
     };
