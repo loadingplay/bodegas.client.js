@@ -20,7 +20,11 @@ class Cart extends Module
         this.shipping_cost = 0;
 
         this.extra_info = new ExtraInfo(1);
+
+        // models
         this.cart_model = new CartProductListModel(this.extra_info);
+
+        // views
         this.product_view = new CartProductListView();
         this.total_view = new CartTotalView();
         this.total_extern_view = new ExternalCartTotalView();
@@ -32,6 +36,7 @@ class Cart extends Module
 
         // add models and views
         this.addModel('product-list', this.cart_model);
+
         this.addView('product-list-view', this.product_view);
         this.addView('total-view', this.total_view);
         this.addView('total-extern-view', this.total_extern_view);

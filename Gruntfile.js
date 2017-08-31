@@ -8,9 +8,7 @@
         var connect_port = 3001;
         /*** istanbul ***/
         grunt.loadNpmTasks('grunt-contrib-qunit');
-        // grunt.loadNpmTasks('grunt-qunit-istanbul');
         /*** istanbul ***/
-
         require('load-grunt-tasks')(grunt);  //jshint ignore: line
 
         grunt.initConfig({
@@ -21,7 +19,7 @@
             qunit : {
                 all: {
                     options: {
-                        urls: ['http://localhost:'+connect_port+'/tests/index.html']
+                        urls: ['http://localhost:'+connect_port+'/tests/index.phantom.html']
                     }
                 }
 
@@ -79,7 +77,7 @@
             uglify: {
                 my_target: {
                     files: {
-                        'dist/bodegas.client.js': ['src/**/*.js']
+                        'dist/bodegas.client.min.js': ['dist/bodegas.client.js']
                     }
                 }
             },
@@ -94,6 +92,38 @@
                 }
             },
 
+            // es6transpiler: {
+            //     dist: {
+            //         files: {
+            //             'dist/bodegas.client.js': 'dist/bodegas.client.es5.js'
+            //         }
+            //     }
+            // },
+
+            // transpile: {
+            //     main: {
+            //         type: "cjs", // or "amd" or "yui"
+            //         files: [{
+            //             expand: true,
+            //             cwd: './',
+            //             src: ['dist/bodegas.client.js'],
+            //             dest: 'dist/bodegas.client.es5.js'
+            //         }]
+            //     }
+            // }
+
+            "babel": {
+                options: {
+                    sourceMap: true
+                },
+                dist: {
+                    files: {
+                        "dist/bodegas.client.es5.js": "dist/bodegas.client.js"
+                    }
+                }
+            }
+
+
         });
 
         grunt.loadNpmTasks('grunt-contrib-concat');
@@ -101,9 +131,10 @@
         grunt.loadNpmTasks('grunt-contrib-uglify');
         grunt.loadNpmTasks('grunt-express');
         grunt.loadNpmTasks('grunt-contrib-connect');
+        grunt.loadNpmTasks('grunt-babel');
 
-        grunt.registerTask('tests', ['connect', 'qunit']);
-        grunt.registerTask('build', ['concat', 'uglify']);
+        grunt.registerTask('tests', ['build', 'connect', 'qunit']);
+        grunt.registerTask('build', ['concat', 'babel']);
         grunt.registerTask('default', ['concat', 'express', 'watch']);
     };
 })();

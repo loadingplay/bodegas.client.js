@@ -336,7 +336,7 @@ class Module
      */
     onInit()
     {
-        console.warn("method must be imeplemented");
+        console.warn("method must be implemented");
     }
 
     /**
@@ -346,7 +346,7 @@ class Module
      */
     onModelLoaded(endpoint, data)
     {
-        console.warn("method must be imeplemented");
+        console.warn("method must be implemented");
     }
 
     onModelUpdate(model)
@@ -361,7 +361,7 @@ class Module
 
     onActionPerformed(tag_name, data, $element)
     {
-        console.warn("method must be imeplemented");
+        console.warn("method must be implemented");
     }
 
 }
