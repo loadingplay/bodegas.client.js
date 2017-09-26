@@ -3,7 +3,7 @@
 
 class CartProduct {
 
-    get total() { return this.quantity * this.price; }
+    get total() { return this.quantity * this.price; }
     get upp_total() { return this.quantity * this.upp; }
     get imges() { return Array.isArray(this.images) ? this.images: []; }
 

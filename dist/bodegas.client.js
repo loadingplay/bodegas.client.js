@@ -952,7 +952,7 @@ class Model extends LPObject
      */
     post(endpoint, parameters)
     {
-        let p = new Promise((resolve, reject) => {
+        let p = new Promise((resolve, reject) => {
             jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
             .done((data) => {
                 resolve(data);
@@ -1018,7 +1018,7 @@ class View extends LPObject
         super();
         this.$target = $target;
         this.template = '';
-        this.click_actions = [];
+        this.click_actions = [];
         this.append = false;  // render method
         this.setDataProvider(view_data_provider);
     }
@@ -1642,7 +1642,7 @@ Variants.prototype.getValues = function(product_sku, variant_name, cb)
 
 class CartProduct {
 
-    get total() { return this.quantity * this.price; }
+    get total() { return this.quantity * this.price; }
     get upp_total() { return this.quantity * this.upp; }
     get imges() { return Array.isArray(this.images) ? this.images: []; }
 
@@ -2124,7 +2124,7 @@ class CheckoutFormView extends View
 //
 //     /**
 //      * get product data from button
-//      * @param {object}  $button     jquery button with data
+//      * @param {object}  $button     jquery button with data
 //      * @return {object} retur a list with all prouct elements
 //      */
 //     getProductData ($button)
@@ -3268,7 +3268,7 @@ class Cart extends Module
         this.cart_model.guid = guid;
         this.cart_model.loadProducts();
     }
-    get guid() { return this.cart_model.guid; }
+    get guid() { return this.cart_model.guid; }
 
     getGUID()
     {
