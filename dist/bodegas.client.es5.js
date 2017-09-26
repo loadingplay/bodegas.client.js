@@ -2491,6 +2491,7 @@ ExtraInfo.prototype.synchronize = function () {
         /********* COMMON **********/
         'app_public': 0,
         'base_url': 'https://apibodegas.loadingplay.com/',
+        //'base_url'              : 'http://apibodegas.onev.today/',
 
         /********* PRODUCTBOX **********/
         'tag': '',
@@ -3549,14 +3550,13 @@ var CartProductListModel = function (_Model) {
         value: function loadProducts() {
             var _this8 = this;
 
-            this.get('cart/load/' + this.guid).then(function (cart_products) {
-                if (cart_products.expired) {
+            this.get('v1/cart/' + this.guid).then(function (cart_products) {
+                if (cart_products.cart.expired) {
                     $.removeCookie('shopping-cart');
                     _this8.guid = _this8.generateGUID();
                     // onload([]);
                 }
-
-                _this8.createFromArray(cart_products.products);
+                _this8.createFromArray(cart_products.cart.items);
                 // self.view.render();
 
                 // onload(cart_products);
@@ -3684,8 +3684,8 @@ var CartProductListModel = function (_Model) {
         value: function saveCart() {
             var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : $.noop;
 
-            this.post('cart/save/' + this.guid, {
-                'json_data': JSON.stringify(this.products)
+            this.post('v1/cart/' + this.guid, {
+                'items': JSON.stringify(this.products)
             }).then(function () {
                 callback();
             });
@@ -4005,7 +4005,7 @@ var CheckoutFormView = function (_View5) {
 //
 //     /**
 //      * get product data from button
-//      * @param {object}  $button     jquery button with data
+//      * @param {object}  $button     jquery button with data
 //      * @return {object} retur a list with all prouct elements
 //      */
 //     getProductData ($button)

@@ -30,7 +30,7 @@ var Utils = {  //jshint ignore: line
 
         return url;
     },
-    getURLWithoutParam : function(module)
+    getURLWithoutParam: function(module)
     {
         if (!Utils.strEndsWith(Utils.base_url, '/'))
         {
