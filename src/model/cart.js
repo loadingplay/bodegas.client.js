@@ -57,16 +57,15 @@ class CartProductListModel extends Model
 
     loadProducts()
     {
-        this.get('cart/load/' + this.guid).then((cart_products) =>
+        this.get('v1/cart/' + this.guid).then((cart_products) =>
         {
-            if (cart_products.expired)
+            if (cart_products.cart.expired)
             {
                 $.removeCookie('shopping-cart');
                 this.guid = this.generateGUID();
                 // onload([]);
             }
-
-            this.createFromArray(cart_products.products);
+            this.createFromArray(cart_products.cart.items);
             // self.view.render();
 
             // onload(cart_products);
@@ -187,8 +186,8 @@ class CartProductListModel extends Model
      */
     saveCart(callback=$.noop)
     {
-        this.post('cart/save/' + this.guid, {
-            'json_data': JSON.stringify(this.products)
+        this.post('v1/cart/' + this.guid, {
+            'items': JSON.stringify(this.products)
         }).then(()=>{
             callback();
         });

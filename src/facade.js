@@ -160,6 +160,7 @@
         /********* COMMON **********/
         'app_public'            : 0,
         'base_url'              : 'https://apibodegas.loadingplay.com/',
+        //'base_url'              : 'http://apibodegas.onev.today/',
 
         /********* PRODUCTBOX **********/
         'tag'                   : '',
