@@ -112,7 +112,7 @@ class Model extends LPObject
      */
     post(endpoint, parameters)
     {
-        let p = new Promise((resolve, reject) => {
+        let p = new Promise((resolve, reject) => {
             jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
             .done((data) => {
                 resolve(data);
@@ -178,7 +178,7 @@ class View extends LPObject
         super();
         this.$target = $target;
         this.template = '';
-        this.click_actions = [];
+        this.click_actions = [];
         this.append = false;  // render method
         this.setDataProvider(view_data_provider);
     }

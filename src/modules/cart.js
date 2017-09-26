@@ -146,7 +146,7 @@ class Cart extends Module
         this.cart_model.guid = guid;
         this.cart_model.loadProducts();
     }
-    get guid() { return this.cart_model.guid; }
+    get guid() { return this.cart_model.guid; }
 
     getGUID()
     {

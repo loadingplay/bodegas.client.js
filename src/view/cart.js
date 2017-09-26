@@ -171,7 +171,7 @@ class CheckoutFormView extends View
 //
 //     /**
 //      * get product data from button
-//      * @param {object}  $button     jquery button with data
+//      * @param {object}  $button     jquery button with data
 //      * @return {object} retur a list with all prouct elements
 //      */
 //     getProductData ($button)
