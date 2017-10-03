@@ -309,7 +309,11 @@ EcommerceFacade.prototype.showProductList = function(page)
                     page,
                     function(products)
                     {
-                        self.options.onLoad.call(this, products);
+                        if (self.options !== undefined)
+                        {
+                            self.options.onLoad.call(this, products);
+                        }
+
                         self.triggerProductsLoaded(products);
                     }
                 );

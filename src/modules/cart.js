@@ -59,9 +59,9 @@ class Cart extends Module
     }
 
     // Interface
-    onModelLoaded(endpoint, data)
+    onModelLoaded(endpoint, data, method)
     {
-        if (endpoint.indexOf('cart/load') === 0)
+        if (endpoint.indexOf('v1/cart') === 0 && method === 'get')
         {
             this.product_view.render();
             this.total_view.render();
@@ -71,7 +71,7 @@ class Cart extends Module
 
             this.onLoadCart(data.products);
         }
-        if (endpoint.indexOf('cart/save') === 0)
+        if (endpoint.indexOf('v1/cart') === 0 && method === 'post')
         {
             this.onSaveModel();
         }
@@ -285,7 +285,7 @@ class Cart extends Module
 
     /**
      * @deprecated
-     * load cart from a cooki
+     * load cart from a cookie
      * @param  {object} callback  callback executed when the cart is loaded
      */
     loadCart(callback=$.noop)

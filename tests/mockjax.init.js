@@ -224,24 +224,61 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: new RegExp(base_url + "/cart/load/(.+)"),
+    url: new RegExp(base_url + "/cart/(.+)"),
     urlParams: ["protocol", "cart_id"],
     response: function(settings)
     {
-        var products = shopping_carts[settings.urlParams.cart_id] === undefined ? [] : shopping_carts[settings.urlParams.cart_id];
-        var expired = (settings.urlParams.cart_id === "foo");
+        if (settings.url.indexOf("extrainfo") !== -1)
+        {
+            if (settings.type === 'post')
+            {
+                this.responseText = {
+                    'status': "success"
+                }
+            }
+            else
+            {
+                this.responseText = {"message": "extra info saved", "success": true};
+            }
+            return;
+        }
 
-        this.responseText = {
-            "checkout_url": "",
-            "expired" : expired,
-            "failure_url": "",
-            "products": products,
-            "webpay_url": "",
-            "success_url": "",
-            "total": 0,
-            "cart_id": expired ? 'asd' : settings.urlParams.cart_id,
-            "session_id": ""
-        };
+        if (settings.type === 'post')
+        {
+            shopping_carts[settings.urlParams.cart_id] = $.parseJSON(settings.data.items);
+            this.responseText = {
+                "status": "success"
+            };
+        }
+        else
+        {
+            var products = shopping_carts[settings.urlParams.cart_id] === undefined ? [] : shopping_carts[settings.urlParams.cart_id];
+            var expired = (settings.urlParams.cart_id === "foo");
+
+            this.responseText = {
+                "status": "success",
+                "cart": {
+                    "checkout_url": "",
+                    "expired" : expired,
+                    "failure_url": "",
+                    "items": products,
+                    "webpay_url": "",
+                    "success_url": "",
+                    "total": 0,
+                    "cart_id": expired ? 'asd' : settings.urlParams.cart_id,
+                    "session_id": ""
+                }
+            };
+        }
+    }
+});
+
+$.mockjax({
+    url: new RegExp(base_url + "/cart/(.+)/extrainfo"),
+    urlParams: ["protocol", "cart_id"],
+    response: function(settings)
+    {
+        this.responseText = {"message": "extra info saved", "success": true};
     }
 });
 
@@ -348,25 +385,6 @@ $.mockjax({
 $.mockjax({
     url: new RegExp(base_url + "/product/images/*"),
     responseText: {"count": 1, "images": [{"url": "https://static.loadingplay.com/static/images/75b152c9fa4aca8cc00a882b7e134115_CARNE2.png.png", "thumb_500": "https://static.loadingplay.com/static/images/500_75b152c9fa4aca8cc00a882b7e134115_CARNE2.png.png", "thumb_1": "https://static.loadingplay.com/static/images/1_75b152c9fa4aca8cc00a882b7e134115_CARNE2.png.png", "thumb_200": "https://static.loadingplay.com/static/images/200_75b152c9fa4aca8cc00a882b7e134115_CARNE2.png.png"}]}
-});
-
-$.mockjax({
-    url: new RegExp(base_url + "/cart/save/(.+)"),
-    urlParams: ["protocol", "cart_id"],
-    response: function(settings)
-    {
-        shopping_carts[settings.urlParams.cart_id] = $.parseJSON(settings.data.json_data);
-        this.responseText = {"message": "cart saved", "success": true};
-    }
-});
-
-$.mockjax({
-    url: new RegExp(base_url + "/cart/extra_info/(.+)"),
-    urlParams: ["protocol", "cart_id"],
-    response: function(settings)
-    {
-        this.responseText = {"message": "extra info saved", "success": true};
-    }
 });
 
 $.mockjax({

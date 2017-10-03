@@ -155,11 +155,20 @@ QUnit.test('load from cache', function(assert)
         var product = products[0];
 
         shopping_cart.addProduct(
-            product.id, product.sku, '', product.main_price, product.name, product.upp);
+            product.id,
+            product.sku,
+            '',
+            product.main_price,
+            product.name,
+            product.upp
+        );
         assert.equal(shopping_cart.getProducts().length, 1, 'length is one');
 
         assert.equal(
-            $.cookie('shopping-cart'), shopping_cart.getGUID(), 'guid created');
+            $.cookie('shopping-cart'),
+            shopping_cart.getGUID(),
+            'guid created'
+        );
 
         // create a brand new instance
         new_shopping_cart = new Cart();
@@ -170,15 +179,16 @@ QUnit.test('load from cache', function(assert)
             'guid is conserved'
         );
 
-        new_shopping_cart.loadCart(function()
-        {
-            assert.deepEqual(
-                new_shopping_cart.getProducts(),
-                shopping_cart.getProducts(),
-                'old products are loaded'
-            );
-            shopping_cart_loaded();
-        });
+        new_shopping_cart.loadCart(
+            function()
+            {
+                assert.deepEqual(
+                    new_shopping_cart.getProducts(),
+                    shopping_cart.getProducts(),
+                    'old products are loaded'
+                );
+                shopping_cart_loaded();
+            });
 
     });
 });
@@ -270,9 +280,12 @@ QUnit.test('test add to cart with variants selected', function(assert)
 
                 // check if product was added within variant
                 assert.equal(
-                    facade.ecommerce.cart.getProducts()[0].sku, '2212121');
+                    facade.ecommerce.cart.getProducts()[0].sku, '2212121'
+                );
                 assert.equal(
-                    facade.ecommerce.cart.getProducts()[0].combination, '1-rojo');
+                    facade.ecommerce.cart.getProducts()[0].combination,
+                    '1-rojo'
+                );
 
                 // select another combination
                 $('.variant-value[variant=talla]')[1].click();
@@ -280,7 +293,8 @@ QUnit.test('test add to cart with variants selected', function(assert)
 
                 $('[lp-cart-add]').attr(
                     'product-combination',
-                    facade.variants_view.getSelectedCombination());
+                    facade.variants_view.getSelectedCombination()
+                );
 
                 // hit add to cart
                 $('[lp-cart-add]')[0].click();
@@ -290,8 +304,36 @@ QUnit.test('test add to cart with variants selected', function(assert)
                 assert.equal(facade.ecommerce.cart.getProducts().length, 2);
 
                 // check both product doesnt add the same
-                assert.equal(facade.ecommerce.cart.getProducts()[0].quantity, 1);
-                assert.equal(facade.ecommerce.cart.getProducts()[1].quantity, 1);
+                assert.equal(
+                    facade.ecommerce.cart.getProducts()[0].quantity, 1
+                );
+                assert.equal(
+                    facade.ecommerce.cart.getProducts()[1].quantity, 1
+                );
+
+                assert.equal(
+                    facade.ecommerce.cart.getProducts()[1].combination,
+                    '2-verde'
+                );
+
+                // this is a buggy situation:
+                // check if combination are generated in right order
+                // even when selected in disorder
+                facade.variants_view.selected_values = [];
+                $('.variant-value').removeClass('active');
+                $('.variant-value[variant=color]')[1].click();
+                $('.variant-value[variant=talla]')[0].click();
+                // add to cart
+                $('[lp-cart-add]').attr(
+                    'product-combination',
+                    facade.variants_view.getSelectedCombination()
+                );
+                $('[lp-cart-add]')[0].click();  // add to cart
+                assert.equal(
+                    facade.ecommerce.cart.getProducts()[0].combination,
+                    '1-rojo',
+                    'combination must be in right order'
+                );
 
                 // test with addone and remove one
                 // TODO: create those tests

@@ -2347,7 +2347,8 @@ ExtraInfo.prototype._isValidIndex = function (index) {
 
 ExtraInfo.prototype.synchronize = function () {
     var json_string = JSON.stringify(this.model);
-    $.post(Utils.getURL('cart', ['extra_info', this.cart_id]), { 'data': json_string }, function () {
+    console.log(this.model);
+    $.post(Utils.getURLWithoutParam('v1/cart/' + this.cart_id + '/extrainfo'), { 'data': json_string }, function () {
         // nothing here...
     });
 };
@@ -2607,7 +2608,10 @@ EcommerceFacade.prototype.showProductList = function (page) {
 
         self.ecommerce.product._list(page, self.options.products_per_page, self.options.ignore_stock, tag, Utils.getUrlParameter('search_query'), self.options.user, self.options.operator, self.options.column, self.options.direction, function (products) {
             self.view.renderProducts(products, page, function (products) {
-                self.options.onLoad.call(this, products);
+                if (self.options !== undefined) {
+                    self.options.onLoad.call(this, products);
+                }
+
                 self.triggerProductsLoaded(products);
             });
         });
@@ -2720,7 +2724,7 @@ var ModelProvider = function () {
 
     _createClass(ModelProvider, [{
         key: "onAjaxRespond",
-        value: function onAjaxRespond(endpoint, data) {
+        value: function onAjaxRespond(endpoint, data, method) {
             // nothing here...
         }
     }, {
@@ -2803,15 +2807,15 @@ var Model = function (_LPObject) {
                 });
             });
             Promise.all([p]).then(function (data) {
-                _this2.onAjaxRespond(endpoint, data);
+                _this2.onAjaxRespond(endpoint, data, 'get');
             });
 
             return p;
         }
     }, {
         key: "onAjaxRespond",
-        value: function onAjaxRespond(endpoint, data) {
-            this.model_provider.onAjaxRespond(endpoint, data);
+        value: function onAjaxRespond(endpoint, data, method) {
+            this.model_provider.onAjaxRespond(endpoint, data, method);
         }
     }, {
         key: "modelUpdate",
@@ -2834,7 +2838,7 @@ var Model = function (_LPObject) {
             var p = new Promise(function (resolve, reject) {
                 jQuery.post(Utils.getURLWithoutParam(endpoint), parameters).done(function (data) {
                     resolve(data);
-                    _this3.model_provider.onAjaxRespond(endpoint, data);
+                    _this3.model_provider.onAjaxRespond(endpoint, data, 'post');
                 }).fail(function () {
                     reject();
                 });
@@ -3015,8 +3019,8 @@ var Module = function () {
         this.model_provider = new ModelProvider();
         this.view_data_provider = new ViewDataProvider();
 
-        this.model_provider.onAjaxRespond = function (endpoint, data) {
-            _this6.onModelLoaded(endpoint, data);
+        this.model_provider.onAjaxRespond = function (endpoint, data, method) {
+            _this6.onModelLoaded(endpoint, data, method);
         };
         this.model_provider.onModelUpdate = function (model) {
             _this6.onModelUpdate(model);
@@ -3085,11 +3089,12 @@ var Module = function () {
          * render start rendering here
          * @param {string} key   key to access model later
          * @param {Model} model  model object to be loaded
+         * @param {string} method http method of request post|get|put|delete
          */
 
     }, {
         key: "onModelLoaded",
-        value: function onModelLoaded(endpoint, data) {
+        value: function onModelLoaded(endpoint, data, method) {
             console.warn("method must be implemented");
         }
     }, {
@@ -4959,8 +4964,8 @@ var Cart = function (_Module) {
 
     }, {
         key: "onModelLoaded",
-        value: function onModelLoaded(endpoint, data) {
-            if (endpoint.indexOf('cart/load') === 0) {
+        value: function onModelLoaded(endpoint, data, method) {
+            if (endpoint.indexOf('v1/cart') === 0 && method === 'get') {
                 this.product_view.render();
                 this.total_view.render();
                 this.total_extern_view.render();
@@ -4969,7 +4974,7 @@ var Cart = function (_Module) {
 
                 this.onLoadCart(data.products);
             }
-            if (endpoint.indexOf('cart/save') === 0) {
+            if (endpoint.indexOf('v1/cart') === 0 && method === 'post') {
                 this.onSaveModel();
             }
         }
@@ -5168,7 +5173,7 @@ var Cart = function (_Module) {
 
         /**
          * @deprecated
-         * load cart from a cooki
+         * load cart from a cookie
          * @param  {object} callback  callback executed when the cart is loaded
          */
 
