@@ -58,8 +58,9 @@ ExtraInfo.prototype._isValidIndex = function(index)
 ExtraInfo.prototype.synchronize = function()
 {
     var json_string = JSON.stringify(this.model);
+    console.log(this.model);
     $.post(
-        Utils.getURL('cart', ['extra_info', this.cart_id]),
+        Utils.getURLWithoutParam('v1/cart/' + this.cart_id + '/extrainfo'),
         {'data' : json_string},
         function()
         {

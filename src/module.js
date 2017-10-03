@@ -14,7 +14,7 @@ class ModelProvider {
      * this method is called once an ajax request is performed
      * @param  {object} data json data with request info
      */
-    onAjaxRespond(endpoint, data)
+    onAjaxRespond(endpoint, data, method)
     {
         // nothing here...
     }
@@ -88,15 +88,15 @@ class Model extends LPObject
                 });
         });
         Promise.all([p]).then((data) => {
-            this.onAjaxRespond(endpoint, data);
+            this.onAjaxRespond(endpoint, data, 'get');
         });
 
         return p;
     }
 
-    onAjaxRespond(endpoint, data)
+    onAjaxRespond(endpoint, data, method)
     {
-        this.model_provider.onAjaxRespond(endpoint, data);
+        this.model_provider.onAjaxRespond(endpoint, data, method);
     }
 
     modelUpdate()
@@ -116,7 +116,7 @@ class Model extends LPObject
             jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
             .done((data) => {
                 resolve(data);
-                this.model_provider.onAjaxRespond(endpoint, data);
+                this.model_provider.onAjaxRespond(endpoint, data, 'post');
             })
             .fail(() => {
                 reject();
@@ -273,9 +273,9 @@ class Module
         this.model_provider = new ModelProvider();
         this.view_data_provider = new ViewDataProvider();
 
-        this.model_provider.onAjaxRespond = (endpoint, data) =>
+        this.model_provider.onAjaxRespond = (endpoint, data, method) =>
         {
-            this.onModelLoaded(endpoint, data);
+            this.onModelLoaded(endpoint, data, method);
         };
         this.model_provider.onModelUpdate = (model) =>
         {
@@ -343,8 +343,9 @@ class Module
      * render start rendering here
      * @param {string} key   key to access model later
      * @param {Model} model  model object to be loaded
+     * @param {string} method http method of request post|get|put|delete
      */
-    onModelLoaded(endpoint, data)
+    onModelLoaded(endpoint, data, method)
     {
         console.warn("method must be implemented");
     }

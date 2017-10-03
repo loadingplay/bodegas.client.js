@@ -387,8 +387,9 @@ ExtraInfo.prototype._isValidIndex = function(index)
 ExtraInfo.prototype.synchronize = function()
 {
     var json_string = JSON.stringify(this.model);
+    console.log(this.model);
     $.post(
-        Utils.getURL('cart', ['extra_info', this.cart_id]),
+        Utils.getURLWithoutParam('v1/cart/' + this.cart_id + '/extrainfo'),
         {'data' : json_string},
         function()
         {
@@ -707,7 +708,11 @@ EcommerceFacade.prototype.showProductList = function(page)
                     page,
                     function(products)
                     {
-                        self.options.onLoad.call(this, products);
+                        if (self.options !== undefined)
+                        {
+                            self.options.onLoad.call(this, products);
+                        }
+
                         self.triggerProductsLoaded(products);
                     }
                 );
@@ -855,7 +860,7 @@ class ModelProvider {
      * this method is called once an ajax request is performed
      * @param  {object} data json data with request info
      */
-    onAjaxRespond(endpoint, data)
+    onAjaxRespond(endpoint, data, method)
     {
         // nothing here...
     }
@@ -929,15 +934,15 @@ class Model extends LPObject
                 });
         });
         Promise.all([p]).then((data) => {
-            this.onAjaxRespond(endpoint, data);
+            this.onAjaxRespond(endpoint, data, 'get');
         });
 
         return p;
     }
 
-    onAjaxRespond(endpoint, data)
+    onAjaxRespond(endpoint, data, method)
     {
-        this.model_provider.onAjaxRespond(endpoint, data);
+        this.model_provider.onAjaxRespond(endpoint, data, method);
     }
 
     modelUpdate()
@@ -957,7 +962,7 @@ class Model extends LPObject
             jQuery.post(Utils.getURLWithoutParam(endpoint), parameters)
             .done((data) => {
                 resolve(data);
-                this.model_provider.onAjaxRespond(endpoint, data);
+                this.model_provider.onAjaxRespond(endpoint, data, 'post');
             })
             .fail(() => {
                 reject();
@@ -1114,9 +1119,9 @@ class Module
         this.model_provider = new ModelProvider();
         this.view_data_provider = new ViewDataProvider();
 
-        this.model_provider.onAjaxRespond = (endpoint, data) =>
+        this.model_provider.onAjaxRespond = (endpoint, data, method) =>
         {
-            this.onModelLoaded(endpoint, data);
+            this.onModelLoaded(endpoint, data, method);
         };
         this.model_provider.onModelUpdate = (model) =>
         {
@@ -1184,8 +1189,9 @@ class Module
      * render start rendering here
      * @param {string} key   key to access model later
      * @param {Model} model  model object to be loaded
+     * @param {string} method http method of request post|get|put|delete
      */
-    onModelLoaded(endpoint, data)
+    onModelLoaded(endpoint, data, method)
     {
         console.warn("method must be implemented");
     }
@@ -3181,9 +3187,9 @@ class Cart extends Module
     }
 
     // Interface
-    onModelLoaded(endpoint, data)
+    onModelLoaded(endpoint, data, method)
     {
-        if (endpoint.indexOf('cart/load') === 0)
+        if (endpoint.indexOf('v1/cart') === 0 && method === 'get')
         {
             this.product_view.render();
             this.total_view.render();
@@ -3193,7 +3199,7 @@ class Cart extends Module
 
             this.onLoadCart(data.products);
         }
-        if (endpoint.indexOf('cart/save') === 0)
+        if (endpoint.indexOf('v1/cart') === 0 && method === 'post')
         {
             this.onSaveModel();
         }
@@ -3407,7 +3413,7 @@ class Cart extends Module
 
     /**
      * @deprecated
-     * load cart from a cooki
+     * load cart from a cookie
      * @param  {object} callback  callback executed when the cart is loaded
      */
     loadCart(callback=$.noop)

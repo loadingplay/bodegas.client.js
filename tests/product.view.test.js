@@ -6,11 +6,11 @@
 var product;
 
 QUnit.module(
-    'ProductView', 
+    'ProductView',
     {
         beforeEach: function()
         {
-            product = new Product(2);
+            // product = new Product(2);
         }
     });
 
@@ -19,6 +19,7 @@ QUnit.test('render', function(assert)
 {
     var product_list_view = new ProductListView();
     var loaded = assert.async();
+    var product = new Product(2);
 
     product_list_view.product_template = '<div><img class="product-image" />{{ name }} <span class="money" >{{ main_price }}</span></div>';
     product_list_view.no_products_template = 'no products';
