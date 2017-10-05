@@ -361,6 +361,15 @@ EcommerceFacade.prototype.loadVariants = function()
         this.options.variants.value_template
     );
 
+    self.variants.getCombination(
+        product_sku,
+        function(variants)
+        {
+            console.log(variants);
+        }
+    );
+
+
     // load variants from database
     self.variants.get(
         product_sku,
