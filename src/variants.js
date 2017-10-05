@@ -65,7 +65,7 @@ Variants.prototype.getCombination = function(product_sku, cb)
 {
     var self = this;
     jQuery.get(
-        Utils.getURL('v1', ['variant', 'list']),
+        Utils.getURL('v1', ['variant', 'combination']),
         {
             'sku': product_sku,
             'namespace': this.site_name + '_' + product_sku
