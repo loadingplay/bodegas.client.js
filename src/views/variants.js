@@ -16,6 +16,8 @@ var VariantsView = function($target)
     this.active_class = 'value-active';
 
     this.selected_values = [];
+    this.productStock = {};
+    this.product_sku = "";
 
     // triggers
     this.initEvents();
@@ -47,7 +49,11 @@ VariantsView.prototype.initEvents = function()
 
         if (self.isValidCombination())
         {
-            $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
+            var sku = self.product_sku + "-" + self.getSelectedCombination();
+
+            $(self.$target).trigger(
+                'combination:selected', 
+                [self.getSelectedCombination(), (self.productStock[sku] > 0)]);
         }
     };
     $(document).on('click', '.variant-value', valueClick);
@@ -117,6 +123,7 @@ VariantsView.prototype.renderVariants = function(variants)
     var variant_builder = [];
     for (var i = 0; i < variants.length; i++)
     {
+        this.variants[i].order = i;
         var rendered = Utils.render(
             this.variant_template,
             {
@@ -163,5 +170,29 @@ VariantsView.prototype.getSelectedCombination = function()
  */
 VariantsView.prototype.isValidCombination = function()
 {
-    return this.variants.length === this.selected_values.length;
+    var variant_list = this.variants;
+    var selected_list = this.selected_values;
+
+    if (variant_list.length === selected_list.length)
+    {
+        var aux_list = $.extend(true, {}, selected_list);
+
+        for (var i = 0; i < variant_list.length; i++)
+        {
+            var variant_name = aux_list[i].variant;
+
+            for (var j = 0; j < variant_list.length; j++)
+            {
+                if (variant_name === variant_list[j].variant_name)
+                {
+                    var position = variant_list[j].order;
+                    selected_list.splice(position, 1, aux_list[i]);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 };
