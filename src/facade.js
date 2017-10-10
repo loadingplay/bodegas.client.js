@@ -360,12 +360,45 @@ EcommerceFacade.prototype.loadVariants = function()
         this.options.variants.variant_template,
         this.options.variants.value_template
     );
+    this.variants_view.product_sku = product_sku;
 
     self.variants.getCombination(
         product_sku,
         function(variants)
         {
-            console.log(variants);
+            var sku_list = [];
+
+            for (var i = 0; i < variants.length; i++)
+            {
+                sku_list.push(variants[i].sku);
+            }
+
+            var cellar_id = 0;
+
+            jQuery.get(
+                Utils.getURL('v1', ['cellar', self.variants.site_name]),
+                {},
+                function(response)
+                {
+                    cellar_id = response.cellar.id;
+
+                    jQuery.get(
+                        Utils.getURL('v1', ['cellar', cellar_id, 'product/']),
+                        {
+                            'sku_list': sku_list.join(",")
+                        },
+                        function(response)
+                        {
+                            for (var i = 0; i < response.products.length; i++)
+                            {
+                                var sku = response.products[i].product_sku;
+                                var stock = response.products[i].balance_units;
+                                self.variants_view.productStock[sku] = stock;
+                            }
+                        }
+                    );
+                }
+            );
         }
     );
 

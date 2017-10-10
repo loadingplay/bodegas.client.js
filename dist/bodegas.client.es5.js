@@ -2639,9 +2639,30 @@ EcommerceFacade.prototype.loadVariants = function () {
     // ensure templates and target
     this.variants_view.$target = this.options.variants.container;
     this.variants_view.setTemplates(this.options.variants.variant_template, this.options.variants.value_template);
+    this.variants_view.product_sku = product_sku;
 
     self.variants.getCombination(product_sku, function (variants) {
-        console.log(variants);
+        var sku_list = [];
+
+        for (var i = 0; i < variants.length; i++) {
+            sku_list.push(variants[i].sku);
+        }
+
+        var cellar_id = 0;
+
+        jQuery.get(Utils.getURL('v1', ['cellar', self.variants.site_name]), {}, function (response) {
+            cellar_id = response.cellar.id;
+
+            jQuery.get(Utils.getURL('v1', ['cellar', cellar_id, 'product/']), {
+                'sku_list': sku_list.join(",")
+            }, function (response) {
+                for (var i = 0; i < response.products.length; i++) {
+                    var sku = response.products[i].product_sku;
+                    var stock = response.products[i].balance_units;
+                    self.variants_view.productStock[sku] = stock;
+                }
+            });
+        });
     });
 
     // load variants from database
@@ -3479,7 +3500,7 @@ Variants.prototype.getValues = function (product_sku, variant_name, cb) {
  */
 Variants.prototype.getCombination = function (product_sku, cb) {
     var self = this;
-    jQuery.get(Utils.getURL('v1', ['variant', 'list']), {
+    jQuery.get(Utils.getURL('v1', ['variant', 'combination']), {
         'sku': product_sku,
         'namespace': this.site_name + '_' + product_sku
     }, function (v) {
@@ -4785,6 +4806,8 @@ var VariantsView = function VariantsView($target) {
     this.active_class = 'value-active';
 
     this.selected_values = [];
+    this.productStock = {};
+    this.product_sku = "";
 
     // triggers
     this.initEvents();
@@ -4812,7 +4835,9 @@ VariantsView.prototype.initEvents = function () {
         $(this).addClass(self.active_class);
 
         if (self.isValidCombination()) {
-            $(self.$target).trigger('combination:selected', [self.getSelectedCombination()]);
+            var sku = self.product_sku + "-" + self.getSelectedCombination();
+
+            $(self.$target).trigger('combination:selected', [self.getSelectedCombination(), self.productStock[sku] > 0]);
         }
     };
     $(document).on('click', '.variant-value', valueClick);
@@ -4873,6 +4898,7 @@ VariantsView.prototype.renderValues = function (values) {
 VariantsView.prototype.renderVariants = function (variants) {
     var variant_builder = [];
     for (var i = 0; i < variants.length; i++) {
+        this.variants[i].order = i;
         var rendered = Utils.render(this.variant_template, {
             'variant_name': variants[i].variant_name,
             'values': this.renderValues(variants[i].values)
@@ -4912,7 +4938,27 @@ VariantsView.prototype.getSelectedCombination = function () {
  * check if all variants have a selected value
  */
 VariantsView.prototype.isValidCombination = function () {
-    return this.variants.length === this.selected_values.length;
+    var variant_list = this.variants;
+    var selected_list = this.selected_values;
+
+    if (variant_list.length === selected_list.length) {
+        var aux_list = $.extend(true, {}, selected_list);
+
+        for (var i = 0; i < variant_list.length; i++) {
+            var variant_name = aux_list[i].variant;
+
+            for (var j = 0; j < variant_list.length; j++) {
+                if (variant_name === variant_list[j].variant_name) {
+                    var position = variant_list[j].order;
+                    selected_list.splice(position, 1, aux_list[i]);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 };
 
 /*jshint esversion: 6 */
