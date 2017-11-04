@@ -794,6 +794,9 @@ EcommerceFacade.prototype.loadVariants = function()
                                 var stock = response.products[i].balance_units;
                                 self.variants_view.productStock[sku] = stock;
                             }
+
+                            // trigger variant stock loaded
+                            self.triggerVarianSKULoaded(self.variants_view.productStock);
                         }
                     );
                 }
@@ -873,6 +876,16 @@ EcommerceFacade.prototype.triggerProductsLoaded = function(products)
 EcommerceFacade.prototype.triggerVariantsLoaded = function(variants)
 {
     $(this.options.container).trigger('variants.loaded', [variants]);
+};
+
+
+/**
+ * this method is executed once all variants are loaded within skus inside
+ * @param  {string} variants    dictionary with variants and stock
+ */
+EcommerceFacade.prototype.triggerVarianSKULoaded = function(variants) 
+{
+    $(this.options.container).trigger('variants.stock.loaded')
 };
 
 /**
