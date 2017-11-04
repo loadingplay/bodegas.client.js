@@ -2663,7 +2663,7 @@ EcommerceFacade.prototype.loadVariants = function () {
                 }
 
                 // trigger variant stock loaded
-                self.triggerVarianSKULoaded(self.variants_view.productStock);
+                self.triggerVarianStockLoaded(self.variants_view.productStock);
             });
         });
     });
@@ -2725,8 +2725,8 @@ EcommerceFacade.prototype.triggerVariantsLoaded = function (variants) {
  * this method is executed once all variants are loaded within skus inside
  * @param  {string} variants    dictionary with variants and stock
  */
-EcommerceFacade.prototype.triggerVarianSKULoaded = function (variants) {
-    $(this.options.container).trigger('variants.stock.loaded');
+EcommerceFacade.prototype.triggerVarianStockLoaded = function (variants) {
+    $(this.options.container).trigger('variants_stock_loaded', [variants]);
 };
 
 /**
