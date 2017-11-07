@@ -5327,7 +5327,7 @@ var Cart = function (_Module) {
         key: "clearCart",
         value: function clearCart(callback) {
             this.model = [];
-            this.cart_model.saveCart();
+            this.cart_model.saveCart(callback);
             // this.saveModel(callback);
         }
     }, {
