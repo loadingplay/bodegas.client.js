@@ -365,7 +365,7 @@ class Cart extends Module
     clearCart(callback)
     {
         this.model = [];
-        this.cart_model.saveCart();
+        this.cart_model.saveCart(callback);
         // this.saveModel(callback);
     }
 }
