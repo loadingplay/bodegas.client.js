@@ -190,7 +190,7 @@ infinite_scroll | If is true, the product list is going t
 onLoad | You can make functions that works when the product is loading to the page
 ```
 
-## Ad to cart
+# Ad to cart
 
 ```Javascript
 // you can send attibuttes to the cart
@@ -210,7 +210,7 @@ onLoad | You can make functions that works when the product is loading to the pa
 </button>
 ```
 
-### Parameters
+## Parameters
 
 ```
 Parameter | Description
@@ -224,4 +224,68 @@ product-id | id of the product
 product-img | image of the product
 
 You can also put any of the elements of the product to fill the cart
+```
+
+#Shopping Cart
+
+```
+// you can send json data to show the shopping cart
+
+//Base template for the cart
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Cant</th>
+        </tr>
+    </thead>
+    <tbody class="shopping-cart">
+    </tbody>
+</table>
+
+//Script to show the products
+
+<script type="text/x-template" id="shopping-cart-product">
+    <tr>
+        <td>{{! name }}</td>
+        <td>{{! price }}</td>
+        <td>
+            <a class="remove-one" product-id="{{! id }}">-</a>
+            {{! quantity }}
+            <a class="add-one" product-id="{{! id }}">+</a>
+        </td>
+        <td>
+            <a cart-id="{{! id }}">
+                <i class="icon-close"></i>
+            </a>
+        </td>
+    </tr>
+</script>
+<script type="text/x-template" id="shopping-cart-total">
+        <tr>
+            <td>Total:</td> 
+            <td >{{! total|money }}</td>
+            <td></td>
+        </tr>
+</script>
+<script type="text/x-template" id="shopping-cart-units-total" >
+    <span> {{! units_total }}</span>
+</script>
+<script type="text/x-template" id="shopping-cart-checkout-form" >
+    <form action="{{! checkout_url}}" method="get" novalidate id="shipping-form" onclick="return Validate()">
+        <input name="site_id" class="form-control required" type="hidden" value="{{! site_id}}">
+        <input name="cart_id" class="form-control required" type="hidden" value="{{! cart_id}}">
+        <input name="origin" class="form-control required" type="hidden" value="{{ site.name }}">
+        <div class="form-group text-center">
+             <button type="submit" class="btn bn">PAGAR</button>
+        </div>
+    </form>
+</script>
+```
+##Parameters
+
+```
+
 ```
