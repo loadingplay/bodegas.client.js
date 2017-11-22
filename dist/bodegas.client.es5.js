@@ -3699,11 +3699,14 @@ var CartProductListModel = function (_Model) {
             // get product images
             img = img === "" ? this.getProductImage(sku, combination) : img;
 
-            var images = [];
             var im = [];
-            for (var j = 0; j < 3; j++) {
-                images.push(img);
-            }
+            var images = {
+                'url': img,
+                'thumb_1': img,
+                'thumb_200': img,
+                'thumb_500': img
+            };
+
             im.push(images);
 
             // doenst add quantity here, so dont cut the execution
