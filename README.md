@@ -257,7 +257,7 @@ You can also put any of the elements of the product to fill the cart
             <a class="add-one" product-id="{{! id }}">+</a>
         </td>
         <td>
-            <a cart-id="{{! id }}">
+            <a class="borrarproducto" cart-id="{{! id }}">
                 <i class="icon-close"></i>
             </a>
         </td>
@@ -287,5 +287,28 @@ You can also put any of the elements of the product to fill the cart
 ##Parameters
 
 ```
+Parameter | Description
+--------- | -----------
+shopping-cart | This class show the scripts of the shopping cart wherever the class is declared
+```
 
+###Script Parameters
+
+```
+Parameter | Description
+--------- | -----------
+{{! name }} | it shows the name of the product
+{{! price }} | it shows the price of the product
+remove-one | this class allows remove one of the quantity of the product, this class needs to be next to the product-id to specify the product
+product-id | this attribute shows the id of the product
+{{! id }} | it shows the product id
+add-one | add one of the quantity of the product, this class needs to be next to the product-id to specify the product
+borrarproducto | this class alows to remove the product from the cart, it needs to be next to the cart-id 
+cart-id | it shows the product id
+{{! total|money }} | it shows the total of the shopping cart in money format
+{{! units_total }} | it shows the total of the products that you are going to buy
+{{! checkout_url}} | it shows the chackout url that is going to open when the subbmit button if its pressed 
+site_id | it shows the id of the site, the value is already configured
+cart_id | this is the id of the cart that automaticlly appears on the checkout
+origin | it shows the origin of the cart, it is the name of the site
 ```
