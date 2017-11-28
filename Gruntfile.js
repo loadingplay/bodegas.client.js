@@ -77,7 +77,7 @@
             uglify: {
                 my_target: {
                     files: {
-                        'dist/bodegas.client.min.js': ['dist/bodegas.client.js']
+                        'dist/bodegas.client.min.js': ['dist/bodegas.client.es5.js']
                     }
                 }
             },
@@ -91,27 +91,6 @@
                     }
                 }
             },
-
-            // es6transpiler: {
-            //     dist: {
-            //         files: {
-            //             'dist/bodegas.client.js': 'dist/bodegas.client.es5.js'
-            //         }
-            //     }
-            // },
-
-            // transpile: {
-            //     main: {
-            //         type: "cjs", // or "amd" or "yui"
-            //         files: [{
-            //             expand: true,
-            //             cwd: './',
-            //             src: ['dist/bodegas.client.js'],
-            //             dest: 'dist/bodegas.client.es5.js'
-            //         }]
-            //     }
-            // }
-
             "babel": {
                 options: {
                     sourceMap: true
@@ -134,7 +113,7 @@
         grunt.loadNpmTasks('grunt-babel');
 
         grunt.registerTask('tests', ['build', 'connect', 'qunit']);
-        grunt.registerTask('build', ['concat', 'babel']);
+        grunt.registerTask('build', ['concat', 'babel', 'uglify']);
         grunt.registerTask('default', ['concat', 'express', 'watch']);
     };
 })();
