@@ -3333,8 +3333,9 @@ class Cart extends Module
         this.total_view.setClickAction('lp-cart-add-one');
         this.total_view.setClickAction('lp-cart-remove-one');
         this.total_view.setClickAction('lp-cart-remove');
+        this.total_view.setClickAction('lp-discount-button');
 
-        this.total_view.setEnterAction('lp-discount');
+        this.total_view.setEnterAction('lp-discount-input');
 
         this.cart_model.loadProducts();
 
@@ -3404,7 +3405,20 @@ class Cart extends Module
             this.cart_model.removeProduct(data);
         }
 
-        if (tag_name === "lp-discount")
+        if (tag_name === "lp-discount-button")
+        {
+            var list = $("[lp-discount-input]");
+
+            for (var i = 0; i < list.length; i++)
+           {
+               if ( $(list[i]).val() != "" )
+                    data = $(list[i]).val()
+           }
+
+            this.cart_model.getDiscount(data, this.site_name);
+        }
+
+        if (tag_name === "lp-discount-input")
         {
             this.cart_model.getDiscount(data, this.site_name);
         }
