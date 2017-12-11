@@ -208,7 +208,7 @@ var EcommerceFacade = function(options)
 
     this.page = 1;
     this.options = options;
-    this.ecommerce = new BodegasClient(this.options.checkout_url);
+    this.ecommerce = new BodegasClient(this.options);
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);

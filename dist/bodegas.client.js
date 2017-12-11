@@ -278,16 +278,17 @@ GhostAnimation.prototype.init = function()
 
 'use strict';
 
-var BodegasClient = function(checkout_url)
+var BodegasClient = function(options)
 {
     this.app_public = '1000';
     this.site_id = 2;
+    this.site_name = options.site_name === undefined ? '' : options.site_name
     this.tag = null;
-    this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+    this.checkout_url = options.checkout_url === undefined ? '' : options.checkout_url;
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new Cart(this.site_id, this.checkout_url);
+    this.cart = new Cart(this.site_id, this.checkout_url, this.site_name);
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback)
@@ -607,7 +608,7 @@ var EcommerceFacade = function(options)
 
     this.page = 1;
     this.options = options;
-    this.ecommerce = new BodegasClient(this.options.checkout_url);
+    this.ecommerce = new BodegasClient(this.options);
     this.view  = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
@@ -1123,6 +1124,20 @@ class View extends LPObject
             var $el = $(e.currentTarget);
             var data = $el.attr(action_tag);
             this.view_data_provider.performAction(action_tag, data, $el);
+        });
+    }
+
+    setEnterAction(action_tag)
+    {
+        $(document).on('keypress', '[' + action_tag + ']', (e) =>
+        {
+            if (e.keyCode === 13)
+            {
+                e.preventDefault();
+                var $el = $(e.currentTarget);
+                var data = $el.val();
+                this.view_data_provider.performAction(action_tag, data, $el);
+            }
         });
     }
 
@@ -1775,6 +1790,8 @@ class CartProductListModel extends Model
         this.extra_info = extra_info;
         this.guid = this.generateGUID();
         this.products = [];
+        this.percentage = 0;
+        this.discount_code = "";
     }
 
     loadProducts()
@@ -1903,6 +1920,26 @@ class CartProductListModel extends Model
         }
     }
 
+    getDiscount(code, site_name)
+    {
+        if (isNaN(code))
+        {
+            this.get('v1/discount/' + code, {"site_name": site_name}).then((response) =>
+            {
+                // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
+                if (response.status === "success" && response.discounts.length != 0)
+                {
+                    if (response.discounts["activate"] === true)
+                    {
+                        this.percentage = response.discounts["percentage"];
+                        this.discount_code = response.discounts["code"];
+                        this.modelUpdate()
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * send cart data throw post to API
      * @param  {Function} [callback=$.noop] callback function
@@ -1986,7 +2023,7 @@ class CartProductListModel extends Model
         this.saveCart();
     }
 
-    getTotal()
+    getProductTotal()
     {
         var total = 0;
         for (var i = 0; i < this.products.length; i++)
@@ -2031,6 +2068,16 @@ class CartProductListModel extends Model
     {
         // implement this method outside
         return '';
+    }
+
+    getDiscountCode()
+    {
+        return this.discount_code;
+    }
+
+    getPercentage()
+    {
+        return this.percentage;
     }
 
 }
@@ -3244,12 +3291,13 @@ VariantsView.prototype.isValidCombination = function()
 
 class Cart extends Module
 {
-    constructor(site_id, checkout_url)
+    constructor(site_id, checkout_url, site_name)
     {
         super();
 
         this.checkout_url = checkout_url === undefined ? '' : checkout_url;
         this.site_id = site_id === undefined ? 2 : site_id;
+        this.site_name = site_name === undefined ? "" : site_name;
 
         this.onLoadCart = $.noop;
         this.onSaveModel = $.noop;
@@ -3285,6 +3333,9 @@ class Cart extends Module
         this.total_view.setClickAction('lp-cart-add-one');
         this.total_view.setClickAction('lp-cart-remove-one');
         this.total_view.setClickAction('lp-cart-remove');
+        this.total_view.setClickAction('lp-discount-button');
+
+        this.total_view.setEnterAction('lp-discount-input');
 
         this.cart_model.loadProducts();
 
@@ -3353,6 +3404,24 @@ class Cart extends Module
         {
             this.cart_model.removeProduct(data);
         }
+
+        if (tag_name === "lp-discount-button")
+        {
+            var list = $("[lp-discount-input]");
+
+            for (var i = 0; i < list.length; i++)
+           {
+               if ( $(list[i]).val() != "" )
+                    data = $(list[i]).val()
+           }
+
+            this.cart_model.getDiscount(data, this.site_name);
+        }
+
+        if (tag_name === "lp-discount-input")
+        {
+            this.cart_model.getDiscount(data, this.site_name);
+        }
     }
 
     onViewRequestData(view)
@@ -3368,13 +3437,16 @@ class Cart extends Module
         )
         {
             return {
+                'subtotal': this.getSubTotal(),
                 'total' : this.getTotal(),
                 'shipping_cost': this.shipping_cost,
                 'units_total' : this.getUnitsTotal(),
                 'upp_total' : this.getUPPTotal(),
                 'checkout_url' : this.getCheckoutUrl(),
                 'site_id' : this.getSiteId(),
-                'cart_id' : this.getGUID()
+                'cart_id' : this.getGUID(),
+                'discount_code' : this.getDiscountCode(),
+                'percentage' : this.getPercentage()
             };
         }
     }
@@ -3499,12 +3571,27 @@ class Cart extends Module
     //     return false;
     // }
 
-    getTotal()
+    getSubTotal()
     {
         var total = 0;
 
-        total += this.cart_model.getTotal();
+        total += this.cart_model.getProductTotal();
+
+        return total;
+    }
+
+    getTotal()
+    {
+        var total = 0;
+        var percentage = 0;
+
+        total += this.cart_model.getProductTotal();
         total += this.shipping_cost;
+
+        percentage = this.getPercentage();
+
+        if (percentage > 0)
+            total = total * (100 - percentage) / 100;
 
         return total;
     }
@@ -3604,5 +3691,15 @@ class Cart extends Module
         this.model = [];
         this.cart_model.saveCart(callback);
         // this.saveModel(callback);
+    }
+
+    getDiscountCode()
+    {
+        return this.cart_model.getDiscountCode();
+    }
+
+    getPercentage()
+    {
+        return this.cart_model.getPercentage();
     }
 }
