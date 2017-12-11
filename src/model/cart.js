@@ -53,6 +53,8 @@ class CartProductListModel extends Model
         this.extra_info = extra_info;
         this.guid = this.generateGUID();
         this.products = [];
+        this.percentage = 0;
+        this.discount_code = "";
     }
 
     loadProducts()
@@ -181,6 +183,26 @@ class CartProductListModel extends Model
         }
     }
 
+    getDiscount(code, site_name)
+    {
+        if (isNaN(code))
+        {
+            this.get('v1/discount/' + code, {"site_name": site_name}).then((response) =>
+            {
+                // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
+                if (response.status === "success" && response.discounts.length != 0)
+                {
+                    if (response.discounts["activate"] === true)
+                    {
+                        this.percentage = response.discounts["percentage"];
+                        this.discount_code = response.discounts["code"];
+                        this.modelUpdate()
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * send cart data throw post to API
      * @param  {Function} [callback=$.noop] callback function
@@ -264,7 +286,7 @@ class CartProductListModel extends Model
         this.saveCart();
     }
 
-    getTotal()
+    getProductTotal()
     {
         var total = 0;
         for (var i = 0; i < this.products.length; i++)
@@ -309,6 +331,16 @@ class CartProductListModel extends Model
     {
         // implement this method outside
         return '';
+    }
+
+    getDiscountCode()
+    {
+        return this.discount_code;
+    }
+
+    getPercentage()
+    {
+        return this.percentage;
     }
 
 }

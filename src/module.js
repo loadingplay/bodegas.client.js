@@ -225,6 +225,20 @@ class View extends LPObject
         });
     }
 
+    setEnterAction(action_tag)
+    {
+        $(document).on('keypress', '[' + action_tag + ']', (e) =>
+        {
+            if (e.keyCode === 13)
+            {
+                e.preventDefault();
+                var $el = $(e.currentTarget);
+                var data = $el.val();
+                this.view_data_provider.performAction(action_tag, data, $el);
+            }
+        });
+    }
+
     /**
      * change current template
      * @param {string} template html template
