@@ -67,9 +67,10 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         if ($.cookie('shopping-cart')) // Check that shopping-cart cookie is created
         {
             column = "random(" + $.cookie('shopping-cart') + ")";
-        }else
+        }
+        else
         {
-            column = "random(000000-000-000-000-000000)"; // Default value for random and the cookie doesn't exists or can't be retrieved
+            column = "random(000000-000-000-000-000000)"; // Default value for random if the cookie doesn't exists or can't be read
         }
     }
 
