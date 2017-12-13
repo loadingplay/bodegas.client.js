@@ -62,6 +62,17 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         term = search_query;
     }
 
+    if (column === "random") // Check for random in sorting column
+    {
+        if ($.cookie('shopping-cart')) // Check that shopping-cart cookie is created
+        {
+            column = "random(" + $.cookie('shopping-cart') + ")";
+        }else
+        {
+            column = "random(000000-000-000-000-000000)"; // Default value for random and the cookie doesn't exists or can't be retrieved
+        }
+    }
+
     //@todo: Add validation for correct spelling of column sort word.
 
     jQuery.post(Utils.getURLWithoutParam('product/search'),
