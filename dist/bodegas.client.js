@@ -278,7 +278,7 @@ GhostAnimation.prototype.init = function()
 
 'use strict';
 
-var BodegasClient = function(options)
+var BodegasClient = function(options={})
 {
     this.app_public = '1000';
     this.site_id = 2;
