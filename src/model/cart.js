@@ -197,8 +197,13 @@ class CartProductListModel extends Model
                         this.percentage = response.discounts["percentage"];
                         this.discount_code = response.discounts["code"];
                         this.modelUpdate()
+                        return
                     }
                 }
+                this.percentage = 0;
+                this.discount_code = "";
+                this.modelUpdate();
+                $(".discount-message").html("Código inválido");
             });
         }
     }
