@@ -225,6 +225,7 @@ class View extends LPObject
         });
     }
 
+
     setEnterAction(action_tag)
     {
         $(document).on('keypress', '[' + action_tag + ']', (e) =>

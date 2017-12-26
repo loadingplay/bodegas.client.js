@@ -1127,6 +1127,7 @@ class View extends LPObject
         });
     }
 
+
     setEnterAction(action_tag)
     {
         $(document).on('keypress', '[' + action_tag + ']', (e) =>
@@ -3564,6 +3565,29 @@ class Cart extends Module
     {
         return this.cart_model.products;
     }
+
+    /**
+     * @deprecated moved to model
+     * check if product exists
+     * @param  {int} id product id
+     * @param  {string}  sku also unique identifier (optional)
+     * @return {boolean}    true if product exists, false otherwise
+     */
+    // productExist(id, sku)
+    // {
+    //     var pid = parseInt(id);
+    //     var final_sku = sku === undefined ? '':sku;
+    //     // get the product from model, if exist or create from database
+    //     for (var i = 0; i < this.model.length; i++)
+    //     {
+    //         if (parseInt(this.model[i].id) === pid &&
+    //             final_sku === this.model[i].sku )
+    //         {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     getSubTotal()
     {

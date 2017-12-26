@@ -2260,15 +2260,18 @@ GhostAnimation.prototype.init = function () {
 
 'use strict';
 
-var BodegasClient = function BodegasClient(checkout_url) {
+var BodegasClient = function BodegasClient() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
     this.app_public = '1000';
     this.site_id = 2;
+    this.site_name = options.site_name === undefined ? '' : options.site_name;
     this.tag = null;
-    this.checkout_url = checkout_url === undefined ? '' : checkout_url;
+    this.checkout_url = options.checkout_url === undefined ? '' : options.checkout_url;
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new Cart(this.site_id, this.checkout_url);
+    this.cart = new Cart(this.site_id, this.checkout_url, this.site_name);
 };
 
 BodegasClient.prototype.authenticate = function (app_public, callback) {
@@ -2538,7 +2541,7 @@ var EcommerceFacade = function EcommerceFacade(options) {
 
     this.page = 1;
     this.options = options;
-    this.ecommerce = new BodegasClient(this.options.checkout_url);
+    this.ecommerce = new BodegasClient(this.options);
     this.view = new ProductListView(this.options.container);
     this.view.no_products_template = this.options.no_products_template;
     this.product_view = new ProductDetailView(this.options.container);
@@ -2998,6 +3001,20 @@ var View = function (_LPObject2) {
                 _this5.view_data_provider.performAction(action_tag, data, $el);
             });
         }
+    }, {
+        key: "setEnterAction",
+        value: function setEnterAction(action_tag) {
+            var _this6 = this;
+
+            $(document).on('keypress', '[' + action_tag + ']', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    var $el = $(e.currentTarget);
+                    var data = $el.val();
+                    _this6.view_data_provider.performAction(action_tag, data, $el);
+                }
+            });
+        }
 
         /**
          * change current template
@@ -3044,7 +3061,7 @@ var Module = function () {
      * @return {[type]} [description]
      */
     function Module() {
-        var _this6 = this;
+        var _this7 = this;
 
         _classCallCheck(this, Module);
 
@@ -3056,16 +3073,16 @@ var Module = function () {
         this.view_data_provider = new ViewDataProvider();
 
         this.model_provider.onAjaxRespond = function (endpoint, data, method) {
-            _this6.onModelLoaded(endpoint, data, method);
+            _this7.onModelLoaded(endpoint, data, method);
         };
         this.model_provider.onModelUpdate = function (model) {
-            _this6.onModelUpdate(model);
+            _this7.onModelUpdate(model);
         };
         this.view_data_provider.getData = function (view) {
-            return _this6.onViewRequestData(view);
+            return _this7.onViewRequestData(view);
         };
         this.view_data_provider.performAction = function (tag_name, data, $element) {
-            _this6.onActionPerformed(tag_name, data, $element);
+            _this7.onActionPerformed(tag_name, data, $element);
         };
 
         this.init();
@@ -3200,6 +3217,16 @@ Product.prototype._list = function (page, items_per_page, ignore_stock, callback
     } else if (search_query !== undefined) {
         term = search_query;
     }
+
+    if (column === "random") // Check for random in sorting column
+        {
+            if ($.cookie('shopping-cart')) // Check that shopping-cart cookie is created
+                {
+                    column = "random(" + $.cookie('shopping-cart') + ")";
+                } else {
+                column = "random(000000-000-000-000-000000)"; // Default value for random if the cookie doesn't exists or can't be read
+            }
+        }
 
     //@todo: Add validation for correct spelling of column sort word.
 
@@ -3593,26 +3620,28 @@ var CartProductListModel = function (_Model) {
     function CartProductListModel(extra_info) {
         _classCallCheck(this, CartProductListModel);
 
-        var _this7 = _possibleConstructorReturn(this, (CartProductListModel.__proto__ || Object.getPrototypeOf(CartProductListModel)).call(this));
+        var _this8 = _possibleConstructorReturn(this, (CartProductListModel.__proto__ || Object.getPrototypeOf(CartProductListModel)).call(this));
 
-        _this7.extra_info = extra_info;
-        _this7.guid = _this7.generateGUID();
-        _this7.products = [];
-        return _this7;
+        _this8.extra_info = extra_info;
+        _this8.guid = _this8.generateGUID();
+        _this8.products = [];
+        _this8.percentage = 0;
+        _this8.discount_code = "";
+        return _this8;
     }
 
     _createClass(CartProductListModel, [{
         key: "loadProducts",
         value: function loadProducts() {
-            var _this8 = this;
+            var _this9 = this;
 
             this.get('v1/cart/' + this.guid).then(function (cart_products) {
                 if (cart_products.cart.expired) {
                     $.removeCookie('shopping-cart');
-                    _this8.guid = _this8.generateGUID();
+                    _this9.guid = _this9.generateGUID();
                     // onload([]);
                 }
-                _this8.createFromArray(cart_products.cart.items);
+                _this9.createFromArray(cart_products.cart.items);
                 // self.view.render();
 
                 // onload(cart_products);
@@ -3731,6 +3760,29 @@ var CartProductListModel = function (_Model) {
                 this.saveCart(callback);
             }
         }
+    }, {
+        key: "getDiscount",
+        value: function getDiscount(code, site_name) {
+            var _this10 = this;
+
+            if (isNaN(code)) {
+                this.get('v1/discount/' + code, { "site_name": site_name }).then(function (response) {
+                    // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
+                    if (response.status === "success" && response.discounts.length != 0) {
+                        if (response.discounts["activate"] === true) {
+                            _this10.percentage = response.discounts["percentage"];
+                            _this10.discount_code = response.discounts["code"];
+                            _this10.modelUpdate();
+                            return;
+                        }
+                    }
+                    _this10.percentage = 0;
+                    _this10.discount_code = "";
+                    _this10.modelUpdate();
+                    $(".discount-message").html("Código inválido");
+                });
+            }
+        }
 
         /**
          * send cart data throw post to API
@@ -3815,8 +3867,8 @@ var CartProductListModel = function (_Model) {
             this.saveCart();
         }
     }, {
-        key: "getTotal",
-        value: function getTotal() {
+        key: "getProductTotal",
+        value: function getProductTotal() {
             var total = 0;
             for (var i = 0; i < this.products.length; i++) {
                 total += this.products[i].total;
@@ -3859,6 +3911,16 @@ var CartProductListModel = function (_Model) {
             // implement this method outside
             return '';
         }
+    }, {
+        key: "getDiscountCode",
+        value: function getDiscountCode() {
+            return this.discount_code;
+        }
+    }, {
+        key: "getPercentage",
+        value: function getPercentage() {
+            return this.percentage;
+        }
     }]);
 
     return CartProductListModel;
@@ -3876,10 +3938,10 @@ var CartProductListView = function (_View) {
     function CartProductListView() {
         _classCallCheck(this, CartProductListView);
 
-        var _this9 = _possibleConstructorReturn(this, (CartProductListView.__proto__ || Object.getPrototypeOf(CartProductListView)).call(this, $('.shopping-cart')));
+        var _this11 = _possibleConstructorReturn(this, (CartProductListView.__proto__ || Object.getPrototypeOf(CartProductListView)).call(this, $('.shopping-cart')));
 
-        _this9.setTemplate($('#shopping-cart-product').html());
-        return _this9;
+        _this11.setTemplate($('#shopping-cart-product').html());
+        return _this11;
     }
 
     return CartProductListView;
@@ -3891,11 +3953,11 @@ var CartTotalView = function (_View2) {
     function CartTotalView() {
         _classCallCheck(this, CartTotalView);
 
-        var _this10 = _possibleConstructorReturn(this, (CartTotalView.__proto__ || Object.getPrototypeOf(CartTotalView)).call(this, $('.shopping-cart')));
+        var _this12 = _possibleConstructorReturn(this, (CartTotalView.__proto__ || Object.getPrototypeOf(CartTotalView)).call(this, $('.shopping-cart')));
 
-        _this10.setTemplate($('#shopping-cart-total').html());
-        _this10.append = true;
-        return _this10;
+        _this12.setTemplate($('#shopping-cart-total').html());
+        _this12.append = true;
+        return _this12;
     }
 
     return CartTotalView;
@@ -3907,10 +3969,10 @@ var ExternalCartTotalView = function (_View3) {
     function ExternalCartTotalView() {
         _classCallCheck(this, ExternalCartTotalView);
 
-        var _this11 = _possibleConstructorReturn(this, (ExternalCartTotalView.__proto__ || Object.getPrototypeOf(ExternalCartTotalView)).call(this, $('.total_cart')));
+        var _this13 = _possibleConstructorReturn(this, (ExternalCartTotalView.__proto__ || Object.getPrototypeOf(ExternalCartTotalView)).call(this, $('.total_cart')));
 
-        _this11.setTemplate($('#total_cart_template').html());
-        return _this11;
+        _this13.setTemplate($('#total_cart_template').html());
+        return _this13;
     }
 
     return ExternalCartTotalView;
@@ -3922,10 +3984,10 @@ var UnitsTotalView = function (_View4) {
     function UnitsTotalView() {
         _classCallCheck(this, UnitsTotalView);
 
-        var _this12 = _possibleConstructorReturn(this, (UnitsTotalView.__proto__ || Object.getPrototypeOf(UnitsTotalView)).call(this, $('.units-total')));
+        var _this14 = _possibleConstructorReturn(this, (UnitsTotalView.__proto__ || Object.getPrototypeOf(UnitsTotalView)).call(this, $('.units-total')));
 
-        _this12.setTemplate($('#shopping-cart-units-total').html());
-        return _this12;
+        _this14.setTemplate($('#shopping-cart-units-total').html());
+        return _this14;
     }
 
     return UnitsTotalView;
@@ -3937,10 +3999,10 @@ var CheckoutFormView = function (_View5) {
     function CheckoutFormView() {
         _classCallCheck(this, CheckoutFormView);
 
-        var _this13 = _possibleConstructorReturn(this, (CheckoutFormView.__proto__ || Object.getPrototypeOf(CheckoutFormView)).call(this, $('.checkout-form')));
+        var _this15 = _possibleConstructorReturn(this, (CheckoutFormView.__proto__ || Object.getPrototypeOf(CheckoutFormView)).call(this, $('.checkout-form')));
 
-        _this13.setTemplate($('#shopping-cart-checkout-form').html());
-        return _this13;
+        _this15.setTemplate($('#shopping-cart-checkout-form').html());
+        return _this15;
     }
 
     return CheckoutFormView;
@@ -4985,52 +5047,56 @@ VariantsView.prototype.isValidCombination = function () {
 var Cart = function (_Module) {
     _inherits(Cart, _Module);
 
-    function Cart(site_id, checkout_url) {
+    function Cart(site_id, checkout_url, site_name) {
         _classCallCheck(this, Cart);
 
-        var _this14 = _possibleConstructorReturn(this, (Cart.__proto__ || Object.getPrototypeOf(Cart)).call(this));
+        var _this16 = _possibleConstructorReturn(this, (Cart.__proto__ || Object.getPrototypeOf(Cart)).call(this));
 
-        _this14.checkout_url = checkout_url === undefined ? '' : checkout_url;
-        _this14.site_id = site_id === undefined ? 2 : site_id;
+        _this16.checkout_url = checkout_url === undefined ? '' : checkout_url;
+        _this16.site_id = site_id === undefined ? 2 : site_id;
+        _this16.site_name = site_name === undefined ? "" : site_name;
 
-        _this14.onLoadCart = $.noop;
-        _this14.onSaveModel = $.noop;
+        _this16.onLoadCart = $.noop;
+        _this16.onSaveModel = $.noop;
 
-        _this14.shipping_cost = 0;
+        _this16.shipping_cost = 0;
 
-        _this14.extra_info = new ExtraInfo(1);
+        _this16.extra_info = new ExtraInfo(1);
 
         // models
-        _this14.cart_model = new CartProductListModel(_this14.extra_info);
+        _this16.cart_model = new CartProductListModel(_this16.extra_info);
 
         // views
-        _this14.product_view = new CartProductListView();
-        _this14.total_view = new CartTotalView();
-        _this14.total_extern_view = new ExternalCartTotalView();
-        _this14.units_total_view = new UnitsTotalView();
-        _this14.checkout_form_view = new CheckoutFormView();
+        _this16.product_view = new CartProductListView();
+        _this16.total_view = new CartTotalView();
+        _this16.total_extern_view = new ExternalCartTotalView();
+        _this16.units_total_view = new UnitsTotalView();
+        _this16.checkout_form_view = new CheckoutFormView();
 
         // google analytics
-        _this14.is_ga_enabled = true;
+        _this16.is_ga_enabled = true;
 
         // add models and views
-        _this14.addModel('product-list', _this14.cart_model);
+        _this16.addModel('product-list', _this16.cart_model);
 
-        _this14.addView('product-list-view', _this14.product_view);
-        _this14.addView('total-view', _this14.total_view);
-        _this14.addView('total-extern-view', _this14.total_extern_view);
-        _this14.addView('units-total-view', _this14.units_total_view);
-        _this14.addView('checkout-form-view', _this14.checkout_form_view);
+        _this16.addView('product-list-view', _this16.product_view);
+        _this16.addView('total-view', _this16.total_view);
+        _this16.addView('total-extern-view', _this16.total_extern_view);
+        _this16.addView('units-total-view', _this16.units_total_view);
+        _this16.addView('checkout-form-view', _this16.checkout_form_view);
 
         // add view actions
-        _this14.product_view.setClickAction('lp-cart-add');
-        _this14.total_view.setClickAction('lp-cart-add-one');
-        _this14.total_view.setClickAction('lp-cart-remove-one');
-        _this14.total_view.setClickAction('lp-cart-remove');
+        _this16.product_view.setClickAction('lp-cart-add');
+        _this16.total_view.setClickAction('lp-cart-add-one');
+        _this16.total_view.setClickAction('lp-cart-remove-one');
+        _this16.total_view.setClickAction('lp-cart-remove');
+        _this16.total_view.setClickAction('lp-discount-button');
 
-        _this14.cart_model.loadProducts();
+        _this16.total_view.setEnterAction('lp-discount-input');
 
-        return _this14;
+        _this16.cart_model.loadProducts();
+
+        return _this16;
     }
 
     _createClass(Cart, [{
@@ -5084,6 +5150,20 @@ var Cart = function (_Module) {
             if (tag_name === "lp-cart-remove") {
                 this.cart_model.removeProduct(data);
             }
+
+            if (tag_name === "lp-discount-button") {
+                var list = $("[lp-discount-input]");
+
+                for (var i = 0; i < list.length; i++) {
+                    if ($(list[i]).val() != "") data = $(list[i]).val();
+                }
+
+                this.cart_model.getDiscount(data, this.site_name);
+            }
+
+            if (tag_name === "lp-discount-input") {
+                this.cart_model.getDiscount(data, this.site_name);
+            }
         }
     }, {
         key: "onViewRequestData",
@@ -5093,13 +5173,16 @@ var Cart = function (_Module) {
             }
             if (view.id === this.total_view.id || view.id === this.total_extern_view.id || view.id === this.units_total_view.id || view.id === this.checkout_form_view.id) {
                 return {
+                    'subtotal': this.getSubTotal(),
                     'total': this.getTotal(),
                     'shipping_cost': this.shipping_cost,
                     'units_total': this.getUnitsTotal(),
                     'upp_total': this.getUPPTotal(),
                     'checkout_url': this.getCheckoutUrl(),
                     'site_id': this.getSiteId(),
-                    'cart_id': this.getGUID()
+                    'cart_id': this.getGUID(),
+                    'discount_code': this.getDiscountCode(),
+                    'percentage': this.getPercentage()
                 };
             }
         }
@@ -5227,12 +5310,26 @@ var Cart = function (_Module) {
         // }
 
     }, {
+        key: "getSubTotal",
+        value: function getSubTotal() {
+            var total = 0;
+
+            total += this.cart_model.getProductTotal();
+
+            return total;
+        }
+    }, {
         key: "getTotal",
         value: function getTotal() {
             var total = 0;
+            var percentage = 0;
 
-            total += this.cart_model.getTotal();
+            total += this.cart_model.getProductTotal();
             total += this.shipping_cost;
+
+            percentage = this.getPercentage();
+
+            if (percentage > 0) total = Math.floor(total * (100 - percentage) / 100);
 
             return total;
         }
@@ -5332,6 +5429,16 @@ var Cart = function (_Module) {
             this.model = [];
             this.cart_model.saveCart(callback);
             // this.saveModel(callback);
+        }
+    }, {
+        key: "getDiscountCode",
+        value: function getDiscountCode() {
+            return this.cart_model.getDiscountCode();
+        }
+    }, {
+        key: "getPercentage",
+        value: function getPercentage() {
+            return this.cart_model.getPercentage();
         }
     }, {
         key: "guid",

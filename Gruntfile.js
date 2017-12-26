@@ -91,7 +91,7 @@
                     }
                 }
             },
-            "babel": {
+            babel: {
                 options: {
                     sourceMap: true
                 },
