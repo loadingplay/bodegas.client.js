@@ -1,6 +1,7 @@
 install:
 - npm install
 - grunt build
+- npm isntall -g bower
 - bower install
 script:
 - grunt tests
