@@ -46,7 +46,7 @@ QUnit.test('cart', function(assert)
 
         // TODO: fix those tests
         assert.deepEqual(
-            shopping_cart.getProducts()[0].images,[['', '', '']],
+            shopping_cart.getProducts()[0].images,[{'url': '', 'thumb_1': '', 'thumb_200': '', 'thumb_500': ''}],
             'images should be blank...');
 
         // add another

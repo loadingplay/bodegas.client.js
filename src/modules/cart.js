@@ -7,12 +7,13 @@
 
 class Cart extends Module
 {
-    constructor(site_id, checkout_url)
+    constructor(site_id, checkout_url, site_name)
     {
         super();
 
         this.checkout_url = checkout_url === undefined ? '' : checkout_url;
         this.site_id = site_id === undefined ? 2 : site_id;
+        this.site_name = site_name === undefined ? "" : site_name;
 
         this.onLoadCart = $.noop;
         this.onSaveModel = $.noop;
@@ -48,6 +49,9 @@ class Cart extends Module
         this.total_view.setClickAction('lp-cart-add-one');
         this.total_view.setClickAction('lp-cart-remove-one');
         this.total_view.setClickAction('lp-cart-remove');
+        this.total_view.setClickAction('lp-discount-button');
+
+        this.total_view.setEnterAction('lp-discount-input');
 
         this.cart_model.loadProducts();
 
@@ -116,6 +120,24 @@ class Cart extends Module
         {
             this.cart_model.removeProduct(data);
         }
+
+        if (tag_name === "lp-discount-button")
+        {
+            var list = $("[lp-discount-input]");
+
+            for (var i = 0; i < list.length; i++)
+           {
+               if ( $(list[i]).val() != "" )
+                    data = $(list[i]).val()
+           }
+
+            this.cart_model.getDiscount(data, this.site_name);
+        }
+
+        if (tag_name === "lp-discount-input")
+        {
+            this.cart_model.getDiscount(data, this.site_name);
+        }
     }
 
     onViewRequestData(view)
@@ -131,13 +153,16 @@ class Cart extends Module
         )
         {
             return {
+                'subtotal': this.getSubTotal(),
                 'total' : this.getTotal(),
                 'shipping_cost': this.shipping_cost,
                 'units_total' : this.getUnitsTotal(),
                 'upp_total' : this.getUPPTotal(),
                 'checkout_url' : this.getCheckoutUrl(),
                 'site_id' : this.getSiteId(),
-                'cart_id' : this.getGUID()
+                'cart_id' : this.getGUID(),
+                'discount_code' : this.getDiscountCode(),
+                'percentage' : this.getPercentage()
             };
         }
     }
@@ -262,12 +287,27 @@ class Cart extends Module
     //     return false;
     // }
 
-    getTotal()
+    getSubTotal()
     {
         var total = 0;
 
-        total += this.cart_model.getTotal();
+        total += this.cart_model.getProductTotal();
+
+        return total;
+    }
+
+    getTotal()
+    {
+        var total = 0;
+        var percentage = 0;
+
+        total += this.cart_model.getProductTotal();
         total += this.shipping_cost;
+
+        percentage = this.getPercentage();
+
+        if (percentage > 0)
+            total = Math.floor(total * (100 - percentage) / 100);
 
         return total;
     }
@@ -367,5 +407,15 @@ class Cart extends Module
         this.model = [];
         this.cart_model.saveCart(callback);
         // this.saveModel(callback);
+    }
+
+    getDiscountCode()
+    {
+        return this.cart_model.getDiscountCode();
+    }
+
+    getPercentage()
+    {
+        return this.cart_model.getPercentage();
     }
 }

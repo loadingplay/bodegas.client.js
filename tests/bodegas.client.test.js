@@ -11,7 +11,9 @@ QUnit.module('Bodegas Client', {});
 QUnit.test('authenticate', function(assert)
 {
     var done = assert.async();
+    console.log("aaaaaaaa");
     var bodegas = new BodegasClient();
+    console.log("bbbbbbbb");
 
     bodegas.authenticate(100, function()
     {

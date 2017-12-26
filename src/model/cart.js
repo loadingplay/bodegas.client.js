@@ -53,6 +53,8 @@ class CartProductListModel extends Model
         this.extra_info = extra_info;
         this.guid = this.generateGUID();
         this.products = [];
+        this.percentage = 0;
+        this.discount_code = "";
     }
 
     loadProducts()
@@ -142,14 +144,16 @@ class CartProductListModel extends Model
     )
     {
         // get product images
-        img = img === "" ? this.getProductImage(sku, combination) : img;
+        img = img === "" ? this.getProductImage(sku, combination):img;
 
-        var images = [];
         var im = [];
-        for (var j = 0; j < 3; j++)
-        {
-            images.push(img);
-        }
+        var images = {
+            'url': img,
+            'thumb_1': img,
+            'thumb_200': img,
+            'thumb_500': img
+        };
+
         im.push(images);
 
         // doenst add quantity here, so dont cut the execution
@@ -176,6 +180,31 @@ class CartProductListModel extends Model
         {
             p.quantity += 1;
             this.saveCart(callback);
+        }
+    }
+
+    getDiscount(code, site_name)
+    {
+        if (isNaN(code))
+        {
+            this.get('v1/discount/' + code, {"site_name": site_name}).then((response) =>
+            {
+                // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
+                if (response.status === "success" && response.discounts.length != 0)
+                {
+                    if (response.discounts["activate"] === true)
+                    {
+                        this.percentage = response.discounts["percentage"];
+                        this.discount_code = response.discounts["code"];
+                        this.modelUpdate()
+                        return
+                    }
+                }
+                this.percentage = 0;
+                this.discount_code = "";
+                this.modelUpdate();
+                $(".discount-message").html("Código inválido");
+            });
         }
     }
 
@@ -262,7 +291,7 @@ class CartProductListModel extends Model
         this.saveCart();
     }
 
-    getTotal()
+    getProductTotal()
     {
         var total = 0;
         for (var i = 0; i < this.products.length; i++)
@@ -307,6 +336,16 @@ class CartProductListModel extends Model
     {
         // implement this method outside
         return '';
+    }
+
+    getDiscountCode()
+    {
+        return this.discount_code;
+    }
+
+    getPercentage()
+    {
+        return this.percentage;
     }
 
 }
