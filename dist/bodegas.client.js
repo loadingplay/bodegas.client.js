@@ -3385,11 +3385,17 @@ class Cart extends Module
 
     onModelUpdate(model)
     {
+
+        var disabled = $(".pagar-che").is(':disabled');
+
         this.product_view.render();
         this.total_view.render();
         this.total_extern_view.render();
         this.units_total_view.render();
         this.checkout_form_view.render();
+
+        if (!disabled)
+            $(".pagar-che").removeAttr('disabled');
     }
 
     onActionPerformed(tag_name, data, $element)
