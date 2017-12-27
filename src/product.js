@@ -33,6 +33,8 @@ Product.prototype.get = function(product_id, user_or_callback, callback)
         });
 };
 
+var request; // var for jQuery.post request handling
+
 Product.prototype._list = function(page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, column, direction, callback)
 {
     var tags = 'false';
@@ -70,13 +72,19 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         }
         else
         {
-            column = "random(000000-000-000-000-00000)"; // Default value for random if the cookie doesn't exists or can't be read
+            column = "random(000000-000-000-000-000000)"; // Default value for random if the cookie doesn't exists or can't be read
         }
     }
 
     //@todo: Add validation for correct spelling of column sort word.
 
-    jQuery.post(Utils.getURLWithoutParam('product/search'),
+    
+    if(request!==undefined)
+    {
+        request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
+    }
+
+    request = jQuery.post(Utils.getURLWithoutParam('product/search'),
         {
             "site_id": this.site_id,
             "page": page,
@@ -99,6 +107,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
 
             callback(product_list);
         });
+    
+
 };
 
 
