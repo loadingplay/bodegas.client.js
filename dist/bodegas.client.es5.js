@@ -5126,11 +5126,16 @@ var Cart = function (_Module) {
     }, {
         key: "onModelUpdate",
         value: function onModelUpdate(model) {
+
+            var disabled = $(".pagar-che").is(':disabled');
+
             this.product_view.render();
             this.total_view.render();
             this.total_extern_view.render();
             this.units_total_view.render();
             this.checkout_form_view.render();
+
+            if (!disabled) $(".pagar-che").removeAttr('disabled');
         }
     }, {
         key: "onActionPerformed",
