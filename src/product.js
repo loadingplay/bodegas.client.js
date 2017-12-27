@@ -70,7 +70,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
         }
         else
         {
-            column = "random(000000-000-000-000-000000)"; // Default value for random if the cookie doesn't exists or can't be read
+            column = "random(000000-000-000-000-00000)"; // Default value for random if the cookie doesn't exists or can't be read
         }
     }
 
