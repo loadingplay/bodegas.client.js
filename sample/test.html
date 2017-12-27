@@ -7,7 +7,8 @@
 
 </head>
 <body>
-
+Mujer<input type="checkbox" name="Categoria2_Calzado_Mujer" class="filter">
+Hombre<input type="checkbox" name="Categoria2_Calzado_Hombre" class="filter">
 <div class="products" ></div>
 
 <script type="text/template" id="product_template" >
@@ -20,10 +21,56 @@
 
 
 <script type="text/javascript">
+
+    window.tag_list = []
+
+    function addTag(tag, tag_list){
+        if(tag_list.length>0)
+        {
+            var add = true;
+            for (var i = 0; i < tag_list.length; i++) {
+                if (tag_list[i].includes(tag))
+                {
+                    tag_list.splice(i,1);
+                    add = false;
+                }
+            }
+
+            if(add)
+                tag_list.push(tag);
+        }
+        else
+        {
+            tag_list.push(tag);
+        }
+
+        return tag_list;
+    }
+
+    function prepareTags(){
+        var filters = window.tag_list.map(function(i){
+            return "+"+i;
+        });
+
+        return filters.join(',');
+    }
+
+    window.config = {
+        'app_public' : 53,
+        'base_url' : 'https://apibodegas.ondev.today/',
+        'tag' : false
+    }
+
     $(document).ready(function(){
-        $(document).ecommerce({
-            'app_public' : 2,
-            'base_url' : 'https://apibodegas.loadingplay.com/'
+        $(document).ecommerce(window.config);
+
+        $('.filter').change(function(){
+            filter_val = $(this).attr('name');
+            t_list = window.tag_list;
+            window.tag_list = addTag(filter_val,t_list);
+            window.config.tag = prepareTags();
+            $('.products').ecommerce('destroy');
+            $(document).ecommerce(window.config);
         });
 
     });
