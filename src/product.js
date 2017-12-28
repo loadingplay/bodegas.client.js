@@ -81,7 +81,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
     
     if(request!==undefined)
     {
-        request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
+        var r = request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
     }
 
     request = jQuery.post(Utils.getURLWithoutParam('product/search'),
@@ -103,12 +103,13 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             if (data.products !== undefined)
             {
                 product_list = data.products;
+
+                if(page===1)
+                    $('.products').empty();
             }
 
             callback(product_list);
         });
-    
-
 };
 
 

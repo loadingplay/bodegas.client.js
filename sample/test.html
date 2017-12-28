@@ -64,13 +64,19 @@ Hombre<input type="checkbox" name="Categoria2_Calzado_Hombre" class="filter">
     $(document).ready(function(){
         $(document).ecommerce(window.config);
 
+        var last;
+
         $('.filter').change(function(){
             filter_val = $(this).attr('name');
             t_list = window.tag_list;
             window.tag_list = addTag(filter_val,t_list);
             window.config.tag = prepareTags();
-            $('.products').ecommerce('destroy');
-            $(document).ecommerce(window.config);
+            if(last!==filter_val)
+            {
+                last = filter_val;
+                $('.products').ecommerce('destroy');
+            }
+            $('.products').ecommerce(window.config);
         });
 
     });
