@@ -1,13 +1,27 @@
+
+language: node_js
+node_js:
+  - "9"
+  - "8"
+before_install:
+  - npm i -g npm
+  - npm i -g grunt-cli
+
+cache:
+  directories:
+    - "node_modules"
+    - "bower_components"
+
 install:
 - npm install
-- grunt build
-- npm isntall -g bower
+- npm install bower
 - bower install
 script:
 - grunt tests
+
 notifications:
-  slack:
-    rooms:
-      secure: KhbI943hgMztJ07SgNGG6AV5YJDgn95HkQXyY4pT5b3P5npZhnnA41vm/jmbxtbFtqXJXGZ57YyHtxXZpNapo6U7aTo0lOHGNo7ozNSAvzx8p7OM6+OnirFQhpFK/0FEZp8u2UPdDDa/XRPj092g5K4UDJ63fMBMBhuy0VsVSpBL7o23c85JR06fY5kQphf0bbvPseWRC+P+yXYOzrULjGfdIyyR/AShrPCPPceP6+kkCB+i7bd1rzpz207TZF/E696O8pZeIVeLrJygYi8gwSwOOuWjcHLchNsTCxSqj7QU2VJ/aRYhj6U8XZrlxqPClSSHkJQb3X8/5fDwsZgs8oPRou7GXOa6CSBlXD8Lbf38ukgi9KhL7WGxixc1xdQmnuU3A+OFj89+lsABUiP58V9uc/l45DBbEuo7U+ycZ+RpH03OxF7hhUzBRTF8i2UHe6NTv3AC5JJa8pphXz0Z948yXVgubKE/sRhnwUhNTr/5qeB7AivFpa/WxqqMuEjEZwnYkhR/ScZI0mCUXidga4BRgoc7aYCEBPtk61OSmnNr3HRxoIZNDLRe6L0KdQpTdm0/7xvkcYaaacB/3nLEJYSZxrPgwoLyv1GCUnMCsXCa1hVjccBhn9LJdI71w+yJkBMYs2ZYqtSg7LDFcYAgkADwbY3Y7+5JKol/Vz6ZVno=
-    on_success: never
-    on_failure: always
+   slack:
+     rooms:
+       secure: KhbI943hgMztJ07SgNGG6AV5YJDgn95HkQXyY4pT5b3P5npZhnnA41vm/jmbxtbFtqXJXGZ57YyHtxXZpNapo6U7aTo0lOHGNo7ozNSAvzx8p7OM6+OnirFQhpFK/0FEZp8u2UPdDDa/XRPj092g5K4UDJ63fMBMBhuy0VsVSpBL7o23c85JR06fY5kQphf0bbvPseWRC+P+yXYOzrULjGfdIyyR/AShrPCPPceP6+kkCB+i7bd1rzpz207TZF/E696O8pZeIVeLrJygYi8gwSwOOuWjcHLchNsTCxSqj7QU2VJ/aRYhj6U8XZrlxqPClSSHkJQb3X8/5fDwsZgs8oPRou7GXOa6CSBlXD8Lbf38ukgi9KhL7WGxixc1xdQmnuU3A+OFj89+lsABUiP58V9uc/l45DBbEuo7U+ycZ+RpH03OxF7hhUzBRTF8i2UHe6NTv3AC5JJa8pphXz0Z948yXVgubKE/sRhnwUhNTr/5qeB7AivFpa/WxqqMuEjEZwnYkhR/ScZI0mCUXidga4BRgoc7aYCEBPtk61OSmnNr3HRxoIZNDLRe6L0KdQpTdm0/7xvkcYaaacB/3nLEJYSZxrPgwoLyv1GCUnMCsXCa1hVjccBhn9LJdI71w+yJkBMYs2ZYqtSg7LDFcYAgkADwbY3Y7+5JKol/Vz6ZVno=
+     on_success: never # default: always
+     on_failure: always # default: always
