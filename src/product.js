@@ -68,7 +68,8 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
     {
         if(page===1)
             random_seed = Math.random();
-        column = "random("+random_seed+")"; //The column param must be sent as random(some_random_number) or else API won't recognize it
+        //The column param must be sent as random(some_random_number_or_string) or else API won't recognize it
+        column = "random("+random_seed+")"; 
     }
 
     jQuery.post(Utils.getURLWithoutParam('product/search'),
@@ -98,8 +99,6 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
             callback(product_list);
         });
 };
-
-
 
 Product.prototype.destroy = function()
 {
