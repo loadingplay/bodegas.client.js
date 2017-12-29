@@ -3197,7 +3197,7 @@ Product.prototype.get = function (product_id, user_or_callback, callback) {
     });
 };
 
-var request; // var for jQuery.post request handling
+var random_seed; // random seed for random sorting of products
 
 Product.prototype._list = function (page, items_per_page, ignore_stock, callback_or_tags, search_query, user, operator, column, direction, callback) {
     var tags = 'false';
@@ -3222,24 +3222,11 @@ Product.prototype._list = function (page, items_per_page, ignore_stock, callback
 
     if (column === "random") // Check for random in sorting column
         {
-            if ($.cookie('shopping-cart')) // Check that shopping-cart cookie is created
-                {
-                    column = "random(" + $.cookie('shopping-cart') + ")";
-                } else {
-                column = "random(000000-000-000-000-000000)"; // Default value for random if the cookie doesn't exists or can't be read
-            }
+            if (page === 1) random_seed = Math.random();
+            column = "random(" + random_seed + ")"; //The column param must be sent as random(some_random_number) or else API won't recognize it
         }
 
-    //@todo: Add validation for correct spelling of column sort word.
-
-
-    /*if(request!==undefined)
-    {
-        request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
-        console.log(request);
-    }*/
-
-    request = jQuery.post(Utils.getURLWithoutParam('product/search'), {
+    jQuery.post(Utils.getURLWithoutParam('product/search'), {
         "site_id": this.site_id,
         "page": page,
         "items_per_page": items_per_page,

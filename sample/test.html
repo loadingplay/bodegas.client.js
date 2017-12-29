@@ -9,6 +9,7 @@
 <body>
 Mujer<input type="checkbox" name="Categoria2_Calzado_Mujer" class="filter">
 Hombre<input type="checkbox" name="Categoria2_Calzado_Hombre" class="filter">
+<button name="clean" class="clean">Limpiar</button>
 <div class="products" ></div>
 
 <script type="text/template" id="product_template" >
@@ -58,13 +59,20 @@ Hombre<input type="checkbox" name="Categoria2_Calzado_Hombre" class="filter">
     window.config = {
         'app_public' : 53,
         'base_url' : 'https://apibodegas.ondev.today/',
-        'tag' : false
+        'tag' : false,
+        'column' : 'random'
     }
 
     $(document).ready(function(){
         $(document).ecommerce(window.config);
 
         var last;
+
+        $('.clean').on('click',function(){
+            window.config.tag = false;
+            $('.products').ecommerce('destroy');
+            $('.products').ecommerce(window.config);
+        });
 
         $('.filter').change(function(){
             filter_val = $(this).attr('name');

@@ -38,9 +38,6 @@ QUnit.test('product sort by url parameter main_price asc', function(assert)
     });
 });
 
-
-
-
 QUnit.test('product sort by url parameter main_price desc', function(assert)
 {
     var $env2 = $('<div></div>');

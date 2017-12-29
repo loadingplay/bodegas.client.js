@@ -1,0 +1,29 @@
+language: node_js
+
+node_js:
+  - "8"
+  - "7"
+  - "6"
+  - "5"
+  - "4"
+before_install:
+  - npm i -g npm
+  - npm i -g grunt-cli
+
+cache:
+  directories:
+    - "node_modules"
+    - "bower_components"
+
+install:
+	- npm install
+	- bower install
+script:
+	- grunt tests
+
+notifications:
+   slack:
+     rooms:
+       - loadingplay:CQg5lsp4Hi9OdB79EZndUnOX#bug
+     on_success: never # default: always
+     on_failure: always # default: always

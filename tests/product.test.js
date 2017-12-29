@@ -20,7 +20,6 @@ QUnit.test('list', function(assert)
     var loaded_with_tags = assert.async();
 
     // simple test
-    console.log("aun no se pega");
     product.list(1, 10, function(products)
     {
         assert.equal(typeof products, 'object', 'product list is json');
