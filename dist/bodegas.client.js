@@ -1364,10 +1364,11 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
     //@todo: Add validation for correct spelling of column sort word.
 
     
-    if(request!==undefined)
+    /*if(request!==undefined)
     {
-        var r = request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
-    }
+        request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
+        console.log(request);
+    }*/
 
     request = jQuery.post(Utils.getURLWithoutParam('product/search'),
         {

@@ -3233,9 +3233,11 @@ Product.prototype._list = function (page, items_per_page, ignore_stock, callback
     //@todo: Add validation for correct spelling of column sort word.
 
 
-    if (request !== undefined) {
-        var r = request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
-    }
+    /*if(request!==undefined)
+    {
+        request.abort(); //Abort last post request to prevent overlapping of requests handled by the facade.
+        console.log(request);
+    }*/
 
     request = jQuery.post(Utils.getURLWithoutParam('product/search'), {
         "site_id": this.site_id,
