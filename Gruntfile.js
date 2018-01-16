@@ -48,6 +48,7 @@
             concat: {
                 js: {
                     src: [
+                        'src/lib/*.js',
                         'src/*.js',
                         'src/model/*.js',
                         'src/view/*.js',
