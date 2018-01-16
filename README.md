@@ -1,4 +1,4 @@
-# bodegas.cliente.js [![Build Status](http://jenkins.ondev.today/buildStatus/icon?job=bodegas.client.js)](http://ondev.today:8080/job/bodegas.client.js/)
+# bodegas.cliente.js [![Build Status](https://travis-ci.org/loadingplay/bodegas.client.js.svg?branch=master)](https://travis-ci.org/loadingplay/bodegas.client.js)
 
 # Coverage
 
@@ -39,7 +39,7 @@ or unittest:
 # Product List
 
 ```javascript
-// you can send json data to show the list of the products 
+// you can send json data to show the list of the products
 
 $(document).ready(function()
 {
@@ -56,14 +56,14 @@ $(document).ready(function()
     var config = {
         'app_public': app_public,
         'base_url': base_url,
-        'products_per_page' : 5, 
+        'products_per_page' : 5,
         'tag': tag,
         'ignore_stock': false,
         'infinite_scroll': true,
-        'checkout_url': checkout_url, 
+        'checkout_url': checkout_url,
         'operator' :'or',
         'templateOrigin': '#product_template',
-        'onLoad': function(products) 
+        'onLoad': function(products)
         {
 
         }
@@ -216,9 +216,9 @@ onLoad | You can make functions that works when the product is loading to the pa
 Parameter | Description
 --------- | -----------
 add-to-cart | This class allows any element to put products to the cart
-product-upp | 
+product-upp |
 product-name | Name of the product
-product-price | Product price 
+product-price | Product price
 product-sku | sku of the product
 product-id | id of the product
 product-img | image of the product
@@ -265,7 +265,7 @@ You can also put any of the elements of the product to fill the cart
 </script>
 <script type="text/x-template" id="shopping-cart-total">
         <tr>
-            <td>Total:</td> 
+            <td>Total:</td>
             <td >{{! total|money }}</td>
             <td></td>
         </tr>
@@ -303,11 +303,11 @@ remove-one | this class allows remove one of the quantity of the product, this c
 product-id | this attribute shows the id of the product
 {{! id }} | it shows the product id
 add-one | add one of the quantity of the product, this class needs to be next to the product-id to specify the product
-borrarproducto | this class alows to remove the product from the cart, it needs to be next to the cart-id 
+borrarproducto | this class alows to remove the product from the cart, it needs to be next to the cart-id
 cart-id | it shows the product id
 {{! total|money }} | it shows the total of the shopping cart in money format
 {{! units_total }} | it shows the total of the products that you are going to buy
-{{! checkout_url}} | it shows the chackout url that is going to open when the subbmit button if its pressed 
+{{! checkout_url}} | it shows the chackout url that is going to open when the subbmit button if its pressed
 site_id | it shows the id of the site, the value is already configured
 cart_id | this is the id of the cart that automaticlly appears on the checkout
 origin | it shows the origin of the cart, it is the name of the site
