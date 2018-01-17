@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -9,6 +9,95 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*!
+ * jQuery Cookie Plugin v1.3.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as anonymous module.
+        define(['jquery'], factory);
+    } else {
+        // Browser globals.
+        factory(jQuery);
+    }
+})(function ($) {
+
+    var pluses = /\+/g;
+
+    function raw(s) {
+        return s;
+    }
+
+    function decoded(s) {
+        return decodeURIComponent(s.replace(pluses, ' '));
+    }
+
+    function converted(s) {
+        if (s.indexOf('"') === 0) {
+            // This is a quoted cookie as according to RFC2068, unescape
+            s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+        }
+        try {
+            return config.json ? JSON.parse(s) : s;
+        } catch (er) {}
+    }
+
+    var config = $.cookie = function (key, value, options) {
+
+        // write
+        if (value !== undefined) {
+            options = $.extend({}, config.defaults, options);
+
+            if (typeof options.expires === 'number') {
+                var days = options.expires,
+                    t = options.expires = new Date();
+                t.setDate(t.getDate() + days);
+            }
+
+            value = config.json ? JSON.stringify(value) : String(value);
+
+            return document.cookie = [config.raw ? key : encodeURIComponent(key), '=', config.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+            options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+        }
+
+        // read
+        var decode = config.raw ? raw : decoded;
+        var cookies = document.cookie.split('; ');
+        var result = key ? undefined : {};
+        for (var i = 0, l = cookies.length; i < l; i++) {
+            var parts = cookies[i].split('=');
+            var name = decode(parts.shift());
+            var cookie = decode(parts.join('='));
+
+            if (key && key === name) {
+                result = converted(cookie);
+                break;
+            }
+
+            if (!key) {
+                result[name] = converted(cookie);
+            }
+        }
+
+        return result;
+    };
+
+    config.defaults = {};
+
+    $.removeCookie = function (key, options) {
+        if ($.cookie(key) !== undefined) {
+            // Must not alter options, thus extending a fresh object...
+            $.cookie(key, '', $.extend({}, options, { expires: -1 }));
+            return true;
+        }
+        return false;
+    };
+});
 
 /* jshint strict : false */
 
@@ -970,7 +1059,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
             e = e || {}, this.p = e.prefix ? W(t) || t : t, h[t] = h[this.p] = this, this.format = e.formatter || ue(e.defaultValue, e.color, e.collapsible, e.multi), e.parser && (this.parse = e.parser), this.clrs = e.color, this.multi = e.multi, this.keyword = e.keyword, this.dflt = e.defaultValue, this.pr = e.priority || 0;
         },
             ye = B._registerComplexSpecialProp = function (t, e, i) {
-            "object" != (typeof e === "undefined" ? "undefined" : _typeof(e)) && (e = { parser: i });var s,
+            "object" != (typeof e === 'undefined' ? 'undefined' : _typeof(e)) && (e = { parser: i });var s,
                 r,
                 n = t.split(","),
                 a = e.defaultValue;for (i = i || [a], s = 0; n.length > s; s++) {
@@ -1195,8 +1284,8 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                     w = we.length,
                     b = h,
                     P = {},
-                    k = "transformOrigin";if ("string" == typeof b.transform && be) u = L.style, u[be] = b.transform, u.display = "block", u.position = "absolute", N.body.appendChild(L), l = Ne(L, null, !1), N.body.removeChild(L), null != b.xPercent && (l.xPercent = ne(b.xPercent, y.xPercent)), null != b.yPercent && (l.yPercent = ne(b.yPercent, y.yPercent));else if ("object" == (typeof b === "undefined" ? "undefined" : _typeof(b))) {
-                    if (l = { scaleX: ne(null != b.scaleX ? b.scaleX : b.scale, y.scaleX), scaleY: ne(null != b.scaleY ? b.scaleY : b.scale, y.scaleY), scaleZ: ne(b.scaleZ, y.scaleZ), x: ne(b.x, y.x), y: ne(b.y, y.y), z: ne(b.z, y.z), xPercent: ne(b.xPercent, y.xPercent), yPercent: ne(b.yPercent, y.yPercent), perspective: ne(b.transformPerspective, y.perspective) }, m = b.directionalRotation, null != m) if ("object" == (typeof m === "undefined" ? "undefined" : _typeof(m))) for (u in m) {
+                    k = "transformOrigin";if ("string" == typeof b.transform && be) u = L.style, u[be] = b.transform, u.display = "block", u.position = "absolute", N.body.appendChild(L), l = Ne(L, null, !1), N.body.removeChild(L), null != b.xPercent && (l.xPercent = ne(b.xPercent, y.xPercent)), null != b.yPercent && (l.yPercent = ne(b.yPercent, y.yPercent));else if ("object" == (typeof b === 'undefined' ? 'undefined' : _typeof(b))) {
+                    if (l = { scaleX: ne(null != b.scaleX ? b.scaleX : b.scale, y.scaleX), scaleY: ne(null != b.scaleY ? b.scaleY : b.scale, y.scaleY), scaleZ: ne(b.scaleZ, y.scaleZ), x: ne(b.x, y.x), y: ne(b.y, y.y), z: ne(b.z, y.z), xPercent: ne(b.xPercent, y.xPercent), yPercent: ne(b.yPercent, y.yPercent), perspective: ne(b.transformPerspective, y.perspective) }, m = b.directionalRotation, null != m) if ("object" == (typeof m === 'undefined' ? 'undefined' : _typeof(m))) for (u in m) {
                         b[u] = m[u];
                     } else b.rotation = m;"string" == typeof b.x && -1 !== b.x.indexOf("%") && (l.x = 0, l.xPercent = ne(b.x, y.xPercent)), "string" == typeof b.y && -1 !== b.y.indexOf("%") && (l.y = 0, l.yPercent = ne(b.y, y.yPercent)), l.rotation = ae("rotation" in b ? b.rotation : "shortRotation" in b ? b.shortRotation + "_short" : "rotationZ" in b ? b.rotationZ : y.rotation, y.rotation, "rotation", P), Se && (l.rotationX = ae("rotationX" in b ? b.rotationX : "shortRotationX" in b ? b.shortRotationX + "_short" : y.rotationX || 0, y.rotationX, "rotationX", P), l.rotationY = ae("rotationY" in b ? b.rotationY : "shortRotationY" in b ? b.shortRotationY + "_short" : y.rotationY || 0, y.rotationY, "rotationY", P)), l.skewX = null == b.skewX ? y.skewX : ae(b.skewX, y.skewX), l.skewY = null == b.skewY ? y.skewY : ae(b.skewY, y.skewY), (_ = l.skewY - y.skewY) && (l.skewX += _, l.rotation += _);
                 }for (Se && null != b.force3D && (y.force3D = b.force3D, p = !0), y.skewType = b.skewType || y.skewType || a.defaultSkewType, f = y.force3D || y.z || y.rotationX || y.rotationY || l.z || l.rotationX || l.rotationY || l.perspective, f || null == b.scale || (l.scaleZ = 1); --w > -1;) {
@@ -1432,7 +1521,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                 }
             } });
     }(), _gsScope._gsDefine.plugin({ propName: "directionalRotation", version: "0.2.1", API: 2, init: function init(t, e) {
-            "object" != (typeof e === "undefined" ? "undefined" : _typeof(e)) && (e = { rotation: e }), this.finals = {};var i,
+            "object" != (typeof e === 'undefined' ? 'undefined' : _typeof(e)) && (e = { rotation: e }), this.finals = {};var i,
                 s,
                 r,
                 n,
@@ -1579,7 +1668,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
             f = function () {
             var t = Object.prototype.toString,
                 e = t.call([]);return function (i) {
-                return null != i && (i instanceof Array || "object" == (typeof i === "undefined" ? "undefined" : _typeof(i)) && !!i.push && t.call(i) === e);
+                return null != i && (i instanceof Array || "object" == (typeof i === 'undefined' ? 'undefined' : _typeof(i)) && !!i.push && t.call(i) === e);
             };
         }(),
             p = {},
@@ -1928,7 +2017,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                 } else {
                     if (e !== this.target) return !1;o = this._propLookup, r = this._overwrittenProps = t ? this._overwrittenProps || {} : "all";
                 }if (o) {
-                    if (l = t || o, _ = t !== r && "all" !== r && t !== o && ("object" != (typeof t === "undefined" ? "undefined" : _typeof(t)) || !t._tempKill), i && (D.onOverwrite || this.vars.onOverwrite)) {
+                    if (l = t || o, _ = t !== r && "all" !== r && t !== o && ("object" != (typeof t === 'undefined' ? 'undefined' : _typeof(t)) || !t._tempKill), i && (D.onOverwrite || this.vars.onOverwrite)) {
                         for (n in l) {
                             o[n] && (u || (u = []), u.push(n));
                         }if ((u || !t) && !W(this, i, e, u)) return !1;
@@ -1969,7 +2058,7 @@ var _gsScope = "undefined" != typeof module && module.exports && "undefined" != 
                 (s[i]._gc || e && !s[i].isActive()) && s.splice(i, 1);
             }return s;
         }, D.killTweensOf = D.killDelayedCallsTo = function (t, e, i) {
-            "object" == (typeof e === "undefined" ? "undefined" : _typeof(e)) && (i = e, e = !1);for (var s = D.getTweensOf(t, e), r = s.length; --r > -1;) {
+            "object" == (typeof e === 'undefined' ? 'undefined' : _typeof(e)) && (i = e, e = !1);for (var s = D.getTweensOf(t, e), r = s.length; --r > -1;) {
                 s[r]._kill(i, t);
             }
         };var $ = g("plugins.TweenPlugin", function (t, e) {
@@ -2688,7 +2777,7 @@ EcommerceFacade.prototype.loadVariants = function () {
 };
 
 EcommerceFacade.prototype.setData = function (data) {
-    if ((typeof data === "undefined" ? "undefined" : _typeof(data)) === 'object') {
+    if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
         for (var k in data) {
             this.ecommerce.cart.extra_info.set_data(k, data[k]);
         }
@@ -2762,17 +2851,17 @@ var ModelProvider = function () {
 
 
     _createClass(ModelProvider, [{
-        key: "onAjaxRespond",
+        key: 'onAjaxRespond',
         value: function onAjaxRespond(endpoint, data, method) {
             // nothing here...
         }
     }, {
-        key: "onModelUpdate",
+        key: 'onModelUpdate',
         value: function onModelUpdate(model) {
             // nothing here...
         }
     }], [{
-        key: "Empty",
+        key: 'Empty',
         value: function Empty() {
             return new ModelProvider();
         }
@@ -2817,7 +2906,7 @@ var Model = function (_LPObject) {
 
 
     _createClass(Model, [{
-        key: "setModelProvider",
+        key: 'setModelProvider',
         value: function setModelProvider(model_provider) {
             if (model_provider instanceof ModelProvider) {
                 this.model_provider = model_provider;
@@ -2834,7 +2923,7 @@ var Model = function (_LPObject) {
          */
 
     }, {
-        key: "get",
+        key: 'get',
         value: function get(endpoint, parameters) {
             var _this2 = this;
 
@@ -2852,12 +2941,12 @@ var Model = function (_LPObject) {
             return p;
         }
     }, {
-        key: "onAjaxRespond",
+        key: 'onAjaxRespond',
         value: function onAjaxRespond(endpoint, data, method) {
             this.model_provider.onAjaxRespond(endpoint, data, method);
         }
     }, {
-        key: "modelUpdate",
+        key: 'modelUpdate',
         value: function modelUpdate() {
             this.model_provider.onModelUpdate(this);
         }
@@ -2870,7 +2959,7 @@ var Model = function (_LPObject) {
          */
 
     }, {
-        key: "post",
+        key: 'post',
         value: function post(endpoint, parameters) {
             var _this3 = this;
 
@@ -2907,7 +2996,7 @@ var ViewDataProvider = function () {
 
 
     _createClass(ViewDataProvider, [{
-        key: "getData",
+        key: 'getData',
         value: function getData(view) {
             console.warn("you must implement this method");
         }
@@ -2920,12 +3009,12 @@ var ViewDataProvider = function () {
          */
 
     }, {
-        key: "performAction",
+        key: 'performAction',
         value: function performAction(tag_name, data, $element) {
             console.warn("you must implement this method");
         }
     }], [{
-        key: "Empty",
+        key: 'Empty',
         value: function Empty() {
             return new ViewDataProvider();
         }
@@ -2969,7 +3058,7 @@ var View = function (_LPObject2) {
 
 
     _createClass(View, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             var html_builder = [];
             var data = this.view_data_provider.getData(this);
@@ -2990,7 +3079,7 @@ var View = function (_LPObject2) {
             }
         }
     }, {
-        key: "setClickAction",
+        key: 'setClickAction',
         value: function setClickAction(action_tag) {
             var _this5 = this;
 
@@ -3002,7 +3091,7 @@ var View = function (_LPObject2) {
             });
         }
     }, {
-        key: "setEnterAction",
+        key: 'setEnterAction',
         value: function setEnterAction(action_tag) {
             var _this6 = this;
 
@@ -3022,7 +3111,7 @@ var View = function (_LPObject2) {
          */
 
     }, {
-        key: "setTemplate",
+        key: 'setTemplate',
         value: function setTemplate(template) {
             this.template = template;
         }
@@ -3034,7 +3123,7 @@ var View = function (_LPObject2) {
          */
 
     }, {
-        key: "setDataProvider",
+        key: 'setDataProvider',
         value: function setDataProvider(view_data_provider) {
             if (view_data_provider instanceof ViewDataProvider) {
                 this.view_data_provider = view_data_provider;
@@ -3094,7 +3183,7 @@ var Module = function () {
 
 
     _createClass(Module, [{
-        key: "init",
+        key: 'init',
         value: function init(imodule) {
             if (!this.onInit()) {
                 return;
@@ -3108,7 +3197,7 @@ var Module = function () {
          */
 
     }, {
-        key: "addModel",
+        key: 'addModel',
         value: function addModel(key, model) {
             if (model instanceof Model) {
                 model.setModelProvider(this.model_provider);
@@ -3116,7 +3205,7 @@ var Module = function () {
             }
         }
     }, {
-        key: "addView",
+        key: 'addView',
         value: function addView(key, view) {
             if (view instanceof View) {
                 view.setDataProvider(this.view_data_provider);
@@ -3133,7 +3222,7 @@ var Module = function () {
          */
 
     }, {
-        key: "onInit",
+        key: 'onInit',
         value: function onInit() {
             console.warn("method must be implemented");
         }
@@ -3146,22 +3235,22 @@ var Module = function () {
          */
 
     }, {
-        key: "onModelLoaded",
+        key: 'onModelLoaded',
         value: function onModelLoaded(endpoint, data, method) {
             console.warn("method must be implemented");
         }
     }, {
-        key: "onModelUpdate",
+        key: 'onModelUpdate',
         value: function onModelUpdate(model) {
             console.warn("method must be implemented");
         }
     }, {
-        key: "onViewRequestData",
+        key: 'onViewRequestData',
         value: function onViewRequestData(view) {
             console.warn("method must be implemented");
         }
     }, {
-        key: "onActionPerformed",
+        key: 'onActionPerformed',
         value: function onActionPerformed(tag_name, data, $element) {
             console.warn("method must be implemented");
         }
@@ -3549,17 +3638,17 @@ Variants.prototype.getCombination = function (product_sku, cb) {
 
 var CartProduct = function () {
     _createClass(CartProduct, [{
-        key: "total",
+        key: 'total',
         get: function get() {
             return this.quantity * this.price;
         }
     }, {
-        key: "upp_total",
+        key: 'upp_total',
         get: function get() {
             return this.quantity * this.upp;
         }
     }, {
-        key: "imges",
+        key: 'imges',
         get: function get() {
             return Array.isArray(this.images) ? this.images : [];
         }
@@ -3591,7 +3680,7 @@ var CartProduct = function () {
     }
 
     _createClass(CartProduct, null, [{
-        key: "FromArray",
+        key: 'FromArray',
         value: function FromArray(a) {
             var cp = new CartProduct();
             cp.id = a.id;
@@ -3630,7 +3719,7 @@ var CartProductListModel = function (_Model) {
     }
 
     _createClass(CartProductListModel, [{
-        key: "loadProducts",
+        key: 'loadProducts',
         value: function loadProducts() {
             var _this9 = this;
 
@@ -3647,7 +3736,7 @@ var CartProductListModel = function (_Model) {
             });
         }
     }, {
-        key: "createFromArray",
+        key: 'createFromArray',
         value: function createFromArray(l) {
             for (var i = 0; i < l.length; i++) {
                 this.products.push(CartProduct.FromArray(l[i]));
@@ -3661,12 +3750,12 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "productExist",
+        key: 'productExist',
         value: function productExist(id) {
             return this.findProductIndex(id) !== -1;
         }
     }, {
-        key: "findProductIndex",
+        key: 'findProductIndex',
         value: function findProductIndex(id) {
             // get the product from model, if exist or create from database
             for (var i = 0; i < this.products.length; i++) {
@@ -3683,7 +3772,7 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "generateGUID",
+        key: 'generateGUID',
         value: function generateGUID() {
             var old_guid = $.cookie('shopping-cart');
             var guid = old_guid;
@@ -3712,7 +3801,7 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "addProduct",
+        key: 'addProduct',
         value: function addProduct(sku) {
             var combination = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
             var price = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "0";
@@ -3749,7 +3838,7 @@ var CartProductListModel = function (_Model) {
             this.addOne(cp.id, callback);
         }
     }, {
-        key: "addOne",
+        key: 'addOne',
         value: function addOne(id) {
             var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : $.noop;
 
@@ -3760,7 +3849,7 @@ var CartProductListModel = function (_Model) {
             }
         }
     }, {
-        key: "getDiscount",
+        key: 'getDiscount',
         value: function getDiscount(code, site_name) {
             var _this10 = this;
 
@@ -3790,7 +3879,7 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "saveCart",
+        key: 'saveCart',
         value: function saveCart() {
             var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : $.noop;
 
@@ -3802,7 +3891,7 @@ var CartProductListModel = function (_Model) {
             this.modelUpdate();
         }
     }, {
-        key: "findProductByID",
+        key: 'findProductByID',
         value: function findProductByID(id) {
             for (var i = 0; i < this.products.length; i++) {
                 if (id === this.products[i].id) {
@@ -3812,7 +3901,7 @@ var CartProductListModel = function (_Model) {
             return false;
         }
     }, {
-        key: "findProductBySKUCombination",
+        key: 'findProductBySKUCombination',
         value: function findProductBySKUCombination(sku, combination) {
             for (var i = 0; i < this.products.length; i++) {
                 if (this.products[i].sku === sku && this.products[i].combination === combination) {
@@ -3829,14 +3918,14 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "removeProduct",
+        key: 'removeProduct',
         value: function removeProduct(id) {
             var index = this.findProductIndex(id);
             this.products.splice(index, 1);
             this.saveCart();
         }
     }, {
-        key: "getProductID",
+        key: 'getProductID',
         value: function getProductID(sku, combination) {
             for (var i = 0; i < this.products.length; i++) {
                 if (this.products[i].sku === sku && this.products[i].combination === combination) {
@@ -3851,7 +3940,7 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "removeOne",
+        key: 'removeOne',
         value: function removeOne(id) {
             var p = this.findProductByID(id);
 
@@ -3866,7 +3955,7 @@ var CartProductListModel = function (_Model) {
             this.saveCart();
         }
     }, {
-        key: "getProductTotal",
+        key: 'getProductTotal',
         value: function getProductTotal() {
             var total = 0;
             for (var i = 0; i < this.products.length; i++) {
@@ -3876,7 +3965,7 @@ var CartProductListModel = function (_Model) {
             return total;
         }
     }, {
-        key: "getUPPTotal",
+        key: 'getUPPTotal',
         value: function getUPPTotal() {
             var total = 0;
             for (var i = 0; i < this.products.length; i++) {
@@ -3886,7 +3975,7 @@ var CartProductListModel = function (_Model) {
             return total;
         }
     }, {
-        key: "getUnitsTotal",
+        key: 'getUnitsTotal',
         value: function getUnitsTotal() {
             var units_total = 0;
 
@@ -3905,18 +3994,18 @@ var CartProductListModel = function (_Model) {
          */
 
     }, {
-        key: "getProductImage",
+        key: 'getProductImage',
         value: function getProductImage(sku, combination) {
             // implement this method outside
             return '';
         }
     }, {
-        key: "getDiscountCode",
+        key: 'getDiscountCode',
         value: function getDiscountCode() {
             return this.discount_code;
         }
     }, {
-        key: "getPercentage",
+        key: 'getPercentage',
         value: function getPercentage() {
             return this.percentage;
         }
@@ -5099,7 +5188,7 @@ var Cart = function (_Module) {
     }
 
     _createClass(Cart, [{
-        key: "onInit",
+        key: 'onInit',
         value: function onInit() {
             return true;
         }
@@ -5107,7 +5196,7 @@ var Cart = function (_Module) {
         // Interface
 
     }, {
-        key: "onModelLoaded",
+        key: 'onModelLoaded',
         value: function onModelLoaded(endpoint, data, method) {
             if (endpoint.indexOf('v1/cart') === 0 && method === 'get') {
                 this.product_view.render();
@@ -5123,7 +5212,7 @@ var Cart = function (_Module) {
             }
         }
     }, {
-        key: "onModelUpdate",
+        key: 'onModelUpdate',
         value: function onModelUpdate(model) {
 
             var disabled = $(".pagar-che").is(':disabled');
@@ -5137,7 +5226,7 @@ var Cart = function (_Module) {
             if (!disabled) $(".pagar-che").removeAttr('disabled');
         }
     }, {
-        key: "onActionPerformed",
+        key: 'onActionPerformed',
         value: function onActionPerformed(tag_name, data, $element) {
             if (tag_name === 'lp-cart-add') {
                 this.cart_model.addProduct($element.attr('product-sku'), $element.attr('product-combination'), $element.attr('product-price'), $element.attr('product-name'), $element.attr('product-upp'), $element.attr('product-bullet1'), $element.attr('product-bullet2'), $element.attr('product-bullet3'), $element.attr('product-img'));
@@ -5170,7 +5259,7 @@ var Cart = function (_Module) {
             }
         }
     }, {
-        key: "onViewRequestData",
+        key: 'onViewRequestData',
         value: function onViewRequestData(view) {
             if (view.id === this.product_view.id) {
                 return this.getProducts();
@@ -5191,22 +5280,22 @@ var Cart = function (_Module) {
             }
         }
     }, {
-        key: "getGUID",
+        key: 'getGUID',
         value: function getGUID() {
             return this.cart_model.guid;
         }
     }, {
-        key: "getCheckoutUrl",
+        key: 'getCheckoutUrl',
         value: function getCheckoutUrl() {
             return this.checkout_url;
         }
     }, {
-        key: "getSiteId",
+        key: 'getSiteId',
         value: function getSiteId() {
             return this.site_id;
         }
     }, {
-        key: "saveModel",
+        key: 'saveModel',
         value: function saveModel(callback) {
             this.onSaveModel = callback;
             this.cart_model.saveCart();
@@ -5218,7 +5307,7 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "getCurrentCombination",
+        key: 'getCurrentCombination',
         value: function getCurrentCombination() {
             // implemented outside
             return "";
@@ -5239,7 +5328,7 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "addProduct",
+        key: 'addProduct',
         value: function addProduct(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback) {
             // soft replacement of id by sku
             if (sku === '') {
@@ -5260,7 +5349,7 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "removeProduct",
+        key: 'removeProduct',
         value: function removeProduct(id) {
             this.cart_model.removeProduct(id);
         }
@@ -5271,7 +5360,7 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "removeOne",
+        key: 'removeOne',
         value: function removeOne(sku) {
             var combination = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
 
@@ -5285,7 +5374,7 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "getProducts",
+        key: 'getProducts',
         value: function getProducts() {
             return this.cart_model.products;
         }
@@ -5314,7 +5403,7 @@ var Cart = function (_Module) {
         // }
 
     }, {
-        key: "getSubTotal",
+        key: 'getSubTotal',
         value: function getSubTotal() {
             var total = 0;
 
@@ -5323,7 +5412,7 @@ var Cart = function (_Module) {
             return total;
         }
     }, {
-        key: "getTotal",
+        key: 'getTotal',
         value: function getTotal() {
             var total = 0;
             var percentage = 0;
@@ -5338,7 +5427,7 @@ var Cart = function (_Module) {
             return total;
         }
     }, {
-        key: "getUnitsTotal",
+        key: 'getUnitsTotal',
         value: function getUnitsTotal() {
             return this.cart_model.getUnitsTotal();
         }
@@ -5346,7 +5435,7 @@ var Cart = function (_Module) {
         /** upp == units per product */
 
     }, {
-        key: "getUPPTotal",
+        key: 'getUPPTotal',
         value: function getUPPTotal() {
             return this.cart_model.getUPPTotal();
         }
@@ -5358,14 +5447,14 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "loadCart",
+        key: 'loadCart',
         value: function loadCart() {
             var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : $.noop;
 
             this.onLoadCart = callback;
         }
     }, {
-        key: "setShippingCost",
+        key: 'setShippingCost',
         value: function setShippingCost(shipping_cost) {
             this.shipping_cost = shipping_cost;
             this.product_view.render();
@@ -5381,14 +5470,14 @@ var Cart = function (_Module) {
          */
 
     }, {
-        key: "enableGA",
+        key: 'enableGA',
         value: function enableGA() {
             this.is_ga_enabled = true;
 
             window.ga('require', 'ec');
         }
     }, {
-        key: "gaAddProduct",
+        key: 'gaAddProduct',
         value: function gaAddProduct(product, position) {
             try {
                 if (this.is_ga_enabled) {
@@ -5404,7 +5493,7 @@ var Cart = function (_Module) {
             }
         }
     }, {
-        key: "gaRemoveProduct",
+        key: 'gaRemoveProduct',
         value: function gaRemoveProduct(product) {
             try {
                 if (this.is_ga_enabled) {
@@ -5418,7 +5507,7 @@ var Cart = function (_Module) {
             }
         }
     }, {
-        key: "gaSetProduct",
+        key: 'gaSetProduct',
         value: function gaSetProduct(product, position) {
             window.ga('ec:addProduct', {
                 'id': product.id,
@@ -5428,24 +5517,24 @@ var Cart = function (_Module) {
             });
         }
     }, {
-        key: "clearCart",
+        key: 'clearCart',
         value: function clearCart(callback) {
             this.model = [];
             this.cart_model.saveCart(callback);
             // this.saveModel(callback);
         }
     }, {
-        key: "getDiscountCode",
+        key: 'getDiscountCode',
         value: function getDiscountCode() {
             return this.cart_model.getDiscountCode();
         }
     }, {
-        key: "getPercentage",
+        key: 'getPercentage',
         value: function getPercentage() {
             return this.cart_model.getPercentage();
         }
     }, {
-        key: "guid",
+        key: 'guid',
         set: function set(guid) {
             this.cart_model.guid = guid;
             this.cart_model.loadProducts();

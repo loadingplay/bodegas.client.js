@@ -14,7 +14,6 @@
   ],
   "dependencies": {
     "qunit": "^2.1.0",
-    "jquery-mockjax": "^2.2.1",
-    "jquery.cookie": "^1.4.1"
+    "jquery-mockjax": "^2.2.1"
   }
 }
