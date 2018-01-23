@@ -109,8 +109,8 @@ class Cart extends Module
                 $element.attr('product-bullet1'),
                 $element.attr('product-bullet2'),
                 $element.attr('product-bullet3'),
-                $element.attr('product-img')),
-                $element.attr('product-weight');
+                $element.attr('product-img'),
+                $element.attr('product-weight'));
         }
 
         if (tag_name === "lp-cart-add-one")

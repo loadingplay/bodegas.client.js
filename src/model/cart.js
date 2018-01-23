@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+F/*jshint esversion: 6 */
 
 
 class CartProduct {
@@ -139,7 +139,7 @@ class CartProductListModel extends Model
      * @param  {object}   img      json with images
      * @param  {int}      weight   weight of the product in kg
      * @param  {Function} callback callback this method when loaded
-     * @todo: use promises
+     * @todo: use promisses
      */
     addProduct(
         sku, combination="", price="0", name="", upp=1, bullet1="",
