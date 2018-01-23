@@ -16,7 +16,7 @@ install:
 - npm install bower
 - bower install
 script:
-- grunt tests
+- grunt tests --v
 
 notifications:
    slack:
