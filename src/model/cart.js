@@ -1,4 +1,4 @@
-F/*jshint esversion: 6 */
+/*jshint esversion: 6 */
 
 
 class CartProduct {
