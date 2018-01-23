@@ -109,7 +109,8 @@ class Cart extends Module
                 $element.attr('product-bullet1'),
                 $element.attr('product-bullet2'),
                 $element.attr('product-bullet3'),
-                $element.attr('product-img'));
+                $element.attr('product-img'),
+                $element.attr('product-weight'));
         }
 
         if (tag_name === "lp-cart-add-one")
@@ -220,10 +221,11 @@ class Cart extends Module
      * @param  {string}   bullet2  some random text
      * @param  {string}   bullet3  some random text
      * @param  {object}   img      json with images
+     * @param  {int}      weight   weight of the product in kg
      * @param  {Function} callback callback this method when loaded
      * @todo: use promisses
      */
-    addProduct(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback)
+    addProduct(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, weight, callback)
     {
         // soft replacement of id by sku
         if (sku === '')
@@ -233,12 +235,12 @@ class Cart extends Module
 
         this.cart_model.addProduct(
             sku, combination, price, name, upp,
-            bullet1, bullet2, bullet3, img, callback
+            bullet1, bullet2, bullet3, img, weight, callback
         );
 
         this.gaAddProduct({
             id, sku, combination, price, name, upp,
-            bullet1, bullet2, bullet3, img
+            bullet1, bullet2, bullet3, img, weight
         }, this.cart_model.findProductIndex(id));
     }
 
