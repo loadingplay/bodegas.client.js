@@ -196,7 +196,10 @@
             'variant_template': '',  // ''  for use default
             'value_template': '', // '' for use default
             'active_class': 'value-active'  // this class is added when a value is selected
-        }
+        },
+
+        /**** CART ****/
+        'onModelUpdate': $.noop
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -226,6 +229,8 @@ var EcommerceFacade = function(options)
     {
         return self.variants_view.getSelectedCombination();
     };
+
+    this.ecommerce.cart.onModelUpdate = this.options.onModelUpdate;
 
     this.animation = null;
 
@@ -471,14 +476,13 @@ EcommerceFacade.prototype.triggerProductsLoaded = function(products)
 };
 
 /**
- * thi event get triggered when all variants are loaded
+ * this event get triggered when all variants are loaded
  * @param  {list} variants variants list
  */
 EcommerceFacade.prototype.triggerVariantsLoaded = function(variants)
 {
     $(this.options.container).trigger('variants.loaded', [variants]);
 };
-
 
 /**
  * this method is executed once all variants are loaded within skus inside
