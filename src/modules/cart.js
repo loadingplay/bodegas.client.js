@@ -17,7 +17,7 @@ class Cart extends Module
 
         this.onLoadCart = $.noop;
         this.onSaveModel = $.noop;
-        this.onModelUpdate = $.noop;
+        this.afterModelUpdate = $.noop;
 
         this.shipping_cost = 0;
 
@@ -95,7 +95,7 @@ class Cart extends Module
         if (!disabled)
             $(".pagar-che").removeAttr('disabled');
 
-        this.onModelUpdate();
+        this.afterModelUpdate();
     }
 
     onActionPerformed(tag_name, data, $element)
