@@ -3596,7 +3596,7 @@ var Variants = function Variants(options) {
  */
 Variants.prototype.get = function (product_sku, cb) {
     var self = this;
-    jQuery.get(Utils.getURL('v1', ['variant', 'list']), {
+    jQuery.get(Utils.getURL('v1', ['variant']), {
         'namespace': this.site_name + '_' + product_sku
     }, function (v) {
 
@@ -3611,9 +3611,8 @@ Variants.prototype.get = function (product_sku, cb) {
  * @param  {Function} cb           callback method
  */
 Variants.prototype.getValues = function (product_sku, variant_name, cb) {
-    jQuery.get(Utils.getURL('v1', ['variant', 'value', 'list']), {
-        'namespace': this.site_name + '_' + product_sku,
-        'variant': variant_name
+    jQuery.get(Utils.getURL('v1', ['variant', variant_name, 'value']), {
+        'namespace': this.site_name + '_' + product_sku
     }, function (v) {
         cb(v.values);
     });
@@ -3626,11 +3625,10 @@ Variants.prototype.getValues = function (product_sku, variant_name, cb) {
  */
 Variants.prototype.getCombination = function (product_sku, cb) {
     var self = this;
-    jQuery.get(Utils.getURL('v1', ['variant', 'combination']), {
-        'sku': product_sku,
+    jQuery.get(Utils.getURL('v1', ['variant', product_sku, 'combination']), {
         'namespace': this.site_name + '_' + product_sku
     }, function (v) {
-        cb(v.combination);
+        cb(v.combinations);
     });
 };
 
@@ -3663,6 +3661,7 @@ var CartProduct = function () {
         var bullet2 = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : "";
         var bullet3 = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : "";
         var im = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "";
+        var weight = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 0;
 
         _classCallCheck(this, CartProduct);
 
@@ -3677,6 +3676,7 @@ var CartProduct = function () {
         this.bullet_2 = bullet2;
         this.bullet_3 = bullet3;
         this.images = im;
+        this.weight = weight;
     }
 
     _createClass(CartProduct, null, [{
@@ -3694,6 +3694,7 @@ var CartProduct = function () {
             cp.bullet_2 = a.bullet_2;
             cp.bullet_3 = a.bullet_3;
             cp.images = a.images;
+            cp.weight = a.weight;
 
             return cp;
         }
@@ -3788,14 +3789,15 @@ var CartProductListModel = function (_Model) {
 
         /**
          * add an element to the shopping cart
-         * @param  {int}   id       product unique identifier
-         * @param  {float}   price     product price
+         * @param  {int}      id       product unique identifier
+         * @param  {float}    price    product price
          * @param  {string}   name
-         * @param  {int}   upp      units per product
+         * @param  {int}      upp      units per product
          * @param  {string}   bullet1  some random text
          * @param  {string}   bullet2  some random text
          * @param  {string}   bullet3  some random text
          * @param  {object}   img      json with images
+         * @param  {int}      weight   weight of the product in kg
          * @param  {Function} callback callback this method when loaded
          * @todo: use promisses
          */
@@ -3811,7 +3813,8 @@ var CartProductListModel = function (_Model) {
             var bullet2 = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : "";
             var bullet3 = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : "";
             var img = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "";
-            var callback = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : $.noop;
+            var weight = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 0;
+            var callback = arguments.length > 10 && arguments[10] !== undefined ? arguments[10] : $.noop;
 
             // get product images
             img = img === "" ? this.getProductImage(sku, combination) : img;
@@ -3831,7 +3834,7 @@ var CartProductListModel = function (_Model) {
 
             if (!cp) {
                 // create a new product and add to products
-                cp = new CartProduct(sku, combination, price, name, upp, bullet1, bullet2, bullet3, im);
+                cp = new CartProduct(sku, combination, price, name, upp, bullet1, bullet2, bullet3, im, weight);
                 this.products.push(cp);
             }
 
@@ -5229,7 +5232,7 @@ var Cart = function (_Module) {
         key: 'onActionPerformed',
         value: function onActionPerformed(tag_name, data, $element) {
             if (tag_name === 'lp-cart-add') {
-                this.cart_model.addProduct($element.attr('product-sku'), $element.attr('product-combination'), $element.attr('product-price'), $element.attr('product-name'), $element.attr('product-upp'), $element.attr('product-bullet1'), $element.attr('product-bullet2'), $element.attr('product-bullet3'), $element.attr('product-img'));
+                this.cart_model.addProduct($element.attr('product-sku'), $element.attr('product-combination'), $element.attr('product-price'), $element.attr('product-name'), $element.attr('product-upp'), $element.attr('product-bullet1'), $element.attr('product-bullet2'), $element.attr('product-bullet3'), $element.attr('product-img'), $element.attr('product-weight'));
             }
 
             if (tag_name === "lp-cart-add-one") {
@@ -5323,23 +5326,24 @@ var Cart = function (_Module) {
          * @param  {string}   bullet2  some random text
          * @param  {string}   bullet3  some random text
          * @param  {object}   img      json with images
+         * @param  {int}      weight   weight of the product in kg
          * @param  {Function} callback callback this method when loaded
          * @todo: use promisses
          */
 
     }, {
         key: 'addProduct',
-        value: function addProduct(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback) {
+        value: function addProduct(id, sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, weight, callback) {
             // soft replacement of id by sku
             if (sku === '') {
                 sku = id;
             }
 
-            this.cart_model.addProduct(sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, callback);
+            this.cart_model.addProduct(sku, combination, price, name, upp, bullet1, bullet2, bullet3, img, weight, callback);
 
             this.gaAddProduct({
                 id: id, sku: sku, combination: combination, price: price, name: name, upp: upp,
-                bullet1: bullet1, bullet2: bullet2, bullet3: bullet3, img: img
+                bullet1: bullet1, bullet2: bullet2, bullet3: bullet3, img: img, weight: weight
             }, this.cart_model.findProductIndex(id));
         }
 
