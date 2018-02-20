@@ -16,6 +16,7 @@ var ProductBox = function($div, options)
     this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
     this.ignore_stock = options.ignore_stock ? 'true' : 'false';
+    this.column = options.column;
 
     this.view = new ProductBoxView(this);
 };
@@ -42,7 +43,11 @@ ProductBox.prototype.loadProducts = function(callback)
 {
     callback = callback || $.noop;
 
-    $.get(this.getURL(), function(json)
+    var data = {
+        'column': this.column
+    };
+
+    $.get(this.getURL(), data, function(json)
     {
         callback(json.products);
     });

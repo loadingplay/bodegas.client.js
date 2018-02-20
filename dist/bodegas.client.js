@@ -692,7 +692,10 @@ ExtraInfo.prototype.synchronize = function()
             'variant_template': '',  // ''  for use default
             'value_template': '', // '' for use default
             'active_class': 'value-active'  // this class is added when a value is selected
-        }
+        },
+
+        /**** CART ****/
+        'afterModelUpdate': $.noop
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -722,6 +725,8 @@ var EcommerceFacade = function(options)
     {
         return self.variants_view.getSelectedCombination();
     };
+
+    this.ecommerce.cart.afterModelUpdate = this.options.afterModelUpdate;
 
     this.animation = null;
 
@@ -967,14 +972,13 @@ EcommerceFacade.prototype.triggerProductsLoaded = function(products)
 };
 
 /**
- * thi event get triggered when all variants are loaded
+ * this event get triggered when all variants are loaded
  * @param  {list} variants variants list
  */
 EcommerceFacade.prototype.triggerVariantsLoaded = function(variants)
 {
     $(this.options.container).trigger('variants.loaded', [variants]);
 };
-
 
 /**
  * this method is executed once all variants are loaded within skus inside
@@ -1505,6 +1509,7 @@ var ProductBox = function($div, options)
     this.onLoad = options.onLoad || $.noop;
     this.$container = $div || $('<div></div>');
     this.ignore_stock = options.ignore_stock ? 'true' : 'false';
+    this.column = options.column;
 
     this.view = new ProductBoxView(this);
 };
@@ -1531,7 +1536,11 @@ ProductBox.prototype.loadProducts = function(callback)
 {
     callback = callback || $.noop;
 
-    $.get(this.getURL(), function(json)
+    var data = {
+        'column': this.column
+    };
+
+    $.get(this.getURL(), data, function(json)
     {
         callback(json.products);
     });
@@ -3414,6 +3423,7 @@ class Cart extends Module
 
         this.onLoadCart = $.noop;
         this.onSaveModel = $.noop;
+        this.afterModelUpdate = $.noop;
 
         this.shipping_cost = 0;
 
@@ -3480,7 +3490,6 @@ class Cart extends Module
 
     onModelUpdate(model)
     {
-
         var disabled = $(".pagar-che").is(':disabled');
 
         this.product_view.render();
@@ -3491,6 +3500,8 @@ class Cart extends Module
 
         if (!disabled)
             $(".pagar-che").removeAttr('disabled');
+
+        this.afterModelUpdate();
     }
 
     onActionPerformed(tag_name, data, $element)
