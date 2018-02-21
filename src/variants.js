@@ -22,7 +22,7 @@ Variants.prototype.get = function(product_sku, cb)
 {
     var self = this;
     jQuery.get(
-        Utils.getURL('v1', ['variant']),
+        Utils.getURL('v1', ['variant', 'list']),
         {
             'namespace': this.site_name + '_' + product_sku
         },
@@ -44,9 +44,10 @@ Variants.prototype.get = function(product_sku, cb)
 Variants.prototype.getValues = function(product_sku, variant_name, cb)
 {
     jQuery.get(
-        Utils.getURL('v1', ['variant', variant_name, 'value']),
+        Utils.getURL('v1', ['variant', 'value', 'list']),
         {
             'namespace': this.site_name + '_' + product_sku,
+            'variant': variant_name
         },
         function(v)
         {
@@ -64,13 +65,14 @@ Variants.prototype.getCombination = function(product_sku, cb)
 {
     var self = this;
     jQuery.get(
-        Utils.getURL('v1', ['variant', product_sku, 'combination']),
+        Utils.getURL('v1', ['variant', 'combination']),
         {
+            'sku': product_sku,
             'namespace': this.site_name + '_' + product_sku
         },
         function(v)
         {
-            cb(v.combinations);
+            cb(v.combination);
         }
     );
 };

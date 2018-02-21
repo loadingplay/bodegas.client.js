@@ -423,16 +423,16 @@ $.mockjax({
 
 
 $.mockjax({
-    url: new RegExp(base_url + "/variant/([^/])*/combination"),
+    url: new RegExp(base_url + "/variant/list"),
     type: "get",
     response: function(settings)
     {
-        this.responseText = {"status": "success", "combinations": [{"sku": "HA-E936-S18-BLU-PTF-VTS-T75-35", "data": ""}]}
+        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
     }
 });
 
 $.mockjax({
-    url: new RegExp(base_url + "/variant/([^/])+/value"),
+    url: new RegExp(base_url + "/variant/value/list"),
     type: "get",
     response: function(settings)
     {
@@ -478,16 +478,6 @@ $.mockjax({
         };
     }
 });
-
-$.mockjax({
-    url: new RegExp(base_url + "/variant"),
-    type: "get",
-    response: function(settings)
-    {
-        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
-    }
-});
-
 
 $.mockjax({
     url: new RegExp(base_url + "/test_model"),

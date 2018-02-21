@@ -2043,13 +2043,13 @@ class CartProductListModel extends Model
         {
             this.get('v1/discount/' + code, {"site_name": site_name}).then((response) =>
             {
-                // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
-                if (response.status === "success" && response.discounts.length != 0)
+                // Se utiliza != 0 porque discount es json cuando tiene dato y es lista cuando no
+                if (response.status === "success" && response.discount.length != 0)
                 {
-                    if (response.discounts["activate"] === true)
+                    if (response.discount["activate"] === true)
                     {
-                        this.percentage = response.discounts["percentage"];
-                        this.discount_code = response.discounts["code"];
+                        this.percentage = response.discount["percentage"];
+                        this.discount_code = response.discount["code"];
                         this.modelUpdate()
                         return
                     }
