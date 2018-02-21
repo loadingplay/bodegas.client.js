@@ -421,17 +421,9 @@ $.mockjax({
     responseText: {"tags": [{"visible": 1, "site_id": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_id": 2, "id": 2, "name": "perro"}]}
 });
 
-$.mockjax({
-    url: "https://apibodegas.loadingplay.com/v1/variant",
-    type: "get",
-    response: function(settings)
-    {
-        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
-    }
-});
 
 $.mockjax({
-    url: new RegExp(base_url + "/variant//combination"),
+    url: new RegExp(base_url + "/variant/([^/])*/combination"),
     type: "get",
     response: function(settings)
     {
@@ -440,7 +432,7 @@ $.mockjax({
 });
 
 $.mockjax({
-    url: new RegExp(base_url + "/variant/talla,color/value"),
+    url: new RegExp(base_url + "/variant/([^/])+/value"),
     type: "get",
     response: function(settings)
     {
@@ -486,6 +478,16 @@ $.mockjax({
         };
     }
 });
+
+$.mockjax({
+    url: new RegExp(base_url + "/variant"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
+    }
+});
+
 
 $.mockjax({
     url: new RegExp(base_url + "/test_model"),
