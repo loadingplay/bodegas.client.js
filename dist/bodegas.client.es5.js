@@ -3606,7 +3606,7 @@ var Variants = function Variants(options) {
  */
 Variants.prototype.get = function (product_sku, cb) {
     var self = this;
-    jQuery.get(Utils.getURL('v1', ['variant', 'list']), {
+    jQuery.get(Utils.getURL('v1', ['variant']), {
         'namespace': this.site_name + '_' + product_sku
     }, function (v) {
 
@@ -3621,9 +3621,8 @@ Variants.prototype.get = function (product_sku, cb) {
  * @param  {Function} cb           callback method
  */
 Variants.prototype.getValues = function (product_sku, variant_name, cb) {
-    jQuery.get(Utils.getURL('v1', ['variant', 'value', 'list']), {
-        'namespace': this.site_name + '_' + product_sku,
-        'variant': variant_name
+    jQuery.get(Utils.getURL('v1', ['variant', variant_name, 'value']), {
+        'namespace': this.site_name + '_' + product_sku
     }, function (v) {
         cb(v.values);
     });
@@ -3636,11 +3635,10 @@ Variants.prototype.getValues = function (product_sku, variant_name, cb) {
  */
 Variants.prototype.getCombination = function (product_sku, cb) {
     var self = this;
-    jQuery.get(Utils.getURL('v1', ['variant', 'combination']), {
-        'sku': product_sku,
+    jQuery.get(Utils.getURL('v1', ['variant', product_sku, 'combination']), {
         'namespace': this.site_name + '_' + product_sku
     }, function (v) {
-        cb(v.combination);
+        cb(v.combinations);
     });
 };
 
