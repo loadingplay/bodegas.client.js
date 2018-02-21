@@ -3868,11 +3868,11 @@ var CartProductListModel = function (_Model) {
 
             if (isNaN(code)) {
                 this.get('v1/discount/' + code, { "site_name": site_name }).then(function (response) {
-                    // Se utiliza != 0 porque discounts es json cuando tiene dato y es lista cuando no
-                    if (response.status === "success" && response.discounts.length != 0) {
-                        if (response.discounts["activate"] === true) {
-                            _this10.percentage = response.discounts["percentage"];
-                            _this10.discount_code = response.discounts["code"];
+                    // Se utiliza != 0 porque discount es json cuando tiene dato y es lista cuando no
+                    if (response.status === "success" && response.discount.length != 0) {
+                        if (response.discount["activate"] === true) {
+                            _this10.percentage = response.discount["percentage"];
+                            _this10.discount_code = response.discount["code"];
                             _this10.modelUpdate();
                             return;
                         }
