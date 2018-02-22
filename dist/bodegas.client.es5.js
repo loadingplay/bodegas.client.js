@@ -5181,10 +5181,15 @@ var Cart = function (_Module) {
         // add models and views
         _this16.addModel('product-list', _this16.cart_model);
 
+        // Nota: se usa en checkout.html
         _this16.addView('product-list-view', _this16.product_view);
+        // Nota: no se usa
         _this16.addView('total-view', _this16.total_view);
+        // Nota: no se usa
         _this16.addView('total-extern-view', _this16.total_extern_view);
+        // Nota: se usa en checkout.html
         _this16.addView('units-total-view', _this16.units_total_view);
+        // Nota: no se usa
         _this16.addView('checkout-form-view', _this16.checkout_form_view);
 
         // add view actions
@@ -5228,7 +5233,8 @@ var Cart = function (_Module) {
     }, {
         key: 'onModelUpdate',
         value: function onModelUpdate(model) {
-            var disabled = $(".pagar-che").is(':disabled');
+            // GUARDAR ESTADO DEL BOTON PAGAR FIJO
+            var disabled = $(".lp-checkout-button").is(':disabled');
 
             this.product_view.render();
             this.total_view.render();

@@ -39,10 +39,15 @@ class Cart extends Module
         // add models and views
         this.addModel('product-list', this.cart_model);
 
+        // Nota: se usa en checkout.html
         this.addView('product-list-view', this.product_view);
+        // Nota: no se usa
         this.addView('total-view', this.total_view);
+        // Nota: no se usa
         this.addView('total-extern-view', this.total_extern_view);
+        // Nota: se usa en checkout.html
         this.addView('units-total-view', this.units_total_view);
+        // Nota: no se usa
         this.addView('checkout-form-view', this.checkout_form_view);
 
         // add view actions
@@ -84,7 +89,8 @@ class Cart extends Module
 
     onModelUpdate(model)
     {
-        var disabled = $(".pagar-che").is(':disabled');
+        // GUARDAR ESTADO DEL BOTON PAGAR FIJO
+        var disabled = $(".lp-checkout-button").is(':disabled');
 
         this.product_view.render();
         this.total_view.render();
