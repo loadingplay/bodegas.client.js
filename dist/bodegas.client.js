@@ -1798,7 +1798,8 @@ Variants.prototype.get = function(product_sku, cb)
     jQuery.get(
         Utils.getURL('v1', ['variant']),
         {
-            'namespace': this.site_name + '_' + product_sku
+            'site_name': this.site_name,
+            'sku': product_sku
         },
         function(v)
         {
@@ -1820,7 +1821,8 @@ Variants.prototype.getValues = function(product_sku, variant_name, cb)
     jQuery.get(
         Utils.getURL('v1', ['variant', variant_name, 'value']),
         {
-            'namespace': this.site_name + '_' + product_sku,
+            'site_name': this.site_name,
+            'sku': product_sku
         },
         function(v)
         {
@@ -1840,7 +1842,8 @@ Variants.prototype.getCombination = function(product_sku, cb)
     jQuery.get(
         Utils.getURL('v1', ['variant', product_sku, 'combination']),
         {
-            'namespace': this.site_name + '_' + product_sku
+            'site_name': this.site_name,
+            'sku': product_sku
         },
         function(v)
         {
