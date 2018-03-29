@@ -4,21 +4,20 @@ var preset = function()
 {
     // set varinats json
     // should be equal to api
-    this.variants_json = [{
-        "values": [
-            "1",
-            "2",
-            "3"
-        ],
-        "variant_name": "talla"
-    }, {
-        "values": [
-            "rojo",
-            "verde",
-            "azul"
-        ],
-        "variant_name": "color"
-    }];
+    this.variants_json = [
+        {
+            "values": ["1", "2", "3"],
+            "variant_name": "talla"
+        }, 
+        {
+            "values": [
+                "rojo",
+                "verde",
+                "azul"
+            ],
+            "variant_name": "color"
+        }
+    ];
 };
 
 var qunit_preconfig = {
