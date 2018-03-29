@@ -89,7 +89,7 @@ VariantsView.prototype.selectVariant = function(variant, value)
         }, ...]
     @return html string with values
  */
-VariantsView.prototype.renderValues = function(values)
+VariantsView.prototype.renderValues = function(values, name)
 {
     var values_builder = [];
 
@@ -97,7 +97,8 @@ VariantsView.prototype.renderValues = function(values)
     {
         values_builder.push(
             Utils.render(this.value_template, {
-                value: values[i]
+                value: values[i],
+                variant_name: name
             })
         );
     }
@@ -130,7 +131,7 @@ VariantsView.prototype.renderVariants = function(variants)
             this.variant_template,
             {
                 'variant_name': variants[i].variant_name,
-                'values': this.renderValues(variants[i].values)
+                'values': this.renderValues(variants[i].values, variants[i].variant_name)
             });
 
         variant_builder.push(rendered);

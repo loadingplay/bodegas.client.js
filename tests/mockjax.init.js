@@ -427,7 +427,7 @@ $.mockjax({
     type: "get",
     response: function(settings)
     {
-        this.responseText = {"status": "success", "combinations": [{"sku": "HA-E936-S18-BLU-PTF-VTS-T75-35", "data": ""}]}
+        this.responseText = {"status": "success", "combinations": [{"sku": "talla", "data": ""},{"sku": "color", "data": ""}]}
     }
 });
 
@@ -439,40 +439,18 @@ $.mockjax({
         this.responseText = {
             "status": "success",
             "values": [{
-                "values": [{
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 1,
-                    "value": "1",
-                    "variant_name": "talla"
-                }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 2,
-                    "value": "2",
-                    "variant_name": "talla"
-                }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 3,
-                    "value": "3",
-                    "variant_name": "talla"
-                }],
+                "values": [
+                    "1",
+                    "2",
+                    "3"
+                ],
                 "variant_name": "talla"
             }, {
-                "values": [{
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 4,
-                    "value": "rojo",
-                    "variant_name": "color"
-                }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 5,
-                    "value": "verde",
-                    "variant_name": "color"
-                }, {
-                    "site_name": "me_NBK-SACO-NEGRA-C168",
-                    "id": 6,
-                    "value": "azul",
-                    "variant_name": "color"
-                }],
+                "values": [
+                    "rojo",
+                    "verde",
+                    "azul"
+                ],
                 "variant_name": "color"
             }]
         };
@@ -484,7 +462,18 @@ $.mockjax({
     type: "get",
     response: function(settings)
     {
-        this.responseText = {"status": "success", "variants": [{"id": 1, "name": "talla"}, {"id": 2, "name": "color"}]};
+        this.responseText = {"status": "success", "variants": [
+            {
+                "sku": "NBK-SACO-NEGRA-C168",
+                "site_name": "me",
+                "id": 1,
+                "name": "talla"
+            }, {
+                "sku": "NBK-SACO-NEGRA-C168",
+                "site_name": "me",
+                "id": 2,
+                "name": "color"
+            }]};
     }
 });
 
