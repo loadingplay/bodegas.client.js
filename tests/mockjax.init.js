@@ -427,7 +427,13 @@ $.mockjax({
     type: "get",
     response: function(settings)
     {
-        this.responseText = {"status": "success", "combinations": [{"sku": "talla", "data": ""},{"sku": "color", "data": ""}]}
+        this.responseText = {
+            "status": "success",
+            "combinations": [
+                {"sku": "talla", "data": ""},
+                {"sku": "color", "data": ""}
+            ]
+        }
     }
 });
 
@@ -438,14 +444,12 @@ $.mockjax({
     {
         this.responseText = {
             "status": "success",
-            "values": [{
-                "values": [
-                    "1",
-                    "2",
-                    "3"
-                ],
+            "values": [
+            {
+                "values": ["1", "2", "3"],
                 "variant_name": "talla"
-            }, {
+            },
+            {
                 "values": [
                     "rojo",
                     "verde",
@@ -462,18 +466,23 @@ $.mockjax({
     type: "get",
     response: function(settings)
     {
-        this.responseText = {"status": "success", "variants": [
-            {
-                "sku": "NBK-SACO-NEGRA-C168",
-                "site_name": "me",
-                "id": 1,
-                "name": "talla"
-            }, {
-                "sku": "NBK-SACO-NEGRA-C168",
-                "site_name": "me",
-                "id": 2,
-                "name": "color"
-            }]};
+        this.responseText = {
+            "status": "success",
+            "variants": [
+                {
+                    "sku": "NBK-SACO-NEGRA-C168",
+                    "site_name": "me",
+                    "id": 1,
+                    "name": "talla"
+                },
+                {
+                    "sku": "NBK-SACO-NEGRA-C168",
+                    "site_name": "me",
+                    "id": 2,
+                    "name": "color"
+                }
+            ]
+        };
     }
 });
 
