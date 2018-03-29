@@ -5054,7 +5054,9 @@ VariantsView.prototype.renderValues = function (values) {
     var values_builder = [];
 
     for (var i = 0; i < values.length; i++) {
-        values_builder.push(Utils.render(this.value_template, values[i]));
+        values_builder.push(Utils.render(this.value_template, {
+            value: values[i]
+        }));
     }
 
     return values_builder.join('');

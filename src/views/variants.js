@@ -96,7 +96,9 @@ VariantsView.prototype.renderValues = function(values)
     for (var i = 0; i < values.length; i++)
     {
         values_builder.push(
-            Utils.render(this.value_template, values[i])
+            Utils.render(this.value_template, {
+                value: values[i]
+            })
         );
     }
 
