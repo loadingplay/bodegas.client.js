@@ -4,43 +4,20 @@ var preset = function()
 {
     // set varinats json
     // should be equal to api
-    this.variants_json = [{
-        "values": [{
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 1,
-            "value": "1",
+    this.variants_json = [
+        {
+            "values": ["1", "2", "3"],
             "variant_name": "talla"
-        }, {
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 2,
-            "value": "2",
-            "variant_name": "talla"
-        }, {
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 3,
-            "value": "3",
-            "variant_name": "talla"
-        }],
-        "variant_name": "talla"
-    }, {
-        "values": [{
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 4,
-            "value": "rojo",
+        }, 
+        {
+            "values": [
+                "rojo",
+                "verde",
+                "azul"
+            ],
             "variant_name": "color"
-        }, {
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 5,
-            "value": "verde",
-            "variant_name": "color"
-        }, {
-            "site_name": "me_NBK-SACO-NEGRA-C168",
-            "id": 6,
-            "value": "azul",
-            "variant_name": "color"
-        }],
-        "variant_name": "color"
-    }];
+        }
+    ];
 };
 
 var qunit_preconfig = {
@@ -91,7 +68,7 @@ QUnit.test('no facade tests', function(assert)
     variants.getValues('aa', 'talla,color', function(values)
     {
         assert.equal(typeof values, 'object', 'values loaded');
-        assert.equal(values[0].values[0].value, '1', 'values loaded');
+        assert.equal(values[0].values[0], '1', 'values loaded');
 
         done2();
     });
