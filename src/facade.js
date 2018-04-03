@@ -199,7 +199,8 @@
         },
 
         /**** CART ****/
-        'afterModelUpdate': $.noop
+        'afterModelUpdate': $.noop,
+        'afterModelSave': $.noop
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -231,6 +232,7 @@ var EcommerceFacade = function(options)
     };
 
     this.ecommerce.cart.afterModelUpdate = this.options.afterModelUpdate;
+    this.ecommerce.cart.afterModelSave = this.options.afterModelSave;
 
     this.animation = null;
 

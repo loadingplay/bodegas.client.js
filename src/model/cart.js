@@ -222,6 +222,7 @@ class CartProductListModel extends Model
             'items': JSON.stringify(this.products)
         }).then(()=>{
             callback();
+            this.modelSaved();
         });
         this.modelUpdate();
     }
