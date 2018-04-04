@@ -104,6 +104,11 @@ class Cart extends Module
         this.afterModelUpdate();
     }
 
+    onModelSaved(model)
+    {
+        this.afterModelSave();
+    }
+
     onActionPerformed(tag_name, data, $element)
     {
         if (tag_name === 'lp-cart-add')

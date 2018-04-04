@@ -695,7 +695,8 @@ ExtraInfo.prototype.synchronize = function()
         },
 
         /**** CART ****/
-        'afterModelUpdate': $.noop
+        'afterModelUpdate': $.noop,
+        'afterModelSave': $.noop
     };
 
 })( jQuery, window, document ); // jshint ignore: line
@@ -727,6 +728,7 @@ var EcommerceFacade = function(options)
     };
 
     this.ecommerce.cart.afterModelUpdate = this.options.afterModelUpdate;
+    this.ecommerce.cart.afterModelSave = this.options.afterModelSave;
 
     this.animation = null;
 
@@ -1106,6 +1108,11 @@ class Model extends LPObject
         this.model_provider.onModelUpdate(this);
     }
 
+    modelSaved()
+    {
+        this.model_provider.onModelSaved(this);
+    }
+
     /**
      *  post data to API
      * @param  {strign} endpoint   the actual API endpoint
@@ -1298,6 +1305,10 @@ class Module
         {
             this.onModelUpdate(model)
         };
+        this.model_provider.onModelSaved = (model) =>
+        {
+            this.onModelSaved(model);
+        };
         this.view_data_provider.getData = (view) =>
         {
             return this.onViewRequestData(view);
@@ -1368,6 +1379,11 @@ class Module
     }
 
     onModelUpdate(model)
+    {
+        console.warn("method must be implemented");
+    }
+
+    onModelSaved(model)
     {
         console.warn("method must be implemented");
     }
@@ -2076,6 +2092,7 @@ class CartProductListModel extends Model
             'items': JSON.stringify(this.products)
         }).then(()=>{
             callback();
+            this.modelSaved();
         });
         this.modelUpdate();
     }
@@ -3514,6 +3531,11 @@ class Cart extends Module
             $(".pagar-che").removeAttr('disabled');
 
         this.afterModelUpdate();
+    }
+
+    onModelSaved(model)
+    {
+        this.afterModelSave();
     }
 
     onActionPerformed(tag_name, data, $element)

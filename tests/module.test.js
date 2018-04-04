@@ -95,6 +95,11 @@ QUnit.test('LyfeCycle', function(assert)
         return this.model.data;
     };
 
+    MyModule.prototype.onModelSaved = function ()
+    {
+        return this.model.data;
+    };
+
     MyModule.prototype.onActionPerformed = function(tag_name, data, $element)
     {
         // nothing here

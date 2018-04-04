@@ -104,6 +104,11 @@ class Model extends LPObject
         this.model_provider.onModelUpdate(this);
     }
 
+    modelSaved()
+    {
+        this.model_provider.onModelSaved(this);
+    }
+
     /**
      *  post data to API
      * @param  {strign} endpoint   the actual API endpoint
@@ -296,6 +301,10 @@ class Module
         {
             this.onModelUpdate(model)
         };
+        this.model_provider.onModelSaved = (model) =>
+        {
+            this.onModelSaved(model);
+        };
         this.view_data_provider.getData = (view) =>
         {
             return this.onViewRequestData(view);
@@ -366,6 +375,11 @@ class Module
     }
 
     onModelUpdate(model)
+    {
+        console.warn("method must be implemented");
+    }
+
+    onModelSaved(model)
     {
         console.warn("method must be implemented");
     }

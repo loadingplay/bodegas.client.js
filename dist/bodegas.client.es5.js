@@ -2623,7 +2623,8 @@ ExtraInfo.prototype.synchronize = function () {
         },
 
         /**** CART ****/
-        'afterModelUpdate': $.noop
+        'afterModelUpdate': $.noop,
+        'afterModelSave': $.noop
     };
 })(jQuery, window, document); // jshint ignore: line
 
@@ -2649,6 +2650,7 @@ var EcommerceFacade = function EcommerceFacade(options) {
     };
 
     this.ecommerce.cart.afterModelUpdate = this.options.afterModelUpdate;
+    this.ecommerce.cart.afterModelSave = this.options.afterModelSave;
 
     this.animation = null;
 
@@ -2955,6 +2957,11 @@ var Model = function (_LPObject) {
         value: function modelUpdate() {
             this.model_provider.onModelUpdate(this);
         }
+    }, {
+        key: 'modelSaved',
+        value: function modelSaved() {
+            this.model_provider.onModelSaved(this);
+        }
 
         /**
          *  post data to API
@@ -3172,6 +3179,9 @@ var Module = function () {
         this.model_provider.onModelUpdate = function (model) {
             _this7.onModelUpdate(model);
         };
+        this.model_provider.onModelSaved = function (model) {
+            _this7.onModelSaved(model);
+        };
         this.view_data_provider.getData = function (view) {
             return _this7.onViewRequestData(view);
         };
@@ -3247,6 +3257,11 @@ var Module = function () {
     }, {
         key: 'onModelUpdate',
         value: function onModelUpdate(model) {
+            console.warn("method must be implemented");
+        }
+    }, {
+        key: 'onModelSaved',
+        value: function onModelSaved(model) {
             console.warn("method must be implemented");
         }
     }, {
@@ -3897,12 +3912,15 @@ var CartProductListModel = function (_Model) {
     }, {
         key: 'saveCart',
         value: function saveCart() {
+            var _this11 = this;
+
             var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : $.noop;
 
             this.post('v1/cart/' + this.guid, {
                 'items': JSON.stringify(this.products)
             }).then(function () {
                 callback();
+                _this11.modelSaved();
             });
             this.modelUpdate();
         }
@@ -4042,10 +4060,10 @@ var CartProductListView = function (_View) {
     function CartProductListView() {
         _classCallCheck(this, CartProductListView);
 
-        var _this11 = _possibleConstructorReturn(this, (CartProductListView.__proto__ || Object.getPrototypeOf(CartProductListView)).call(this, $('.shopping-cart')));
+        var _this12 = _possibleConstructorReturn(this, (CartProductListView.__proto__ || Object.getPrototypeOf(CartProductListView)).call(this, $('.shopping-cart')));
 
-        _this11.setTemplate($('#shopping-cart-product').html());
-        return _this11;
+        _this12.setTemplate($('#shopping-cart-product').html());
+        return _this12;
     }
 
     return CartProductListView;
@@ -4057,11 +4075,11 @@ var CartTotalView = function (_View2) {
     function CartTotalView() {
         _classCallCheck(this, CartTotalView);
 
-        var _this12 = _possibleConstructorReturn(this, (CartTotalView.__proto__ || Object.getPrototypeOf(CartTotalView)).call(this, $('.shopping-cart')));
+        var _this13 = _possibleConstructorReturn(this, (CartTotalView.__proto__ || Object.getPrototypeOf(CartTotalView)).call(this, $('.shopping-cart')));
 
-        _this12.setTemplate($('#shopping-cart-total').html());
-        _this12.append = true;
-        return _this12;
+        _this13.setTemplate($('#shopping-cart-total').html());
+        _this13.append = true;
+        return _this13;
     }
 
     return CartTotalView;
@@ -4073,10 +4091,10 @@ var ExternalCartTotalView = function (_View3) {
     function ExternalCartTotalView() {
         _classCallCheck(this, ExternalCartTotalView);
 
-        var _this13 = _possibleConstructorReturn(this, (ExternalCartTotalView.__proto__ || Object.getPrototypeOf(ExternalCartTotalView)).call(this, $('.total_cart')));
+        var _this14 = _possibleConstructorReturn(this, (ExternalCartTotalView.__proto__ || Object.getPrototypeOf(ExternalCartTotalView)).call(this, $('.total_cart')));
 
-        _this13.setTemplate($('#total_cart_template').html());
-        return _this13;
+        _this14.setTemplate($('#total_cart_template').html());
+        return _this14;
     }
 
     return ExternalCartTotalView;
@@ -4088,10 +4106,10 @@ var UnitsTotalView = function (_View4) {
     function UnitsTotalView() {
         _classCallCheck(this, UnitsTotalView);
 
-        var _this14 = _possibleConstructorReturn(this, (UnitsTotalView.__proto__ || Object.getPrototypeOf(UnitsTotalView)).call(this, $('.units-total')));
+        var _this15 = _possibleConstructorReturn(this, (UnitsTotalView.__proto__ || Object.getPrototypeOf(UnitsTotalView)).call(this, $('.units-total')));
 
-        _this14.setTemplate($('#shopping-cart-units-total').html());
-        return _this14;
+        _this15.setTemplate($('#shopping-cart-units-total').html());
+        return _this15;
     }
 
     return UnitsTotalView;
@@ -4103,10 +4121,10 @@ var CheckoutFormView = function (_View5) {
     function CheckoutFormView() {
         _classCallCheck(this, CheckoutFormView);
 
-        var _this15 = _possibleConstructorReturn(this, (CheckoutFormView.__proto__ || Object.getPrototypeOf(CheckoutFormView)).call(this, $('.checkout-form')));
+        var _this16 = _possibleConstructorReturn(this, (CheckoutFormView.__proto__ || Object.getPrototypeOf(CheckoutFormView)).call(this, $('.checkout-form')));
 
-        _this15.setTemplate($('#shopping-cart-checkout-form').html());
-        return _this15;
+        _this16.setTemplate($('#shopping-cart-checkout-form').html());
+        return _this16;
     }
 
     return CheckoutFormView;
@@ -5157,59 +5175,59 @@ var Cart = function (_Module) {
     function Cart(site_id, checkout_url, site_name) {
         _classCallCheck(this, Cart);
 
-        var _this16 = _possibleConstructorReturn(this, (Cart.__proto__ || Object.getPrototypeOf(Cart)).call(this));
+        var _this17 = _possibleConstructorReturn(this, (Cart.__proto__ || Object.getPrototypeOf(Cart)).call(this));
 
-        _this16.checkout_url = checkout_url === undefined ? '' : checkout_url;
-        _this16.site_id = site_id === undefined ? 2 : site_id;
-        _this16.site_name = site_name === undefined ? "" : site_name;
+        _this17.checkout_url = checkout_url === undefined ? '' : checkout_url;
+        _this17.site_id = site_id === undefined ? 2 : site_id;
+        _this17.site_name = site_name === undefined ? "" : site_name;
 
-        _this16.onLoadCart = $.noop;
-        _this16.onSaveModel = $.noop;
-        _this16.afterModelUpdate = $.noop;
+        _this17.onLoadCart = $.noop;
+        _this17.onSaveModel = $.noop;
+        _this17.afterModelUpdate = $.noop;
 
-        _this16.shipping_cost = 0;
+        _this17.shipping_cost = 0;
 
-        _this16.extra_info = new ExtraInfo(1);
+        _this17.extra_info = new ExtraInfo(1);
 
         // models
-        _this16.cart_model = new CartProductListModel(_this16.extra_info);
+        _this17.cart_model = new CartProductListModel(_this17.extra_info);
 
         // views
-        _this16.product_view = new CartProductListView();
-        _this16.total_view = new CartTotalView();
-        _this16.total_extern_view = new ExternalCartTotalView();
-        _this16.units_total_view = new UnitsTotalView();
-        _this16.checkout_form_view = new CheckoutFormView();
+        _this17.product_view = new CartProductListView();
+        _this17.total_view = new CartTotalView();
+        _this17.total_extern_view = new ExternalCartTotalView();
+        _this17.units_total_view = new UnitsTotalView();
+        _this17.checkout_form_view = new CheckoutFormView();
 
         // google analytics
-        _this16.is_ga_enabled = true;
+        _this17.is_ga_enabled = true;
 
         // add models and views
-        _this16.addModel('product-list', _this16.cart_model);
+        _this17.addModel('product-list', _this17.cart_model);
 
         // Nota: se usa en checkout.html
-        _this16.addView('product-list-view', _this16.product_view);
+        _this17.addView('product-list-view', _this17.product_view);
         // Nota: no se usa
-        _this16.addView('total-view', _this16.total_view);
+        _this17.addView('total-view', _this17.total_view);
         // Nota: no se usa
-        _this16.addView('total-extern-view', _this16.total_extern_view);
+        _this17.addView('total-extern-view', _this17.total_extern_view);
         // Nota: se usa en checkout.html
-        _this16.addView('units-total-view', _this16.units_total_view);
+        _this17.addView('units-total-view', _this17.units_total_view);
         // Nota: no se usa
-        _this16.addView('checkout-form-view', _this16.checkout_form_view);
+        _this17.addView('checkout-form-view', _this17.checkout_form_view);
 
         // add view actions
-        _this16.product_view.setClickAction('lp-cart-add');
-        _this16.total_view.setClickAction('lp-cart-add-one');
-        _this16.total_view.setClickAction('lp-cart-remove-one');
-        _this16.total_view.setClickAction('lp-cart-remove');
-        _this16.total_view.setClickAction('lp-discount-button');
+        _this17.product_view.setClickAction('lp-cart-add');
+        _this17.total_view.setClickAction('lp-cart-add-one');
+        _this17.total_view.setClickAction('lp-cart-remove-one');
+        _this17.total_view.setClickAction('lp-cart-remove');
+        _this17.total_view.setClickAction('lp-discount-button');
 
-        _this16.total_view.setEnterAction('lp-discount-input');
+        _this17.total_view.setEnterAction('lp-discount-input');
 
-        _this16.cart_model.loadProducts();
+        _this17.cart_model.loadProducts();
 
-        return _this16;
+        return _this17;
     }
 
     _createClass(Cart, [{
@@ -5251,6 +5269,11 @@ var Cart = function (_Module) {
             if (!disabled) $(".pagar-che").removeAttr('disabled');
 
             this.afterModelUpdate();
+        }
+    }, {
+        key: 'onModelSaved',
+        value: function onModelSaved(model) {
+            this.afterModelSave();
         }
     }, {
         key: 'onActionPerformed',
