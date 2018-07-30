@@ -418,7 +418,7 @@ $.mockjax({
 $.mockjax({
     url: new RegExp(base_url + "/tag/list_all/*"),
     type: "get",
-    responseText: {"tags": [{"visible": 1, "site_name": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_name": 2, "id": 2, "name": "perro"}"site_name"}
+    responseText: {"tags": [{"visible": 1, "site_name": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_name": 2, "id": 2, "name": "perro"}]}
 });
 
 
