@@ -3,14 +3,14 @@
 
 'use strict';
 
-var Tag = function(site_id)
+var Tag = function(site_name)
 {
-    this.site_id = site_id === undefined ? 0 : site_id;
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Tag.prototype.listAll = function(callback)
 {
-    $.get(Utils.getURL('tag', ['list_all', this.site_id]), function(data)
+    $.get(Utils.getURL('tag', ['list_all', this.site_name]), function(data)
     {
         callback(data.tags);
     });

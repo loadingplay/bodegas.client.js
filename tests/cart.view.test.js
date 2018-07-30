@@ -150,7 +150,7 @@ QUnit.test('all buttons renders all', function(assert)
                 'units_total' : 10,
                 'upp_total' : 5,
                 'checkout_url' : 'test',
-                'site_id' : 13,
+                'site_name' : 13,
                 'cart_id' : 'foo'
             };
         }
@@ -224,10 +224,10 @@ QUnit.test('all buttons renders all', function(assert)
     $element.html('');
     $total_cart.html('');
     // render units per product
-    // view.total_template = '<div>{{ site_id }}</div>';
+    // view.total_template = '<div>{{ site_name }}</div>';
     // view.total_cart_template = '<div>{{ cart_id }}</div>';
     // view.renderTotal($element, $total_cart);
-    total_view.setTemplate('<div>{{ site_id }}</div>');
+    total_view.setTemplate('<div>{{ site_name }}</div>');
     extern_total_view.setTemplate('<div>{{ cart_id }}</div>');
 
     total_view.render();

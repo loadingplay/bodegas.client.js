@@ -27,9 +27,9 @@ QUnit.test('init', function(assert)
 {
     var bodegas = new BodegasClient();
 
-    bodegas.init(100);
+    bodegas.init("site_name");
 
-    assert.equal(bodegas.site_id, 100, 'app id initialized');
+    assert.equal(bodegas.site_name, "site_name", 'app id initialized');
     assert.ok(bodegas.product instanceof Product, 'product initialized');
     assert.ok(bodegas.tag instanceof Tag, 'tag initialized');
     assert.ok(bodegas.cart instanceof Cart, 'cart initialized');

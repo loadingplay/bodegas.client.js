@@ -3,9 +3,9 @@
 
 'use strict';
 
-var Product = function(site_id)
+var Product = function(site_name)
 {
-    this.site_id = site_id === undefined ? 0 : site_id;
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, column, direction, callback)
@@ -74,7 +74,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
 
     jQuery.post(Utils.getURLWithoutParam('product/search'),
         {
-            "site_id": this.site_id,
+            "site_name": this.site_name,
             "page": page,
             "items_per_page": items_per_page,
             "tags": tags,

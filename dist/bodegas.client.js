@@ -377,14 +377,14 @@ GhostAnimation.prototype.init = function()
 var BodegasClient = function(options={})
 {
     this.app_public = '1000';
-    this.site_id = 2;
+    this.site_name = 2;
     this.site_name = options.site_name === undefined ? '' : options.site_name
     this.tag = null;
     this.checkout_url = options.checkout_url === undefined ? '' : options.checkout_url;
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new Cart(this.site_id, this.checkout_url, this.site_name);
+    this.cart = new Cart(this.site_name, this.checkout_url, this.site_name);
 };
 
 BodegasClient.prototype.authenticate = function(app_public, callback)
@@ -401,13 +401,13 @@ BodegasClient.prototype.authenticate = function(app_public, callback)
 };
 
 
-BodegasClient.prototype.init = function(site_id)
+BodegasClient.prototype.init = function(site_name)
 {
-    this.site_id = site_id;
-    this.tag.site_id = site_id;
-    this.product.site_id = site_id;
+    this.site_name = site_name;
+    this.tag.site_name = site_name;
+    this.product.site_name = site_name;
 
-    this.cart.site_id = site_id;
+    this.cart.site_name = site_name;
     this.cart.checkout_url = this.checkout_url;
     this.cart.loadCart();
 };
@@ -1405,9 +1405,9 @@ class Module
 
 'use strict';
 
-var Product = function(site_id)
+var Product = function(site_name)
 {
-    this.site_id = site_id === undefined ? 0 : site_id;
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Product.prototype.list = function(page, items_per_page, callback_or_tags, search_query, user, operator, column, direction, callback)
@@ -1476,7 +1476,7 @@ Product.prototype._list = function(page, items_per_page, ignore_stock, callback_
 
     jQuery.post(Utils.getURLWithoutParam('product/search'),
         {
-            "site_id": this.site_id,
+            "site_name": this.site_name,
             "page": page,
             "items_per_page": items_per_page,
             "tags": tags,
@@ -1567,14 +1567,14 @@ ProductBox.prototype.loadProducts = function(callback)
 
 'use strict';
 
-var Tag = function(site_id)
+var Tag = function(site_name)
 {
-    this.site_id = site_id === undefined ? 0 : site_id;
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Tag.prototype.listAll = function(callback)
 {
-    $.get(Utils.getURL('tag', ['list_all', this.site_id]), function(data)
+    $.get(Utils.getURL('tag', ['list_all', this.site_name]), function(data)
     {
         callback(data.tags);
     });
@@ -2431,7 +2431,7 @@ class CheckoutFormView extends View
 //     {
 //         return {
 //             checkout_url : this.controller.getCheckoutUrl(),
-//             site_id : this.controller.getSiteId(),
+//             site_name : this.controller.getSiteName(),
 //             cart_id : this.controller.getGUID()
 //         };
 //     }
@@ -2461,7 +2461,7 @@ class CheckoutFormView extends View
 //     goToCheckout(checkout)
 //     {
 //         document.location.href = checkout.checkout_url + '?' +
-//                                 'site_id=' + checkout.site_id +
+//                                 'site_name=' + checkout.site_name +
 //                                 '&cart_id=' + checkout.cart_id;
 //     }
 //
@@ -2582,7 +2582,7 @@ class CheckoutFormView extends View
 //             'units_total' : this.controller.getUnitsTotal(),
 //             'upp_total' : this.controller.getUPPTotal(),
 //             'checkout_url' : this.controller.getCheckoutUrl(),
-//             'site_id' : this.controller.getSiteId(),
+//             'site_name' : this.controller.getSiteName(),
 //             'cart_id' : this.controller.getGUID()
 //         };
 //     }
@@ -3436,12 +3436,11 @@ VariantsView.prototype.isValidCombination = function()
 
 class Cart extends Module
 {
-    constructor(site_id, checkout_url, site_name)
+    constructor(checkout_url, site_name)
     {
         super();
 
         this.checkout_url = checkout_url === undefined ? '' : checkout_url;
-        this.site_id = site_id === undefined ? 2 : site_id;
         this.site_name = site_name === undefined ? "" : site_name;
 
         this.onLoadCart = $.noop;
@@ -3608,7 +3607,7 @@ class Cart extends Module
                 'units_total' : this.getUnitsTotal(),
                 'upp_total' : this.getUPPTotal(),
                 'checkout_url' : this.getCheckoutUrl(),
-                'site_id' : this.getSiteId(),
+                'site_name' : this.getSiteId(),
                 'cart_id' : this.getGUID(),
                 'discount_code' : this.getDiscountCode(),
                 'percentage' : this.getPercentage()
@@ -3634,7 +3633,7 @@ class Cart extends Module
 
     getSiteId()
     {
-        return this.site_id;
+        return this.site_name;
     }
 
     saveModel(callback)

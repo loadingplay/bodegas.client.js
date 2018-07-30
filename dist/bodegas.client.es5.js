@@ -2353,14 +2353,14 @@ var BodegasClient = function BodegasClient() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     this.app_public = '1000';
-    this.site_id = 2;
+    this.site_name = 2;
     this.site_name = options.site_name === undefined ? '' : options.site_name;
     this.tag = null;
     this.checkout_url = options.checkout_url === undefined ? '' : options.checkout_url;
 
     this.tag = new Tag();
     this.product = new Product();
-    this.cart = new Cart(this.site_id, this.checkout_url, this.site_name);
+    this.cart = new Cart(this.site_name, this.checkout_url, this.site_name);
 };
 
 BodegasClient.prototype.authenticate = function (app_public, callback) {
@@ -2373,12 +2373,12 @@ BodegasClient.prototype.authenticate = function (app_public, callback) {
     });
 };
 
-BodegasClient.prototype.init = function (site_id) {
-    this.site_id = site_id;
-    this.tag.site_id = site_id;
-    this.product.site_id = site_id;
+BodegasClient.prototype.init = function (site_name) {
+    this.site_name = site_name;
+    this.tag.site_name = site_name;
+    this.product.site_name = site_name;
 
-    this.cart.site_id = site_id;
+    this.cart.site_name = site_name;
     this.cart.checkout_url = this.checkout_url;
     this.cart.loadCart();
 };
@@ -3284,8 +3284,8 @@ var Module = function () {
 
 'use strict';
 
-var Product = function Product(site_id) {
-    this.site_id = site_id === undefined ? 0 : site_id;
+var Product = function Product(site_name) {
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Product.prototype.list = function (page, items_per_page, callback_or_tags, search_query, user, operator, column, direction, callback) {
@@ -3337,7 +3337,7 @@ Product.prototype._list = function (page, items_per_page, ignore_stock, callback
         }
 
     jQuery.post(Utils.getURLWithoutParam('product/search'), {
-        "site_id": this.site_id,
+        "site_name": this.site_name,
         "page": page,
         "items_per_page": items_per_page,
         "tags": tags,
@@ -3411,12 +3411,12 @@ ProductBox.prototype.loadProducts = function (callback) {
 
 'use strict';
 
-var Tag = function Tag(site_id) {
-    this.site_id = site_id === undefined ? 0 : site_id;
+var Tag = function Tag(site_name) {
+    this.site_name = site_name === undefined ? 0 : site_name;
 };
 
 Tag.prototype.listAll = function (callback) {
-    $.get(Utils.getURL('tag', ['list_all', this.site_id]), function (data) {
+    $.get(Utils.getURL('tag', ['list_all', this.site_name]), function (data) {
         callback(data.tags);
     });
 };
@@ -4282,7 +4282,7 @@ var CheckoutFormView = function (_View5) {
 //     {
 //         return {
 //             checkout_url : this.controller.getCheckoutUrl(),
-//             site_id : this.controller.getSiteId(),
+//             site_name : this.controller.getSiteName(),
 //             cart_id : this.controller.getGUID()
 //         };
 //     }
@@ -4312,7 +4312,7 @@ var CheckoutFormView = function (_View5) {
 //     goToCheckout(checkout)
 //     {
 //         document.location.href = checkout.checkout_url + '?' +
-//                                 'site_id=' + checkout.site_id +
+//                                 'site_name=' + checkout.site_name +
 //                                 '&cart_id=' + checkout.cart_id;
 //     }
 //
@@ -4433,7 +4433,7 @@ var CheckoutFormView = function (_View5) {
 //             'units_total' : this.controller.getUnitsTotal(),
 //             'upp_total' : this.controller.getUPPTotal(),
 //             'checkout_url' : this.controller.getCheckoutUrl(),
-//             'site_id' : this.controller.getSiteId(),
+//             'site_name' : this.controller.getSiteName(),
 //             'cart_id' : this.controller.getGUID()
 //         };
 //     }
@@ -5172,13 +5172,12 @@ VariantsView.prototype.isValidCombination = function () {
 var Cart = function (_Module) {
     _inherits(Cart, _Module);
 
-    function Cart(site_id, checkout_url, site_name) {
+    function Cart(checkout_url, site_name) {
         _classCallCheck(this, Cart);
 
         var _this17 = _possibleConstructorReturn(this, (Cart.__proto__ || Object.getPrototypeOf(Cart)).call(this));
 
         _this17.checkout_url = checkout_url === undefined ? '' : checkout_url;
-        _this17.site_id = site_id === undefined ? 2 : site_id;
         _this17.site_name = site_name === undefined ? "" : site_name;
 
         _this17.onLoadCart = $.noop;
@@ -5322,7 +5321,7 @@ var Cart = function (_Module) {
                     'units_total': this.getUnitsTotal(),
                     'upp_total': this.getUPPTotal(),
                     'checkout_url': this.getCheckoutUrl(),
-                    'site_id': this.getSiteId(),
+                    'site_name': this.getSiteId(),
                     'cart_id': this.getGUID(),
                     'discount_code': this.getDiscountCode(),
                     'percentage': this.getPercentage()
@@ -5342,7 +5341,7 @@ var Cart = function (_Module) {
     }, {
         key: 'getSiteId',
         value: function getSiteId() {
-            return this.site_id;
+            return this.site_name;
         }
     }, {
         key: 'saveModel',

@@ -85,7 +85,7 @@
             <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
 
                 <input name="checkout" class="form-control required" type="text" value="{{checkout_url}}" />
-                <input name="site_id" class="form-control required" type="text" value="{{site_id}}" />
+                <input name="site_name" class="form-control required" type="text" value="{{site_name}}" />
                 <input name="cart_id" class="form-control required" type="text" value="{{cart_id}}" />
                 <input name="session_id" class="form-control required" type="text" value="{{session_id}}" />
                 <input name="success_url" class="form-control required" type="text" value="{{success_url}}" />
@@ -111,7 +111,7 @@
         </script>
 
         <script type="text/x-template" id="shopping-cart-checkout-button" >
-            <button type="submit" class="btn btn-outline">Pagar {{ site_id }}</button>
+            <button type="submit" class="btn btn-outline">Pagar {{ site_name }}</button>
         </script>
 
         <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>

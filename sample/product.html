@@ -29,10 +29,10 @@
             <div>{{ description }}</div>
             <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" class="add-to-cart" >add to cart</button>
 
-            <button 
-                product-id="{{ id }}" 
-                product-name="{{ name }}" 
-                product-price="{{ main_price }}" 
+            <button
+                product-id="{{ id }}"
+                product-name="{{ name }}"
+                product-price="{{ main_price }}"
 
                 class="buy-product" >Proceed to checkout</button>
         </div>
@@ -57,7 +57,7 @@
         <div type="template" id="shopping-cart-total" >
             <span class="total" > Total: <span class="money" >{{ total }}</span> </span>
             <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
-                <input name="site_id" class="form-control required" type="hidden" value="{{site_id}}">
+                <input name="site_name" class="form-control required" type="hidden" value="{{site_name}}">
                 <input name="order_id" class="form-control required" type="hidden" value="{{cart_id}}">
                 <input name="session_id" class="form-control required" type="hidden" value="{{session_id}}">
                 <input name="success_url" class="form-control required" type="hidden" value="{{success_url}}">
@@ -69,7 +69,7 @@
         </div>        <!-- shopping cart -->
 
         <script type="text/x-template" id="shopping-cart-checkout-button" >
-            <button type="submit" class="btn btn-outline">Pagar {{ site_id }}</button>
+            <button type="submit" class="btn btn-outline">Pagar {{ site_name }}</button>
         </script>
 
 

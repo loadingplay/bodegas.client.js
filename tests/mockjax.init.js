@@ -8,7 +8,7 @@ var product_list = {
         "upp": 2,
         "sku": "2212121",
         "description": "<ul><li>Alimento para gato Adulto, Delicias de carne y pescado Mayores 7 a\u00f1os<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "CAT CHOW",
         "enabled": false,
         "name": "CAT CHOW Adultos  8 Kg",
@@ -28,7 +28,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "2212115",
         "description": "<ul><li>Alimento para gato Adulto Ahora t\u00fa tambi\u00e9n podr\u00e1s ver la diferencia que hace una buena nutrici\u00f3n. Ojos brillantes, pelaje reluciente, vitalidad. Es esto lo que queremos para nuestro gato y es as\u00ed que sabemos que tiene una buena alimentaci\u00f3n.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "CAT CHOW",
         "enabled": false,
         "name": "CAT CHOW Vida Sana  7 Kg",
@@ -48,7 +48,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "18804",
         "description": "<ul><li>Snack para perros, Integral Junior Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.Producto semi-h\u00famedo para premiar o complementar la alimentaci\u00f3n de su perro.<\/li><li>Formulados con ingredientes altamente palatables y exquisito aroma que los hace irresistibles para su perro.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 300 Gr.",
@@ -69,7 +69,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "18802",
         "description": "<ul><li>Snack para perros, Integral Duo Es una l\u00ednea de riqu\u00edsimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 500 Gr.",
@@ -89,7 +89,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "18803",
         "description": "<ul><li>Snack para perros, Integral Mini Es una l\u00ednea de riqu\u00edsimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 500 Gr.",
@@ -109,7 +109,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "18801",
         "description": "<ul><li>Snack para perros, Integral Maxi Es una l\u00ednea de riqu\u00edsimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 500 Gr.",
@@ -129,7 +129,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "17702",
         "description": "<ul><li>Snack para perros, Tartitas Es una l\u00ednea de riqu\u00edsimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 600 Gr.",
@@ -149,7 +149,7 @@ var product_list = {
         "bulk_price": 1,
         "sku": "17701",
         "description": "<ul><li>Snack para perros, Mix de fruta Es una l\u00ednea de riqu\u00edsimas galletitas horneadas con cuidado especial y preparadas con ingredientes integrales y deliciosos sabores naturales.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW ABRAZZOS 600 Gr.",
@@ -169,7 +169,7 @@ var product_list = {
         "bulk_price": 0,
         "sku": "1124",
         "description": "<ul><li>Alimento para perro Adulto mayor, todas las razas mayores de 7 a\u00f1os PURINA\u00ae DOG CHOW\u00ae Adultos Mayores de 7 A\u00f1os\u00a0est\u00e1 espec\u00edficamente formulado con los nutrientes e ingredientes de calidad que ayudar\u00e1n a su cuerpo maduro tener salud y vitalidad por muchos a\u00f1os por venir<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW Ad Mayores de 7  A\u00f1os 1,5 Kg",
@@ -189,7 +189,7 @@ var product_list = {
         "bulk_price": 0,
         "sku": "111",
         "description": "<ul><li>Alimento para perro Adulto sabor Pollo Purina Dog Chow Adultos est\u00e1 espec\u00edficamente formulado con los nutrientes e ingredientes de calidad que lo ayudar\u00e1n a tener salud y vitalidad por muchos m\u00e1s a\u00f1os.Purina Dog Chow Adultos est\u00e1 espec\u00edficamente formulado con los nutrientes e ingredientes de calidad que lo ayudar\u00e1n a tener salud y vitalidad por muchos m\u00e1s a\u00f1os.<\/li><\/ul>",
-        "site_id": 2,
+        "site_name": "site_name",
         "brand": "DOG CHOW",
         "enabled": false,
         "name": "DOG CHOW Ad Pollo 21 Kg",
@@ -313,7 +313,7 @@ $.mockjax({
 //     urlParams: ["protocol", "product_id"],
 //     response: function()
 //     {
-//         this.responseText = {"bulk_price": 1, "stores": [], "bullet_3": "foo", "bullet_2": "3k", "site_id": 2, "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", "id": 1127, "sku": "2212107", "weight": null, "profit_margin": null, "main_price": 6494, "cost_price": 6494, "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", "tags": [1], "brand": "CAT CHOW", "manufacturer": "Nestle", "name": "Cat Chow Adultos", "enabled": false, "for_sale": true, "promotion_price": 0, "position": 0, "upp": 1}
+//         this.responseText = {"bulk_price": 1, "stores": [], "bullet_3": "foo", "bullet_2": "3k", "site_name": 2, "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", "id": 1127, "sku": "2212107", "weight": null, "profit_margin": null, "main_price": 6494, "cost_price": 6494, "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", "tags": [1], "brand": "CAT CHOW", "manufacturer": "Nestle", "name": "Cat Chow Adultos", "enabled": false, "for_sale": true, "promotion_price": 0, "position": 0, "upp": "site_name"}
 //     }
 // });
 
@@ -329,7 +329,7 @@ $.mockjax({
                 "stores": [],
                 "bullet_3": "foo",
                 "bullet_2": "3k",
-                "site_id": 2,
+                "site_name": "site_name",
                 "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os",
                 "id": 1127,
                 "sku": "2212107",
@@ -362,7 +362,7 @@ $.mockjax({
                 "brand": "CAT CHOW",
                 "enabled": false,
                 "name": "CAT CHOW Adultos  8 Kg",
-                "site_id": 2,
+                "site_name": "site_name",
                 "main_price": 13860,
                 "manufacturer": "Nestle",
                 "id": settings.urlParams.product_id,
@@ -378,7 +378,7 @@ $.mockjax({
     url : new RegExp(base_url + "/product/get/"),
     response: function()
     {
-        this.responseText = {"bulk_price": 1, "stores": [], "bullet_3": "foo", "bullet_2": "3k", "site_id": 2, "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", "id": 1127, "sku": "2212107", "weight": null, "profit_margin": null, "main_price": 6494, "cost_price": 6494, "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", "tags": [1], "brand": "CAT CHOW", "manufacturer": "Nestle", "name": "Cat Chow Adultos", "enabled": false, "for_sale": true, "promotion_price": 0, "position": 0, "upp": 1}
+        this.responseText = {"bulk_price": 1, "stores": [], "bullet_3": "foo", "bullet_2": "3k", "site_name": 2, "bullet_1": "Alimento para gato adulto, delicias de carne 1 a 7 a\u00c3\u00b1os", "id": 1127, "sku": "2212107", "weight": null, "profit_margin": null, "main_price": 6494, "cost_price": 6494, "description": "PURINA CAT CHOW Adultos te ofrece un alimento 100% completo y balanceado desarrollado especialmente para los gatos de 1-7 a\u00c3\u00b1os de edad que le podr\u00c3\u00a1 ayudar a mantener un desarrollo sano de su coraz\u00f3n y un sistema inmunol\u00f3gico m\u00c3\u00a1s fuerte gracias a su contenido de: Prote\u00c3\u00adnas, Amino\u00c3\u00a1cidos esenciale, Grasas, Minerales y Vitaminas, Antioxidantes.<br><br>Formato de Venta: Bolsa<br><br>Delivery: 72 horas<br>", "tags": [1], "brand": "CAT CHOW", "manufacturer": "Nestle", "name": "Cat Chow Adultos", "enabled": false, "for_sale": true, "promotion_price": 0, "position": 0, "upp": "site_name"}
     }
 });
 
@@ -418,7 +418,7 @@ $.mockjax({
 $.mockjax({
     url: new RegExp(base_url + "/tag/list_all/*"),
     type: "get",
-    responseText: {"tags": [{"visible": 1, "site_id": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_id": 2, "id": 2, "name": "perro"}]}
+    responseText: {"tags": [{"visible": 1, "site_name": 2, "id": 19, "name": "gato"}, {"visible": 1, "site_name": 2, "id": 2, "name": "perro"}"site_name"}
 });
 
 
