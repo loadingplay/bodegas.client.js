@@ -308,7 +308,7 @@ cart-id | it shows the product id
 {{! total|money }} | it shows the total of the shopping cart in money format
 {{! units_total }} | it shows the total of the products that you are going to buy
 {{! checkout_url}} | it shows the chackout url that is going to open when the subbmit button if its pressed
-site_name | it shows the id of the site, the value is already configured
+site_name | it shows the name of the site, the value is already configured
 cart_id | this is the id of the cart that automaticlly appears on the checkout
 origin | it shows the origin of the cart, it is the name of the site
 ```
