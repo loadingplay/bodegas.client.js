@@ -275,7 +275,7 @@ You can also put any of the elements of the product to fill the cart
 </script>
 <script type="text/x-template" id="shopping-cart-checkout-form" >
     <form action="{{! checkout_url}}" method="get" novalidate id="shipping-form" onclick="return Validate()">
-        <input name="site_id" class="form-control required" type="hidden" value="{{! site_id}}">
+        <input name="site_name" class="form-control required" type="hidden" value="{{! site_name}}">
         <input name="cart_id" class="form-control required" type="hidden" value="{{! cart_id}}">
         <input name="origin" class="form-control required" type="hidden" value="{{ site.name }}">
         <div class="form-group text-center">
@@ -308,7 +308,7 @@ cart-id | it shows the product id
 {{! total|money }} | it shows the total of the shopping cart in money format
 {{! units_total }} | it shows the total of the products that you are going to buy
 {{! checkout_url}} | it shows the chackout url that is going to open when the subbmit button if its pressed
-site_id | it shows the id of the site, the value is already configured
+site_name | it shows the name of the site, the value is already configured
 cart_id | this is the id of the cart that automaticlly appears on the checkout
 origin | it shows the origin of the cart, it is the name of the site
 ```

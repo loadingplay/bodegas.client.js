@@ -205,7 +205,7 @@ class CheckoutFormView extends View
 //     {
 //         return {
 //             checkout_url : this.controller.getCheckoutUrl(),
-//             site_id : this.controller.getSiteId(),
+//             site_name : this.controller.getSiteName(),
 //             cart_id : this.controller.getGUID()
 //         };
 //     }
@@ -235,7 +235,7 @@ class CheckoutFormView extends View
 //     goToCheckout(checkout)
 //     {
 //         document.location.href = checkout.checkout_url + '?' +
-//                                 'site_id=' + checkout.site_id +
+//                                 'site_name=' + checkout.site_name +
 //                                 '&cart_id=' + checkout.cart_id;
 //     }
 //
@@ -356,7 +356,7 @@ class CheckoutFormView extends View
 //             'units_total' : this.controller.getUnitsTotal(),
 //             'upp_total' : this.controller.getUPPTotal(),
 //             'checkout_url' : this.controller.getCheckoutUrl(),
-//             'site_id' : this.controller.getSiteId(),
+//             'site_name' : this.controller.getSiteName(),
 //             'cart_id' : this.controller.getGUID()
 //         };
 //     }

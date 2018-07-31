@@ -7,12 +7,11 @@
 
 class Cart extends Module
 {
-    constructor(site_id, checkout_url, site_name)
+    constructor(checkout_url, site_name)
     {
         super();
 
         this.checkout_url = checkout_url === undefined ? '' : checkout_url;
-        this.site_id = site_id === undefined ? 2 : site_id;
         this.site_name = site_name === undefined ? "" : site_name;
 
         this.onLoadCart = $.noop;
@@ -179,7 +178,7 @@ class Cart extends Module
                 'units_total' : this.getUnitsTotal(),
                 'upp_total' : this.getUPPTotal(),
                 'checkout_url' : this.getCheckoutUrl(),
-                'site_id' : this.getSiteId(),
+                'site_name' : this.getSiteId(),
                 'cart_id' : this.getGUID(),
                 'discount_code' : this.getDiscountCode(),
                 'percentage' : this.getPercentage()
@@ -205,7 +204,7 @@ class Cart extends Module
 
     getSiteId()
     {
-        return this.site_id;
+        return this.site_name;
     }
 
     saveModel(callback)
