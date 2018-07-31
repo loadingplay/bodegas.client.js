@@ -9,15 +9,19 @@
     <body>
 
         <!-- tags -->
-        <div class="menu" >
+        <!-- uncomment this to show tags -->
+        <!-- <div class="menu" >
             <ul>
             </ul>
         </div>
 
         <div type="template" id="tag_template" >
             <li><a href="/sample/tag.html?tag={{ id }}" >{{ name }}</a></li>
-        </div>
+        </div> -->
         <!-- tags -->
+
+        <!-- paybutton checkout -->
+        <div class="checkout-form"></div>
 
         <!-- products -->
         <div class="products" >
@@ -40,7 +44,22 @@
                 <div class="money" >{{ main_price }}</div>
                 <div style="height:200px;overflow:hidden" >{{ description }}</div>
                 <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button product-id="{{ id }}" product-name="{{ name }}" product-price="{{ main_price }}" product-upp="{{ upp }}" class="add-to-cart add-to-cart-animation" >add to cart</button>
+                <button
+                    type="button"
+                    class="btn add-to-cart btn-success car"
+                    id="open-cart"
+                    data-toggle="modal"
+                    data-target="#myModal"
+                    product-upp="{{ upp }}"
+                    product-name="{{ name }}"
+                    product-price="{{ main_price }}"
+                    product-sku="{{ sku }}"
+                    product-id="{{ id }}"
+                    product-img="{{ images[0]['thumb_500'] }}"
+                    product-weight="{{ weight }}"
+                    lp-cart-add>
+                    Comprar ahora
+                </button>
 
             </div>
         </script>
@@ -49,6 +68,8 @@
         <!-- shopping cart -->
         <div class="shopping-cart shopping-cart-animation" style="border : black solid 1px">
         </div>
+
+        <form action="{{ checkout_url}}" method="get" novalidate id="shipping-form" class="myform" onclick="return Validate()">
 
         <div>
             <button class="test-extra-data" >Test Extra Data</button>
@@ -78,21 +99,17 @@
         <script type="text/x-template" id="shopping-cart-total" >
             <span class="total" > Total: {{ total|money }}</span>
             <div class="units-total"></div>
-            <div class="checkout-form"></div>
         </script>
 
         <script type="text/x-template" id="shopping-cart-checkout-form" >
-            <form action="{{checkout_url}}" method="get" novalidate id="shipping-form" class="myform">
-
-                <input name="checkout" class="form-control required" type="text" value="{{checkout_url}}" />
-                <input name="site_name" class="form-control required" type="text" value="{{site_name}}" />
-                <input name="cart_id" class="form-control required" type="text" value="{{cart_id}}" />
-                <input name="session_id" class="form-control required" type="text" value="{{session_id}}" />
-                <input name="success_url" class="form-control required" type="text" value="{{success_url}}" />
-                <input name="failure_url" class="form-control required" type="text" value="{{failure_url}}" />
-                <input name="webpay_url" class="form-control required" type="text" value="{{webpay_url}}" />
-
-                <input type="submit" class="form-group text-center" value="Checkout" />
+            <form action="{{ checkout_url}}" method="get" novalidate id="shipping-form" class="myform" onclick="return Validate()">
+                <input name="site_name" class="form-control required" type="hidden" value="{{ site_name }}">
+                <input name="cart_id" class="form-control required" type="hidden" value="{{ cart_id}}">
+                <input name="origin" class="form-control required" type="hidden" value="{{ origin }}">
+                <input name="total" class="total-carro" type="hidden" value="{{ total }}">
+                <div class="form-group text-center">
+                    <button type="submit" class="btn bn pagar-carro">PAGAR</button>
+                </div>
             </form>
         </script>
         <!-- shopping cart -->
@@ -129,9 +146,9 @@
                 //alert("html: " + $('#tag_template').html());
                 $(".products").ecommerce({
                     'ignore_stock' : true,
-                    'app_public' : 2,
-                    'animation' : 'ghost',
-                    'checkout_url' : 'http://apibodegas.ondev.today/',
+                    'app_public' : 'fm',
+                    'base_url': 'https://apibodegas.ondev.today',
+                    'checkout_url' : 'https://lpcheckout.ondev.today/',
                     'products_per_page' : 9,
                     'analytics' : analytics,
                     'user' : 'ricardo@loadingplay.com'
