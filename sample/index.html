@@ -40,31 +40,31 @@
     </div>
 
     <script type="text/template" id="product_template">
-            <div class="product" >
-                <div>{{ name }}</div>
-                <img height="300" width="300" class="product-image" src="{{ images[0][0] }}" />
-                <div class="money" >{{ main_price }}</div>
-                <div style="height:200px;overflow:hidden" >{{ description }}</div>
-                <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
-                <button
-                    type="button"
-                    class="btn add-to-cart btn-success car"
-                    id="open-cart"
-                    data-toggle="modal"
-                    data-target="#myModal"
-                    product-upp="{{ upp }}"
-                    product-name="{{ name }}"
-                    product-price="{{ main_price }}"
-                    product-sku="{{ sku }}"
-                    product-id="{{ id }}"
-                    product-img="{{ images[0]['thumb_500'] }}"
-                    product-weight="{{ weight }}"
-                    lp-cart-add>
-                    Comprar ahora
-                </button>
+        <div class="product" >
+            <div>{{ name }}</div>
+            <img height="300" width="300" class="product-image" src="{{ images[0][0] }}" />
+            <div class="money" >{{ main_price }}</div>
+            <div style="height:200px;overflow:hidden" >{{ description }}</div>
+            <a href="/sample/product.html?id={{ id }}">Ver detalle</a>
+            <button
+                type="button"
+                class="btn add-to-cart btn-success car"
+                id="open-cart"
+                data-toggle="modal"
+                data-target="#myModal"
+                product-upp="{{ upp }}"
+                product-name="{{ name }}"
+                product-price="{{ main_price }}"
+                product-sku="{{ sku }}"
+                product-id="{{ id }}"
+                product-img="{{ images[0]['thumb_500'] }}"
+                product-weight="{{ weight }}"
+                lp-cart-add>
+                Comprar ahora
+            </button>
 
-            </div>
-        </script>
+        </div>
+    </script>
     <!-- products -->
 
     <!-- shopping cart -->
