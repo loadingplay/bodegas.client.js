@@ -137,6 +137,12 @@
             options = $.extend(true, {}, $.fn[pluginName].defaults, options);
             options.onLoad = options.onLoad === undefined ? $.noop : options.onLoad.clone();
 
+            // TODO: remove this fix once all is site name for ever
+            if (options.site_name === "")
+            {
+                options.site_name = options.app_public;
+            }
+
             Utils.base_url = options.base_url;
         }
 
