@@ -513,3 +513,37 @@ $.mockjax({
         this.responseText = {};
     }
 });
+
+$.mockjax({
+    url: new RegExp(base_url + "/v1/cellar/0"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {
+            "cellar": {
+                "id": "1",
+                "name": "cellar",
+                "description": "description",
+                "for_sale": "true",
+                "reservation": "false"
+            }
+        };
+    }
+});
+
+$.mockjax({
+    url: new RegExp(base_url + "/v1/cellar/1/product/"),
+    type: "get",
+    response: function(settings)
+    {
+        this.responseText = {
+            "status": "success",
+            "products": [{
+                "product_sku": "talla",
+                "balance_units": 0
+            }, {
+                "product_sku": "color",
+                "balance_units": 0
+            }]};
+    }
+});
