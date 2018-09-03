@@ -2366,7 +2366,7 @@ BodegasClient.prototype.authenticate = function (app_public, callback) {
     var self = this;
     jQuery.get(Utils.getURL('authenticate', [app_public]), function (data) {
         if (data.success) {
-            self.init(app_public);
+            self.init(self.site_name);
             callback(self);
         }
     });
