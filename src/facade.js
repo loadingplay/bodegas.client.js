@@ -187,6 +187,7 @@
         'operator'              : 'or', // solo se puede pasar mas de 1 tag con operator and, or solo funciona con 1 tag
         'column'                : 'main_price', // columna de la tabla por la cual se quiere ordenar "main_price, name, sku, etc". Por defecto se ordena por "main_price"
         'direction'             : 'asc', // orientación del orden, asc (ascendiente) o desc (descendiente). Por defecto es asc
+        'deactivate_product'    : false,
 
         /******* TEMPLATES *******/
         'no_products_template'  : '<span class="fuentes2" >No tenemos productos en esta sección por el momento</span>',
@@ -305,6 +306,9 @@ EcommerceFacade.prototype.showProductList = function(page)
             tag = Utils.getUrlParameter('tag');
         }
 
+        if (self.options.deactivate_product)
+            return;
+
         self.ecommerce.product._list(
             page,
             self.options.products_per_page,
@@ -337,6 +341,10 @@ EcommerceFacade.prototype.showProductList = function(page)
 
 EcommerceFacade.prototype.showProductDetail = function()
 {
+    // deactivate product render
+    if (self.options.deactivate_product)
+        return;
+
     var product_id = this.options.product_id || Utils.getUrlParameter('id');
     var self = this;
     self.ecommerce.product.get(
