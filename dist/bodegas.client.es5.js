@@ -2726,7 +2726,7 @@ EcommerceFacade.prototype.showProductList = function (page) {
 
 EcommerceFacade.prototype.showProductDetail = function () {
     // deactivate product render
-    if (self.options.deactivate_product) return;
+    if (this.options.deactivate_product) return;
 
     var product_id = this.options.product_id || Utils.getUrlParameter('id');
     var self = this;
