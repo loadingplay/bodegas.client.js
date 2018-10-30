@@ -384,6 +384,8 @@ var BodegasClient = function(options={})
     this.tag = new Tag();
     this.product = new Product();
     this.cart = new Cart(this.checkout_url, this.site_name);
+
+    this.init(this.site_name);
 };
 
 

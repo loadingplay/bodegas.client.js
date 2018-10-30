@@ -2360,6 +2360,8 @@ var BodegasClient = function BodegasClient() {
     this.tag = new Tag();
     this.product = new Product();
     this.cart = new Cart(this.checkout_url, this.site_name);
+
+    this.init(this.site_name);
 };
 
 BodegasClient.prototype.init = function (site_name) {
