@@ -289,54 +289,51 @@ EcommerceFacade.prototype.showProductList = function(page)
         return;
     }
 
-    this.ecommerce.authenticate(this.options.app_public, function()
+    self.ecommerce.tag.listAll(function(tags)
     {
-        self.ecommerce.tag.listAll(function(tags)
-        {
-            self.view.renderTags(tags);
-        });
-
-        var tag = '';
-        if (self.options.tag !== '')
-        {
-            tag = self.options.tag;
-        }
-        else
-        {
-            tag = Utils.getUrlParameter('tag');
-        }
-
-        if (self.options.deactivate_product)
-            return;
-
-        self.ecommerce.product._list(
-            page,
-            self.options.products_per_page,
-            self.options.ignore_stock,
-            tag,
-            Utils.getUrlParameter('search_query'),
-            self.options.user,
-            self.options.operator,
-            self.options.column,
-            self.options.direction,
-            function(products)
-            {
-                self.view.renderProducts(
-                    products,
-                    page,
-                    function(products)
-                    {
-                        if (self.options !== undefined)
-                        {
-                            self.options.onLoad.call(this, products);
-                        }
-
-                        self.triggerProductsLoaded(products);
-                    }
-                );
-            }
-        );
+        self.view.renderTags(tags);
     });
+
+    var tag = '';
+    if (self.options.tag !== '')
+    {
+        tag = self.options.tag;
+    }
+    else
+    {
+        tag = Utils.getUrlParameter('tag');
+    }
+
+    if (self.options.deactivate_product)
+        return;
+
+    self.ecommerce.product._list(
+        page,
+        self.options.products_per_page,
+        self.options.ignore_stock,
+        tag,
+        Utils.getUrlParameter('search_query'),
+        self.options.user,
+        self.options.operator,
+        self.options.column,
+        self.options.direction,
+        function(products)
+        {
+            self.view.renderProducts(
+                products,
+                page,
+                function(products)
+                {
+                    if (self.options !== undefined)
+                    {
+                        self.options.onLoad.call(this, products);
+                    }
+
+                    self.triggerProductsLoaded(products);
+                }
+            );
+        }
+    );
 };
 
 EcommerceFacade.prototype.showProductDetail = function()

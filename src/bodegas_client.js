@@ -17,19 +17,8 @@ var BodegasClient = function(options={})
     this.tag = new Tag();
     this.product = new Product();
     this.cart = new Cart(this.checkout_url, this.site_name);
-};
 
-BodegasClient.prototype.authenticate = function(app_public, callback)
-{
-    var self = this;
-    jQuery.get(Utils.getURL('authenticate', [app_public]), function(data)
-    {
-        if (data.success)
-        {
-            self.init(self.site_name);
-            callback(self);
-        }
-    });
+    this.init(this.site_name);
 };
 
 
