@@ -8,21 +8,6 @@
 QUnit.module('Bodegas Client', {});
 
 
-QUnit.test('authenticate', function(assert)
-{
-    var done = assert.async();
-    var bodegas = new BodegasClient();
-
-    bodegas.authenticate(100, function()
-    {
-        assert.ok(true, 'perform the callback');
-
-        // insert more tests here
-
-        done();
-    });
-});
-
 QUnit.test('init', function(assert)
 {
     var bodegas = new BodegasClient();

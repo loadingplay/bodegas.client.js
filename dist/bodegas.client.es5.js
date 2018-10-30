@@ -2362,16 +2362,6 @@ var BodegasClient = function BodegasClient() {
     this.cart = new Cart(this.checkout_url, this.site_name);
 };
 
-BodegasClient.prototype.authenticate = function (app_public, callback) {
-    var self = this;
-    jQuery.get(Utils.getURL('authenticate', [app_public]), function (data) {
-        if (data.success) {
-            self.init(self.site_name);
-            callback(self);
-        }
-    });
-};
-
 BodegasClient.prototype.init = function (site_name) {
     this.site_name = site_name;
     this.tag.site_name = site_name;
@@ -2698,28 +2688,26 @@ EcommerceFacade.prototype.showProductList = function (page) {
         return;
     }
 
-    this.ecommerce.authenticate(this.options.app_public, function () {
-        self.ecommerce.tag.listAll(function (tags) {
-            self.view.renderTags(tags);
-        });
+    self.ecommerce.tag.listAll(function (tags) {
+        self.view.renderTags(tags);
+    });
 
-        var tag = '';
-        if (self.options.tag !== '') {
-            tag = self.options.tag;
-        } else {
-            tag = Utils.getUrlParameter('tag');
-        }
+    var tag = '';
+    if (self.options.tag !== '') {
+        tag = self.options.tag;
+    } else {
+        tag = Utils.getUrlParameter('tag');
+    }
 
-        if (self.options.deactivate_product) return;
+    if (self.options.deactivate_product) return;
 
-        self.ecommerce.product._list(page, self.options.products_per_page, self.options.ignore_stock, tag, Utils.getUrlParameter('search_query'), self.options.user, self.options.operator, self.options.column, self.options.direction, function (products) {
-            self.view.renderProducts(products, page, function (products) {
-                if (self.options !== undefined) {
-                    self.options.onLoad.call(this, products);
-                }
+    self.ecommerce.product._list(page, self.options.products_per_page, self.options.ignore_stock, tag, Utils.getUrlParameter('search_query'), self.options.user, self.options.operator, self.options.column, self.options.direction, function (products) {
+        self.view.renderProducts(products, page, function (products) {
+            if (self.options !== undefined) {
+                self.options.onLoad.call(this, products);
+            }
 
-                self.triggerProductsLoaded(products);
-            });
+            self.triggerProductsLoaded(products);
         });
     });
 };
